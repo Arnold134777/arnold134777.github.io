@@ -88,19 +88,19 @@
     <div class="article-entry" itemprop="articleBody">
       
         <hr>
-<p>问题1：loadNibNamed<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">static NSString *cellId = @&#34;AboutTableViewCell&#34;;&#10;    AboutTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];&#10;    if(!cell)&#10;    &#123;&#10;        cell = [[[NSBundle mainBundle]loadNibNamed:@&#34;AboutTableViewCell&#34; owner:self options:nil] lastObject];&#10;    &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="问题1：loadNibNamed">问题1：loadNibNamed</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">static NSString *cellId = @&#34;AboutTableViewCell&#34;;&#10;    AboutTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];&#10;    if(!cell)&#10;    &#123;&#10;        cell = [[[NSBundle mainBundle]loadNibNamed:@&#34;AboutTableViewCell&#34; owner:self options:nil] lastObject];&#10;    &#125;</span><br></pre></td></tr></table></figure>
 <p>原因：I suspect that your leak may be coming from the outlets in the nib. Note this phrase in the docs on loadNibNamed::<br>To establish outlet connections, this method uses the setValue:forKey: method, which may cause the object in the outlet to be retained automatically.<br>In other words, loadNibNamed sometimes imposes an extra retain because of the odd way key-value-coding works.</p>
 <p>However, that is speculation, and there’s no need for it, because there’s no need for you to call loadNibNamed: in the first place!</p>
 <p>You’re using a custom UITableViewCell subclass, designed in a nib? Then why not do this the normal way? Make a nib containing one top-level object: the cell. Design the cell in the nib, set its class, hook up its outlets etc. In your code, call registerNib:forCellReuseIdentifier: on the table view, to tell the table view about your nib. When you later call dequeueReusableCellWithIdentifier:, if there are no free cells in the reuse pile, the table view will load your nib and hand you cell. No muss, no fuss.</p>
-<p>问题2：imageWithRenderingMode<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tabBarItem1.selectedImage = [[UIImage imageNamed:@&#34;img_wifi_hl&#34;] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];</span><br></pre></td></tr></table></figure></p>
+<h3 id="问题2：imageWithRenderingMode">问题2：imageWithRenderingMode</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tabBarItem1.selectedImage = [[UIImage imageNamed:@&#34;img_wifi_hl&#34;] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];</span><br></pre></td></tr></table></figure>
 <p>暂时未找到解决办法</p>
-<p>问题3：id bridge<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (id)fetchSSIDInfo&#10;&#10;&#123;&#10;&#10;    NSArray *ifs = CFBridgingRelease(CNCopySupportedInterfaces());&#10;    id info = nil;&#10;    for (NSString *ifnam in ifs) &#123;&#10;        info = CFBridgingRelease(CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam));&#10;        if (info &#38;&#38; [info count]) &#123;&#10;            break;&#10;        &#125;&#10;    &#125;&#10;    return info;&#10;&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="问题3：id_bridge">问题3：id bridge</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (id)fetchSSIDInfo&#10;&#10;&#123;&#10;&#10;    NSArray *ifs = CFBridgingRelease(CNCopySupportedInterfaces());&#10;    id info = nil;&#10;    for (NSString *ifnam in ifs) &#123;&#10;        info = CFBridgingRelease(CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam));&#10;        if (info &#38;&#38; [info count]) &#123;&#10;            break;&#10;        &#125;&#10;    &#125;&#10;    return info;&#10;&#125;</span><br></pre></td></tr></table></figure>
 <p>CFBridgingRelease 替换掉原来的（id bridge）</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="www.arnold134777.com/2015/11/23/iOS-内存泄漏处理/" data-id="cihbrv1bs0005efjmmgr2xs52" class="article-share-link">Share</a>
+      <a data-url="www.arnold134777.com/2015/11/23/iOS-内存泄漏处理/" data-id="cihbrzzdu0005f0jm9iluhjef" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
@@ -147,7 +147,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="www.arnold134777.com/2015/11/23/LintCode-最大间距/" data-id="cihbrv1bb0000efjmz9xcg9jn" class="article-share-link">Share</a>
+      <a data-url="www.arnold134777.com/2015/11/23/LintCode-最大间距/" data-id="cihbrzzdi0000f0jmksicpwmm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
@@ -194,7 +194,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="www.arnold134777.com/2015/11/19/hello-world/" data-id="cihbrv1bv0008efjmb7zu77il" class="article-share-link">Share</a>
+      <a data-url="www.arnold134777.com/2015/11/19/hello-world/" data-id="cihbrzze50008f0jm0zn9hrz8" class="article-share-link">Share</a>
       
       
     </footer>
