@@ -30,7 +30,7 @@
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
 			
-			<img lazy-src="/images/avatar.jpeg" class="js-avatar">
+			<img lazy-src="/images/avatar.png" class="js-avatar">
 			
 		</a>
 
@@ -154,7 +154,7 @@
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img lazy-src="/images/avatar.jpeg" class="js-avatar">
+				<img lazy-src="/images/avatar.png" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author">Arnold</h1>
@@ -183,6 +183,72 @@
 	</div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-MSWeakTimer机制解析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/03/MSWeakTimer机制解析/" class="article-date">
+  	<time datetime="2015-12-03T03:22:46.000Z" itemprop="datePublished">2015-12-03</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/12/03/MSWeakTimer机制解析/">MSWeakTimer机制解析</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>MSWeakTimer地址：<a href="https://github.com/mindsnacks/MSWeakTimer" target="_blank" rel="external">https://github.com/mindsnacks/MSWeakTimer</a></p>
+<p><strong>基本介绍</strong></p>
+<p>线程安全的MSWeakTimer是NSTimer的替代品，最基本的特点是它不会 retain target 以及支持GCD queues。</p>
+<p><strong>问题的提出</strong></p>
+<p>关于 NSTimer 中 target 的生命周期问题，当 repeat 为 YES 时NSTimer 会 retains 它的 target，那么target的生命周期就成了问题，完全的交给了这个timer，只有当timer 调用invalidate后 dealloc 才有机会发生。</p>
+<p>另一个问题是GCD，在苹果的官方文档中说的很清楚:</p>
+<p>Special Considerations</p>
+<p>You must send this message from the thread on which the timer was installed. If you send this message from another thread, the input source associated with the timer may not be removed from its run loop, which could prevent the thread from exiting properly.</p>
+<p>invalidate必须由安装这个timer的线程发起，否则这个timer有可能不会从run loop中移除。这种情况会发生的一个情况就是：当这个线程是由 GCD 管理的。这是因为 NSTimer 依赖于当前线程的run loop, 而GCD完全是另外一回事，它不能确保timer的阻塞和invalidate是由同一个线程发起的，run loop和queue将会交织在一起，世界就乱了…</p>
+<p><strong>而MSWeakTimer完全就不是用run loop实现的，所以就不用考虑那么多了，它可以与GCD和谐共存，被任意线程 install 和 invalidate。</strong></p>
+<p><strong>源码分析</strong><br>（1）初始化<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if ((self = [super init]))&#10;    &#123;&#10;        self.timeInterval = timeInterval;&#10;        self.target = target;&#10;        self.selector = selector;&#10;        self.userInfo = userInfo;&#10;        self.repeats = repeats;&#10;&#10;        NSString *privateQueueName = [NSString stringWithFormat:@&#34;com.mindsnacks.msweaktimer.%p&#34;, self];&#10; // 1.&#21019;&#24314;&#20018;&#34892;&#38431;&#21015;&#10; // Dispatch queues created with the DISPATCH_QUEUE_SERIAL or a NULLattribute&#10; // invoke blocks serially in FIFO order.&#10;        self.privateSerialQueue = dispatch_queue_create([privateQueueName cStringUsingEncoding:NSASCIIStringEncoding], DISPATCH_QUEUE_SERIAL);&#10;        dispatch_set_target_queue(self.privateSerialQueue, dispatchQueue);&#10; // 2.dispatch_source &#23450;&#26102;&#22120;&#10;        self.timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER,&#10;                                            0,&#10;                                            0,&#10;                                            self.privateSerialQueue);&#10;    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>（2）设置定时器的触发时间<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dispatch_source_set_timer(self.timer,&#10;                              dispatch_time(DISPATCH_TIME_NOW, intervalInNanoseconds),&#10;                              (uint64_t)intervalInNanoseconds,&#10;                              toleranceInNanoseconds&#10;                              );</span><br></pre></td></tr></table></figure></p>
+<p>（3）设置定时器触发的事件<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__weak MSWeakTimer *weakSelf = self;&#10;&#10;   dispatch_source_set_event_handler(self.timer, ^&#123;&#10;       [weakSelf timerFired];&#10;   &#125;);&#10;&#10;   dispatch_resume(self.timer);</span><br></pre></td></tr></table></figure></p>
+<p>（4）具体event<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if (OSAtomicAnd32OrigBarrier(1, &#38;_timerFlags.timerIsInvalidated)) // &#21407;&#23376;&#25805;&#20316;&#10;   &#123;&#10;       return;&#10;   &#125;&#10;&#10;   // We&#39;re not worried about this warning because the selector we&#39;re calling doesn&#39;t return a +1 object.&#10;   #pragma clang diagnostic push&#10;   #pragma clang diagnostic ignored &#34;-Warc-performSelector-leaks&#34;&#10;       [self.target performSelector:self.selector withObject:self];&#10;   #pragma clang diagnostic pop&#10;&#10;   if (!self.repeats)&#10;   &#123;&#10;       [self invalidate];&#10;   &#125;</span><br></pre></td></tr></table></figure></p>
+<p>（5）释放<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (void)invalidate&#10;&#123;&#10;    // We check with an atomic operation if it has already been invalidated. Ideally we would synchronize this on the private queue,&#10;    // but since we can&#39;t know the context from which this method will be called, dispatch_sync might cause a deadlock.&#10;    if (!OSAtomicTestAndSetBarrier(7, &#38;_timerFlags.timerIsInvalidated))&#10;    &#123;&#10;        dispatch_source_t timer = self.timer;&#10;        dispatch_async(self.privateSerialQueue, ^&#123;&#10;            dispatch_source_cancel(timer);&#10;            ms_release_gcd_object(timer);&#10;        &#125;);&#10;    &#125;&#10;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>附：<br>OSAtomicAnd32OrigBarrier ： 用于原子操作的判断，出于线程安全考虑<br>OSAtomic原子操作：<a href="http://southpeak.github.io/blog/2014/10/17/osatomicyuan-zi-cao-zuo/" target="_blank" rel="external">http://southpeak.github.io/blog/2014/10/17/osatomicyuan-zi-cao-zuo/</a><br>GCD dispatch_source：<a href="http://www.cnblogs.com/sunfrog/p/3308766.html" target="_blank" rel="external">http://www.cnblogs.com/sunfrog/p/3308766.html</a> </p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
   
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   
