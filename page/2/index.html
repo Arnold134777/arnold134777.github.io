@@ -3,30 +3,17 @@
 <head>
   <meta charset="utf-8">
   
-  <title>LintCode 最大间距 | Arnold的技术博客</title>
+  <title>Arnold的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="http://www.lintcode.com/zh-cn/problem/maximum-gap/
-最大间距 查看运行结果 
-给定一个未经排序的数组，请找出其排序表中连续两个要素的最大间距。
-如果数组中的要素少于 2 个，请返回 0.
-您在真实的面试中是否遇到过这个题？ Yes样例给定数组 [1, 9, 2, 5]，其排序表为 [1, 2, 5, 9]，其最大的间距是在 5 和 9 之间，= 4">
-<meta property="og:type" content="article">
-<meta property="og:title" content="LintCode 最大间距">
-<meta property="og:url" content="www.arnold134777.com/2015/11/23/LintCode-最大间距/index.html">
+  <meta name="description" content="iOS开发,喜欢算法">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Arnold的技术博客">
+<meta property="og:url" content="www.arnold134777.com/page/2/index.html">
 <meta property="og:site_name" content="Arnold的技术博客">
-<meta property="og:description" content="http://www.lintcode.com/zh-cn/problem/maximum-gap/
-最大间距 查看运行结果 
-给定一个未经排序的数组，请找出其排序表中连续两个要素的最大间距。
-如果数组中的要素少于 2 个，请返回 0.
-您在真实的面试中是否遇到过这个题？ Yes样例给定数组 [1, 9, 2, 5]，其排序表为 [1, 2, 5, 9]，其最大的间距是在 5 和 9 之间，= 4">
-<meta property="og:updated_time" content="2015-11-30T06:54:37.000Z">
+<meta property="og:description" content="iOS开发,喜欢算法">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LintCode 最大间距">
-<meta name="twitter:description" content="http://www.lintcode.com/zh-cn/problem/maximum-gap/
-最大间距 查看运行结果 
-给定一个未经排序的数组，请找出其排序表中连续两个要素的最大间距。
-如果数组中的要素少于 2 个，请返回 0.
-您在真实的面试中是否遇到过这个题？ Yes样例给定数组 [1, 9, 2, 5]，其排序表为 [1, 2, 5, 9]，其最大的间距是在 5 和 9 之间，= 4">
+<meta name="twitter:title" content="Arnold的技术博客">
+<meta name="twitter:description" content="iOS开发,喜欢算法">
   
     <link rel="alternative" href="/atom.xml" title="Arnold的技术博客" type="application/atom+xml">
   
@@ -185,7 +172,72 @@
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-LintCode-最大间距" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap">
+  
+    <article id="post-iOS-内存泄漏处理" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/11/23/iOS-内存泄漏处理/" class="article-date">
+  	<time datetime="2015-11-23T09:38:44.000Z" itemprop="datePublished">2015-11-23</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/23/iOS-内存泄漏处理/">iOS 内存泄漏处理</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h3 id="问题1：loadNibNamed">问题1：loadNibNamed</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> NSString *cellId = @<span class="string">"AboutTableViewCell"</span>;</span><br><span class="line">    AboutTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];</span><br><span class="line">    <span class="keyword">if</span>(!cell)</span><br><span class="line">    &#123;</span><br><span class="line">        cell = [[[NSBundle mainBundle]loadNibNamed:@<span class="string">"AboutTableViewCell"</span> owner:self options:nil] lastObject];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>原因：I suspect that your leak may be coming from the outlets in the nib. Note this phrase in the docs on loadNibNamed::<br>To establish outlet connections, this method uses the setValue:forKey: method, which may cause the object in the outlet to be retained automatically.<br>In other words, loadNibNamed sometimes imposes an extra retain because of the odd way key-value-coding works.</p>
+<p>However, that is speculation, and there’s no need for it, because there’s no need for you to call loadNibNamed: in the first place!</p>
+<p>You’re using a custom UITableViewCell subclass, designed in a nib? Then why not do this the normal way? Make a nib containing one top-level object: the cell. Design the cell in the nib, set its class, hook up its outlets etc. In your code, call registerNib:forCellReuseIdentifier: on the table view, to tell the table view about your nib. When you later call dequeueReusableCellWithIdentifier:, if there are no free cells in the reuse pile, the table view will load your nib and hand you cell. No muss, no fuss.</p>
+<h3 id="问题2：imageWithRenderingMode">问题2：imageWithRenderingMode</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tabBarItem1.selectedImage = [[UIImage imageNamed:@<span class="string">"img_wifi_hl"</span>] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];</span><br></pre></td></tr></table></figure>
+<p>暂时未找到解决办法</p>
+<h3 id="问题3：id_bridge">问题3：id bridge</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (id)fetchSSIDInfo</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    NSArray *ifs = CFBridgingRelease(CNCopySupportedInterfaces());</span><br><span class="line">    id info = nil;</span><br><span class="line">    <span class="keyword">for</span> (NSString *ifnam in ifs) &#123;</span><br><span class="line">        info = CFBridgingRelease(CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam));</span><br><span class="line">        <span class="keyword">if</span> (info &amp;&amp; [info count]) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> info;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>CFBridgingRelease 替换掉原来的（id bridge）</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-LintCode-最大间距" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
       <a href="/2015/11/23/LintCode-最大间距/" class="article-date">
@@ -201,23 +253,12 @@
       <header class="article-header">
         
   
-    <h1 class="article-title" itemprop="name">
-      LintCode 最大间距
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/23/LintCode-最大间距/">LintCode 最大间距</a>
     </h1>
   
 
       </header>
-      
-      <div class="article-info article-info-post">
-        
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-	</div>
-
-        
-
-        <div class="clearfix"></div>
-      </div>
       
     
     <div class="article-entry" itemprop="articleBody">
@@ -235,66 +276,35 @@
       
     </div>
     
-  </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2015/11/23/iOS-内存泄漏处理/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          iOS 内存泄漏处理
-        
-      </div>
-    </a>
-  
-  
-</nav>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+	</div>
 
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
   
 </article>
 
 
-<div class="share">
-	<!-- JiaThis Button BEGIN -->
-	<div class="jiathis_style">
-		<span class="jiathis_txt">分享到：</span>
-		<a class="jiathis_button_tsina"></a>
-		<a class="jiathis_button_cqq"></a>
-		<a class="jiathis_button_douban"></a>
-		<a class="jiathis_button_weixin"></a>
-		<a class="jiathis_button_tumblr"></a>
-		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
-	</div>
-	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
-	<!-- JiaThis Button END -->
-</div>
-
-
-
-<div class="duoshuo">
-	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="LintCode-最大间距" data-title="LintCode 最大间距" data-url="www.arnold134777.com/2015/11/23/LintCode-最大间距/"></div>
-	<!-- 多说评论框 end -->
-	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-	<script type="text/javascript">
-	var duoshuoQuery = {short_name:"true"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0] 
-		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
-	</script>
-	<!-- 多说公共JS代码 end -->
-</div>
 
 
 
 
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    </nav>
+  
 </div>
       <footer id="footer">
   <div class="outer">
@@ -318,8 +328,8 @@
 		fancybox: true,
 		mathjax: true,
 		animate: true,
-		isHome: false,
-		isPost: true,
+		isHome: true,
+		isPost: false,
 		isArchive: false,
 		isTag: false,
 		isCategory: false,

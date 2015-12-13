@@ -3,21 +3,36 @@
 <head>
   <meta charset="utf-8">
   
-  <title>LintCode最小路径和 | Arnold的技术博客</title>
+  <title>LintCode二叉树中的最大路径和 | Arnold的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="给定一个只含非负整数的m*n网格，找到一条从左上角到右下角的可以使数字和最小的路径。样例注意你在同一时间只能向下或者向右移动一步
-1234567891011121314151617181920212223242526272829303132333435public class Solution &amp;#123;    /**     * @param grid: a list of lists of">
+  <meta name="description" content="给出一棵二叉树，寻找一条路径使其路径和最大，路径可以在任一节点中开始和结束（路径和为两个节点之间所在路径上的节点权值之和）
+样例给出一棵二叉树：
+  1
+ / \
+2   3
+返回 6
+代码:123456789101112131415161718192021222324252627282930313233343536373839404142/** * Definition of TreeNode:">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LintCode最小路径和">
-<meta property="og:url" content="www.arnold134777.com/2015/12/05/LintCode最小路径和/index.html">
+<meta property="og:title" content="LintCode二叉树中的最大路径和">
+<meta property="og:url" content="www.arnold134777.com/2015/12/13/LintCode二叉树中的最大路径和/index.html">
 <meta property="og:site_name" content="Arnold的技术博客">
-<meta property="og:description" content="给定一个只含非负整数的m*n网格，找到一条从左上角到右下角的可以使数字和最小的路径。样例注意你在同一时间只能向下或者向右移动一步
-1234567891011121314151617181920212223242526272829303132333435public class Solution &amp;#123;    /**     * @param grid: a list of lists of">
-<meta property="og:updated_time" content="2015-12-13T11:51:25.000Z">
+<meta property="og:description" content="给出一棵二叉树，寻找一条路径使其路径和最大，路径可以在任一节点中开始和结束（路径和为两个节点之间所在路径上的节点权值之和）
+样例给出一棵二叉树：
+  1
+ / \
+2   3
+返回 6
+代码:123456789101112131415161718192021222324252627282930313233343536373839404142/** * Definition of TreeNode:">
+<meta property="og:updated_time" content="2015-12-13T11:53:30.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LintCode最小路径和">
-<meta name="twitter:description" content="给定一个只含非负整数的m*n网格，找到一条从左上角到右下角的可以使数字和最小的路径。样例注意你在同一时间只能向下或者向右移动一步
-1234567891011121314151617181920212223242526272829303132333435public class Solution &amp;#123;    /**     * @param grid: a list of lists of">
+<meta name="twitter:title" content="LintCode二叉树中的最大路径和">
+<meta name="twitter:description" content="给出一棵二叉树，寻找一条路径使其路径和最大，路径可以在任一节点中开始和结束（路径和为两个节点之间所在路径上的节点权值之和）
+样例给出一棵二叉树：
+  1
+ / \
+2   3
+返回 6
+代码:123456789101112131415161718192021222324252627282930313233343536373839404142/** * Definition of TreeNode:">
   
     <link rel="alternative" href="/atom.xml" title="Arnold的技术博客" type="application/atom+xml">
   
@@ -176,11 +191,11 @@
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-LintCode最小路径和" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-LintCode二叉树中的最大路径和" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/12/05/LintCode最小路径和/" class="article-date">
-  	<time datetime="2015-12-05T13:04:22.000Z" itemprop="datePublished">2015-12-05</time>
+      <a href="/2015/12/13/LintCode二叉树中的最大路径和/" class="article-date">
+  	<time datetime="2015-12-13T11:40:48.000Z" itemprop="datePublished">2015-12-13</time>
 </a>
     </div>
   
@@ -193,7 +208,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      LintCode最小路径和
+      LintCode二叉树中的最大路径和
     </h1>
   
 
@@ -213,8 +228,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>给定一个只含非负整数的m*n网格，找到一条从左上角到右下角的可以使数字和最小的路径。<br>样例<br>注意<br>你在同一时间只能向下或者向右移动一步</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> grid: a list of lists of integers.</span><br><span class="line">     * <span class="doctag">@return</span>: An integer, minimizes the sum of all numbers along its path</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minPathSum</span><span class="params">(<span class="keyword">int</span>[][] grid)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == grid)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span> row = grid.length;</span><br><span class="line">		<span class="keyword">int</span> col = grid[<span class="number">0</span>].length;</span><br><span class="line">		<span class="keyword">if</span>(row &lt;= <span class="number">0</span> || col &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span>[][] steps = <span class="keyword">new</span> <span class="keyword">int</span>[row][col];</span><br><span class="line">		steps[<span class="number">0</span>][<span class="number">0</span>] = grid[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; row;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			steps[i][<span class="number">0</span>] += steps[i - <span class="number">1</span>][<span class="number">0</span>] + grid[i][<span class="number">0</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; col;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			steps[<span class="number">0</span>][i] += steps[<span class="number">0</span>][i - <span class="number">1</span>] + grid[<span class="number">0</span>][i];</span><br><span class="line">		&#125;</span><br><span class="line">	</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; row;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt; col;j++)</span><br><span class="line">			&#123;</span><br><span class="line">				steps[i][j] = Math.min(steps[i - <span class="number">1</span>][j], steps[i][j - <span class="number">1</span>]) + grid[i][j];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	</span><br><span class="line">		<span class="keyword">return</span> steps[row - <span class="number">1</span>][col - <span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p>给出一棵二叉树，寻找一条路径使其路径和最大，路径可以在任一节点中开始和结束（路径和为两个节点之间所在路径上的节点权值之和）</p>
+<p>样例<br>给出一棵二叉树：</p>
+<pre><code>  <span class="number">1</span>
+ / \
+<span class="number">2</span>   <span class="number">3</span>
+</code></pre><p>返回 6</p>
+<p><strong><em>代码:</em></strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line"> * Definition of TreeNode:</span><br><span class="line"> * public class TreeNode &#123;</span><br><span class="line"> *     public int val;</span><br><span class="line"> *     public TreeNode left, right;</span><br><span class="line"> *     public TreeNode(int val) &#123;</span><br><span class="line"> *         this.val = val;</span><br><span class="line"> *         this.left = this.right = null;</span><br><span class="line"> *     &#125;</span><br><span class="line"> * &#125;</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> root: The root of binary tree.</span><br><span class="line">     * <span class="doctag">@return</span>: An integer.</span><br><span class="line">     */</span></span><br><span class="line">   <span class="keyword">int</span> max = Integer.MIN_VALUE;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxPathSum</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == root)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		subMaxPathSum(root);</span><br><span class="line">		<span class="keyword">return</span> max;</span><br><span class="line">        &#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">subMaxPathSum</span><span class="params">(TreeNode node)</span></span><br><span class="line">	</span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == node)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">int</span> leftMax = subMaxPathSum(node.left);</span><br><span class="line">		<span class="keyword">int</span> rightMax = subMaxPathSum(node.right);</span><br><span class="line">		<span class="keyword">int</span> subMax = Math.max(Math.max(Math.max(leftMax + node.val, rightMax + node.val), node.val),leftMax + rightMax + node.val);</span><br><span class="line">		<span class="keyword">if</span>(max &lt; subMax)</span><br><span class="line">		&#123;</span><br><span class="line">			max = subMax;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> Math.max(Math.max(leftMax + node.val, rightMax + node.val), node.val);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -224,18 +244,9 @@
     
 <nav id="article-nav">
   
-    <a href="/2015/12/05/LintCode数字三角形/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          LintCode数字三角形
-        
-      </div>
-    </a>
   
-  
-    <a href="/2015/12/05/LintCode交叉字符串/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">LintCode交叉字符串</div>
+    <a href="/2015/12/13/LintCode背包问题/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">LintCode背包问题</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -264,7 +275,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="LintCode最小路径和" data-title="LintCode最小路径和" data-url="www.arnold134777.com/2015/12/05/LintCode最小路径和/"></div>
+	<div class="ds-thread" data-thread-key="LintCode二叉树中的最大路径和" data-title="LintCode二叉树中的最大路径和" data-url="www.arnold134777.com/2015/12/13/LintCode二叉树中的最大路径和/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
