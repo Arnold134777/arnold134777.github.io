@@ -174,6 +174,67 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-LintCode-编辑距离" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/20/LintCode-编辑距离/" class="article-date">
+  	<time datetime="2015-12-20T11:26:44.000Z" itemprop="datePublished">2015-12-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/12/20/LintCode-编辑距离/">LintCode 编辑距离</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>给出两个单词word1和word2，计算出将word1 转换为word2的最少操作次数。</p>
+<p>你总共三种操作方法：</p>
+<p>插入一个字符<br>删除一个字符<br>替换一个字符</p>
+<p>样例<br>给出 work1=”mart” 和 work2=”karma”</p>
+<p>返回 3</p>
+<p>分析:minSteps[i][j]表示word1的前i个字符改为word2的前j个字符的最少操作数，因此有转移方程<br>minSteps[i][j] =<br>{<br>   minSteps[i - 1][j - 1];(word1[i] == wrod2[j])<br>min(minSteps[i - 1][j - 1],minSteps[i][j - 1],minSteps[i - 1][j]);(word1[i] != wrod2[j])<br>} </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minDistance</span><span class="params">(String word1, String word2)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == word1 || <span class="keyword">null</span> == word2)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span>[][] minSteps = <span class="keyword">new</span> <span class="keyword">int</span>[word1.length() + <span class="number">1</span>][word2.length() + <span class="number">1</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= word1.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			minSteps[i][<span class="number">0</span>] = i;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= word2.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			minSteps[<span class="number">0</span>][i] = i;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= word1.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= word2.length();j++)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(word1.charAt(i - <span class="number">1</span>) == word2.charAt(j - <span class="number">1</span>))</span><br><span class="line">				&#123;</span><br><span class="line">					minSteps[i][j] = minSteps[i - <span class="number">1</span>][j - <span class="number">1</span>];</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					minSteps[i][j] = Math.min(minSteps[i - <span class="number">1</span>][j - <span class="number">1</span>], Math.min(minSteps[i - <span class="number">1</span>][j], minSteps[i][j - <span class="number">1</span>])) + <span class="number">1</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> minSteps[word1.length()][word2.length()];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-LintCode-不同的子序列" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -726,62 +787,6 @@
 <p>[<br>  [0,0,0],<br>  [0,1,0],<br>  [0,0,0]<br>]<br>一共有2条不同的路径从左上角到右下角。</p>
 <p>注意<br>m 和 n 均不超过100</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> obstacleGrid: A list of lists of integers</span><br><span class="line">     * <span class="doctag">@return</span>: An integer</span><br><span class="line">     */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">uniquePathsWithObstacles</span><span class="params">(<span class="keyword">int</span>[][] obstacleGrid)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">null</span> == obstacleGrid)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span>[] columns = obstacleGrid[<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">int</span>[][] paths = <span class="keyword">new</span> <span class="keyword">int</span>[obstacleGrid.length][columns.length];</span><br><span class="line">		<span class="keyword">boolean</span> havePath = <span class="keyword">true</span>;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; obstacleGrid.length; i++) &#123;</span><br><span class="line">			<span class="keyword">if</span> (!havePath) &#123;</span><br><span class="line">				paths[i][<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (obstacleGrid[i][<span class="number">0</span>] == <span class="number">1</span>) &#123;</span><br><span class="line">				paths[i][<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">				havePath = <span class="keyword">false</span>;</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				paths[i][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		havePath = <span class="keyword">true</span>;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; columns.length; i++) &#123;</span><br><span class="line">			<span class="keyword">if</span> (!havePath) &#123;</span><br><span class="line">				paths[<span class="number">0</span>][i] = <span class="number">0</span>;</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (obstacleGrid[<span class="number">0</span>][i] == <span class="number">1</span>) &#123;</span><br><span class="line">				paths[<span class="number">0</span>][i] = <span class="number">0</span>;</span><br><span class="line">				havePath = <span class="keyword">false</span>;</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				paths[<span class="number">0</span>][i] = <span class="number">1</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; obstacleGrid.length; i++) &#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt; columns.length;j++)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(obstacleGrid[i][j] == <span class="number">1</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					paths[i][j] = <span class="number">0</span>;</span><br><span class="line">					<span class="keyword">continue</span>;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span>	</span><br><span class="line">				&#123;</span><br><span class="line">					paths[i][j] = paths[i - <span class="number">1</span>][j] + paths[i][j - <span class="number">1</span>];</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> paths[obstacleGrid.length - <span class="number">1</span>][columns.length - <span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-LintCode最长上升连续子序列" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/12/05/LintCode最长上升连续子序列/" class="article-date">
-  	<time datetime="2015-12-05T12:36:33.000Z" itemprop="datePublished">2015-12-05</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/05/LintCode最长上升连续子序列/">LintCode最长上升连续子序列</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>给定一个整数数组（下标从 0 到 n-1， n 表示整个数组的规模），请找出该数组中的最长上升连续子序列。（最长上升连续子序列可以定义为从右到左或从左到右的序列。）</p>
-<p>代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> A an array of Integer</span><br><span class="line">     * <span class="doctag">@return</span>  an integer</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestIncreasingContinuousSubsequence</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == nums || nums.length &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span> ascendCount = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span> maxAscendCount = -<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; nums.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(nums[i] &gt; nums[i - <span class="number">1</span>])</span><br><span class="line">			&#123;</span><br><span class="line">				ascendCount++;</span><br><span class="line">				<span class="keyword">if</span>(ascendCount &gt; maxAscendCount)</span><br><span class="line">				&#123;</span><br><span class="line">					maxAscendCount = ascendCount;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				ascendCount = <span class="number">1</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(ascendCount &gt; maxAscendCount)</span><br><span class="line">		&#123;</span><br><span class="line">			maxAscendCount = ascendCount;</span><br><span class="line">		&#125;</span><br><span class="line">		ascendCount = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = nums.length - <span class="number">1</span>;i &gt;= <span class="number">1</span>;i--)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(nums[i] &lt; nums[i - <span class="number">1</span>])</span><br><span class="line">			&#123;</span><br><span class="line">				ascendCount++;</span><br><span class="line">				<span class="keyword">if</span>(ascendCount &gt; maxAscendCount)</span><br><span class="line">				&#123;</span><br><span class="line">					maxAscendCount = ascendCount;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				ascendCount = <span class="number">1</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> maxAscendCount;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
       
     </div>

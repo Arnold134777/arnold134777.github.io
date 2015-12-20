@@ -3,27 +3,33 @@
 <head>
   <meta charset="utf-8">
   
-  <title>LintCode 不同的子序列 | Arnold的技术博客</title>
+  <title>LintCode 编辑距离 | Arnold的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="给出字符串S和字符串T，计算S的不同的子序列中T出现的个数。
-子序列字符串是原始字符串通过删除一些(或零个)产生的一个新的字符串，并且对剩下的字符的相对位置没有影响。(比如，“ACE”是“ABCDE”的子序列字符串,而“AEC”不是)。样例给出S = “rabbbit”, T = “rabbit”
+  <meta name="description" content="给出两个单词word1和word2，计算出将word1 转换为word2的最少操作次数。
+你总共三种操作方法：
+插入一个字符删除一个字符替换一个字符
+样例给出 work1=”mart” 和 work2=”karma”
 返回 3
-分析：这里我们可以用f(i,j)表示S中前i个字符串中，T的前j个字符出现的次数，不管S[">
+分析:minSteps[i][j]表示word1的前i个字符改为word2的前j个字符的最少操作数，因此有转移方程minSteps[i][j] ={   minSteps[">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LintCode 不同的子序列">
-<meta property="og:url" content="www.arnold134777.com/2015/12/20/LintCode-不同的子序列/index.html">
+<meta property="og:title" content="LintCode 编辑距离">
+<meta property="og:url" content="www.arnold134777.com/2015/12/20/LintCode-编辑距离/index.html">
 <meta property="og:site_name" content="Arnold的技术博客">
-<meta property="og:description" content="给出字符串S和字符串T，计算S的不同的子序列中T出现的个数。
-子序列字符串是原始字符串通过删除一些(或零个)产生的一个新的字符串，并且对剩下的字符的相对位置没有影响。(比如，“ACE”是“ABCDE”的子序列字符串,而“AEC”不是)。样例给出S = “rabbbit”, T = “rabbit”
+<meta property="og:description" content="给出两个单词word1和word2，计算出将word1 转换为word2的最少操作次数。
+你总共三种操作方法：
+插入一个字符删除一个字符替换一个字符
+样例给出 work1=”mart” 和 work2=”karma”
 返回 3
-分析：这里我们可以用f(i,j)表示S中前i个字符串中，T的前j个字符出现的次数，不管S[">
-<meta property="og:updated_time" content="2015-12-20T07:40:02.000Z">
+分析:minSteps[i][j]表示word1的前i个字符改为word2的前j个字符的最少操作数，因此有转移方程minSteps[i][j] ={   minSteps[">
+<meta property="og:updated_time" content="2015-12-20T11:33:48.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LintCode 不同的子序列">
-<meta name="twitter:description" content="给出字符串S和字符串T，计算S的不同的子序列中T出现的个数。
-子序列字符串是原始字符串通过删除一些(或零个)产生的一个新的字符串，并且对剩下的字符的相对位置没有影响。(比如，“ACE”是“ABCDE”的子序列字符串,而“AEC”不是)。样例给出S = “rabbbit”, T = “rabbit”
+<meta name="twitter:title" content="LintCode 编辑距离">
+<meta name="twitter:description" content="给出两个单词word1和word2，计算出将word1 转换为word2的最少操作次数。
+你总共三种操作方法：
+插入一个字符删除一个字符替换一个字符
+样例给出 work1=”mart” 和 work2=”karma”
 返回 3
-分析：这里我们可以用f(i,j)表示S中前i个字符串中，T的前j个字符出现的次数，不管S[">
+分析:minSteps[i][j]表示word1的前i个字符改为word2的前j个字符的最少操作数，因此有转移方程minSteps[i][j] ={   minSteps[">
   
     <link rel="alternative" href="/atom.xml" title="Arnold的技术博客" type="application/atom+xml">
   
@@ -182,11 +188,11 @@
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-LintCode-不同的子序列" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-LintCode-编辑距离" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/12/20/LintCode-不同的子序列/" class="article-date">
-  	<time datetime="2015-12-20T07:32:57.000Z" itemprop="datePublished">2015-12-20</time>
+      <a href="/2015/12/20/LintCode-编辑距离/" class="article-date">
+  	<time datetime="2015-12-20T11:26:44.000Z" itemprop="datePublished">2015-12-20</time>
 </a>
     </div>
   
@@ -199,7 +205,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      LintCode 不同的子序列
+      LintCode 编辑距离
     </h1>
   
 
@@ -219,11 +225,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>给出字符串S和字符串T，计算S的不同的子序列中T出现的个数。</p>
-<p>子序列字符串是原始字符串通过删除一些(或零个)产生的一个新的字符串，并且对剩下的字符的相对位置没有影响。(比如，“ACE”是“ABCDE”的子序列字符串,而“AEC”不是)。<br>样例<br>给出S = “rabbbit”, T = “rabbit”</p>
+        <p>给出两个单词word1和word2，计算出将word1 转换为word2的最少操作次数。</p>
+<p>你总共三种操作方法：</p>
+<p>插入一个字符<br>删除一个字符<br>替换一个字符</p>
+<p>样例<br>给出 work1=”mart” 和 work2=”karma”</p>
 <p>返回 3</p>
-<p>分析：这里我们可以用f(i,j)表示S中前i个字符串中，T的前j个字符出现的次数，不管S[i]和T[j]相不相等，首先f(i,j)=f(i-1,j)，其次要是S[i]==T[j]的话，f(i,j) = f(i-1,j)+f(i-1,j-1),可以看到，i的状态只与i-1有关，于是可以用滚动数组来进行优化。代码类似01背包。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> S, T: Two string.</span><br><span class="line">     * <span class="doctag">@return</span>: Count the number of distinct subsequences</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numDistinct</span><span class="params">(String S, String T)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == S || <span class="keyword">null</span> == T)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="comment">// commons 表示S中的前i个字符包含T的前j个字符的个数</span></span><br><span class="line">		<span class="keyword">int</span>[][] commons = <span class="keyword">new</span> <span class="keyword">int</span>[S.length() + <span class="number">1</span>][T.length() + <span class="number">1</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= S.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			commons[i][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= S.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= T.length();j++)</span><br><span class="line">			&#123;</span><br><span class="line">				</span><br><span class="line">				<span class="keyword">if</span>(S.charAt(i - <span class="number">1</span>) != T.charAt(j - <span class="number">1</span>))</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="comment">// 不包含S中的第i个</span></span><br><span class="line">					commons[i][j] = commons[i - <span class="number">1</span>][j];</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					<span class="comment">// dp思想，匹配结果分为包含S中的第i个与不包含第i个两种</span></span><br><span class="line">					commons[i][j] = commons[i - <span class="number">1</span>][j - <span class="number">1</span>] +  commons[i - <span class="number">1</span>][j];</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;		</span><br><span class="line">		<span class="keyword">return</span> commons[S.length()][T.length()];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>分析:minSteps[i][j]表示word1的前i个字符改为word2的前j个字符的最少操作数，因此有转移方程<br>minSteps[i][j] =<br>{<br>   minSteps[i - 1][j - 1];(word1[i] == wrod2[j])<br>min(minSteps[i - 1][j - 1],minSteps[i][j - 1],minSteps[i - 1][j]);(word1[i] != wrod2[j])<br>} </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minDistance</span><span class="params">(String word1, String word2)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == word1 || <span class="keyword">null</span> == word2)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span>[][] minSteps = <span class="keyword">new</span> <span class="keyword">int</span>[word1.length() + <span class="number">1</span>][word2.length() + <span class="number">1</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= word1.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			minSteps[i][<span class="number">0</span>] = i;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= word2.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			minSteps[<span class="number">0</span>][i] = i;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= word1.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= word2.length();j++)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(word1.charAt(i - <span class="number">1</span>) == word2.charAt(j - <span class="number">1</span>))</span><br><span class="line">				&#123;</span><br><span class="line">					minSteps[i][j] = minSteps[i - <span class="number">1</span>][j - <span class="number">1</span>];</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					minSteps[i][j] = Math.min(minSteps[i - <span class="number">1</span>][j - <span class="number">1</span>], Math.min(minSteps[i - <span class="number">1</span>][j], minSteps[i][j - <span class="number">1</span>])) + <span class="number">1</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> minSteps[word1.length()][word2.length()];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -233,18 +241,9 @@
     
 <nav id="article-nav">
   
-    <a href="/2015/12/20/LintCode-编辑距离/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          LintCode 编辑距离
-        
-      </div>
-    </a>
   
-  
-    <a href="/2015/12/20/LintCode-硬币排成线/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">LintCode 硬币排成线</div>
+    <a href="/2015/12/20/LintCode-不同的子序列/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">LintCode 不同的子序列</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -273,7 +272,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="LintCode-不同的子序列" data-title="LintCode 不同的子序列" data-url="www.arnold134777.com/2015/12/20/LintCode-不同的子序列/"></div>
+	<div class="ds-thread" data-thread-key="LintCode-编辑距离" data-title="LintCode 编辑距离" data-url="www.arnold134777.com/2015/12/20/LintCode-编辑距离/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
