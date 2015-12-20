@@ -174,6 +174,135 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/05/hello-world/" class="article-date">
+  	<time datetime="2015-12-05T12:33:03.000Z" itemprop="datePublished">2015-12-05</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/12/05/hello-world/">Hello World</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+<h2 id="Quick_Start">Quick Start</h2><h3 id="Create_a_new_post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run_server">Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="Generate_static_files">Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-MSWeakTimer机制解析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/03/MSWeakTimer机制解析/" class="article-date">
+  	<time datetime="2015-12-03T03:22:46.000Z" itemprop="datePublished">2015-12-03</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/12/03/MSWeakTimer机制解析/">MSWeakTimer机制解析</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>MSWeakTimer地址：<a href="https://github.com/mindsnacks/MSWeakTimer" target="_blank" rel="external">https://github.com/mindsnacks/MSWeakTimer</a></p>
+<p><strong>基本介绍</strong></p>
+<p>线程安全的MSWeakTimer是NSTimer的替代品，最基本的特点是它不会 retain target 以及支持GCD queues。</p>
+<p><strong>问题的提出</strong></p>
+<p>关于 NSTimer 中 target 的生命周期问题，当 repeat 为 YES 时NSTimer 会 retains 它的 target，那么target的生命周期就成了问题，完全的交给了这个timer，只有当timer 调用invalidate后 dealloc 才有机会发生。</p>
+<p>另一个问题是GCD，在苹果的官方文档中说的很清楚:</p>
+<p>Special Considerations</p>
+<p>You must send this message from the thread on which the timer was installed. If you send this message from another thread, the input source associated with the timer may not be removed from its run loop, which could prevent the thread from exiting properly.</p>
+<p>invalidate必须由安装这个timer的线程发起，否则这个timer有可能不会从run loop中移除。这种情况会发生的一个情况就是：当这个线程是由 GCD 管理的。这是因为 NSTimer 依赖于当前线程的run loop, 而GCD完全是另外一回事，它不能确保timer的阻塞和invalidate是由同一个线程发起的，run loop和queue将会交织在一起，世界就乱了…</p>
+<p><strong>而MSWeakTimer完全就不是用run loop实现的，所以就不用考虑那么多了，它可以与GCD和谐共存，被任意线程 install 和 invalidate。</strong></p>
+<p><strong>源码分析</strong><br>（1）初始化<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ((self = [<span class="keyword">super</span> init]))</span><br><span class="line">    &#123;</span><br><span class="line">        self.timeInterval = timeInterval;</span><br><span class="line">        self.target = target;</span><br><span class="line">        self.selector = selector;</span><br><span class="line">        self.userInfo = userInfo;</span><br><span class="line">        self.repeats = repeats;</span><br><span class="line"></span><br><span class="line">        NSString *privateQueueName = [NSString stringWithFormat:@<span class="string">"com.mindsnacks.msweaktimer.%p"</span>, self];</span><br><span class="line"> <span class="comment">// 1.创建串行队列</span></span><br><span class="line"> <span class="comment">// Dispatch queues created with the DISPATCH_QUEUE_SERIAL or a NULLattribute</span></span><br><span class="line"> <span class="comment">// invoke blocks serially in FIFO order.</span></span><br><span class="line">        self.privateSerialQueue = dispatch_queue_create([privateQueueName cStringUsingEncoding:NSASCIIStringEncoding], DISPATCH_QUEUE_SERIAL);</span><br><span class="line">        dispatch_set_target_queue(self.privateSerialQueue, dispatchQueue);</span><br><span class="line"> <span class="comment">// 2.dispatch_source 定时器</span></span><br><span class="line">        self.timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER,</span><br><span class="line">                                            <span class="number">0</span>,</span><br><span class="line">                                            <span class="number">0</span>,</span><br><span class="line">                                            self.privateSerialQueue);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>（2）设置定时器的触发时间<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">dispatch_source_set_timer(self.timer,</span><br><span class="line">                              dispatch_time(DISPATCH_TIME_NOW, intervalInNanoseconds),</span><br><span class="line">                              (uint64_t)intervalInNanoseconds,</span><br><span class="line">                              toleranceInNanoseconds</span><br><span class="line">                              );</span><br></pre></td></tr></table></figure></p>
+<p>（3）设置定时器触发的事件<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">__weak MSWeakTimer *weakSelf = self;</span><br><span class="line"></span><br><span class="line">   dispatch_source_set_event_handler(self.timer, ^&#123;</span><br><span class="line">       [weakSelf timerFired];</span><br><span class="line">   &#125;);</span><br><span class="line"></span><br><span class="line">   dispatch_resume(self.timer);</span><br></pre></td></tr></table></figure></p>
+<p>（4）具体event<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">if (OSAtomicAnd32OrigBarrier(1, &amp;_timerFlags.timerIsInvalidated)) // 原子操作</span><br><span class="line">   &#123;</span><br><span class="line">       return;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   // We're not worried about this warning because the selector we're calling doesn't return a +1 object.</span><br><span class="line">   #pragma clang diagnostic push</span><br><span class="line">   #pragma clang diagnostic ignored "-Warc-performSelector-leaks"</span><br><span class="line">       [self.target performSelector:self.selector withObject:self];</span><br><span class="line">   #pragma clang diagnostic pop</span><br><span class="line"></span><br><span class="line">   if (!self.repeats)</span><br><span class="line">   &#123;</span><br><span class="line">       [self invalidate];</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<p>（5）释放<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)invalidate</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// We check with an atomic operation if it has already been invalidated. Ideally we would synchronize this on the private queue,</span></span><br><span class="line">    <span class="comment">// but since we can't know the context from which this method will be called, dispatch_sync might cause a deadlock.</span></span><br><span class="line">    <span class="keyword">if</span> (!OSAtomicTestAndSetBarrier(<span class="number">7</span>, &amp;_timerFlags.timerIsInvalidated))</span><br><span class="line">    &#123;</span><br><span class="line">        dispatch_source_t timer = self.timer;</span><br><span class="line">        dispatch_async(self.privateSerialQueue, ^&#123;</span><br><span class="line">            dispatch_source_cancel(timer);</span><br><span class="line">            ms_release_gcd_object(timer);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>附：<br>OSAtomicAnd32OrigBarrier ： 用于原子操作的判断，出于线程安全考虑<br>OSAtomic原子操作：<a href="http://southpeak.github.io/blog/2014/10/17/osatomicyuan-zi-cao-zuo/" target="_blank" rel="external">http://southpeak.github.io/blog/2014/10/17/osatomicyuan-zi-cao-zuo/</a><br>GCD dispatch_source：<a href="http://www.cnblogs.com/sunfrog/p/3308766.html" target="_blank" rel="external">http://www.cnblogs.com/sunfrog/p/3308766.html</a> </p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GCD/">GCD</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-iOS-内存泄漏处理" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
