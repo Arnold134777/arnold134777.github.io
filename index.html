@@ -178,7 +178,7 @@
   
     <div class="article-meta">
       <a href="/2016/01/01/iOS问题解决/" class="article-date">
-  	<time datetime="2015-12-31T17:03:05.000Z" itemprop="datePublished">2016-01-01</time>
+  	<time datetime="2015-12-31T16:14:18.000Z" itemprop="datePublished">2016-01-01</time>
 </a>
     </div>
   
@@ -200,40 +200,60 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>###前言<br>整理之前iOS开发中遇到的问题，集合一下。很大部分来自StackOverFlow。</p>
-<p>###问题1:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available</p>
-<p>解决：Build Setting中的optimization level release改为与debug一样的模式。</p>
-<p>###问题2:Xcode代码中类和方法等字体变黑文件失去关联symbol not found<br>解决：Xcode用得久了，代码中类和方法等字体变黑文件失去关联symbol not found，连智能提示有时候都没有，这里是因为工程索引文件被破坏导致，可通过以下方法解决：</p>
+        <h2 id="前言">前言</h2><p>整理之前iOS开发中遇到的问题，集合一下。很大部分来自StackOverFlow。</p>
+<h3 id="问题1:Xcode_release下调试报错[Project_Name]_was_compiled_with_optimization_-_stepping_may_behave_oddly;_variables_may_not_be_available">问题1:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available</h3><p>解决：Build Setting中的optimization level release改为与debug一样的模式。</p>
+<h3 id="问题2:Xcode代码中类和方法等字体变黑文件失去关联symbol_not_found">问题2:Xcode代码中类和方法等字体变黑文件失去关联symbol not found</h3><p>解决：Xcode用得久了，代码中类和方法等字体变黑文件失去关联symbol not found，连智能提示有时候都没有，这里是因为工程索引文件被破坏导致，可通过以下方法解决：</p>
 <p>一、Organizer -&gt; Projects -&gt;把所有工程中的Derived Data 删除Delete掉。</p>
 <p>二、进入~/Library/Developer/Xcode/DerivedData 这个文件夹，把里面相关工程的文件夹删掉。</p>
-<p>###问题3:提交SVN Target没有显示出来<br>解决：需要勾选Autocreate schemes</p>
-<p>###问题4:property follows cocoa naming convention for returning ‘owned’ objects<br>注意：</p>
-<p>#####代码中不能使用retain, release, retain, autorelease</p>
-<p>#####不重载dealloc（如果是释放对象内存以外的处理，是可以重载该函数的，但是不能调用[super dealloc]）</p>
-<p>#####不能使用NSAllocateObject, NSDeallocateObject</p>
-<p>#####不能在C结构体中使用对象指针</p>
-<p>#####id与void *间的如果cast时需要用特定的方法（__bridge关键字）</p>
-<p>#####不能使用NSAutoReleasePool、而需要@autoreleasepool块</p>
-<p>#####不能使用“new”开始的属性名称 （如果使用会有下面的编译错误”Property’s synthesized getter follows Cocoa naming convention for returning ‘owned’ objects”）</p>
-<p>###问题5:”No previous prototype for function” warning警告错误<br>解决：warning:No previous prototype for function “randomPoint”。如何取消这个警告错误呢？方法尝试了这两种都可以： </p>
-<p>#####1.方法上加修饰符static</p>
-<p>#####2.或者Project-Info -&gt; TARGETS -&gt;Build Settings -&gt; LLVM GCC4.2 - Warnings组 -&gt; Missing Function Prototypes   Yes-&gt;No</p>
-<p>###问题6:Code signing is required for product type ‘Application’ in SDK ‘iOS5.1’</p>
-<p>解决:One possible solution which works for me:</p>
+<h3 id="问题3:提交SVN_Target没有显示出来">问题3:提交SVN Target没有显示出来</h3><p>解决：需要勾选Autocreate schemes</p>
+<h3 id="问题4:property_follows_cocoa_naming_convention_for_returning_‘owned’_objects">问题4:property follows cocoa naming convention for returning ‘owned’ objects</h3><p>注意：</p>
+<blockquote>
+<ul>
+<li>代码中不能使用retain, release, retain, autorelease</li>
+<li>不重载dealloc（如果是释放对象内存以外的处理，是可以重载该函数的，但是不能调用[super dealloc]）</li>
+<li>不能使用NSAllocateObject, NSDeallocateObject</li>
+<li>不能在C结构体中使用对象指针</li>
+<li>id与void *间的如果cast时需要用特定的方法（__bridge关键字）</li>
+<li>不能使用NSAutoReleasePool、而需要@autoreleasepool块</li>
+<li>不能使用“new”开始的属性名称 （如果使用会有下面的编译错误”Property’s synthesized getter follows Cocoa naming convention for returning ‘owned’ objects”）</li>
+</ul>
+</blockquote>
+<h3 id="问题5:”No_previous_prototype_for_function”_warning警告错误">问题5:”No previous prototype for function” warning警告错误</h3><p>解决：warning:No previous prototype for function “randomPoint”。如何取消这个警告错误呢？方法尝试了这两种都可以： </p>
+<blockquote>
+<ul>
+<li><p>1.方法上加修饰符static</p>
+</li>
+<li><p>2.或者Project-Info -&gt; TARGETS -&gt;Build Settings -&gt; LLVM GCC4.2 - Warnings组 -&gt; Missing Function Prototypes   Yes-&gt;No</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="问题6:Code_signing_is_required_for_product_type_‘Application’_in_SDK_‘iOS5-1’">问题6:Code signing is required for product type ‘Application’ in SDK ‘iOS5.1’</h3><p>解决:One possible solution which works for me:</p>
 <p>Search “code sign” in Build settings<br>Change everything in code signing identity to “iOS developer”, which are “Don’t code sign” originally.</p>
-<p>###问题7:The common causes for “Undefined symbols for architecture armv7”<br>You import a header and do not link against the correct library. This is common, especially for headers for libraries like QuartzCore since it is not included in projects by default. To resolve:</p>
-<p>Add the correct libraries in the Link Binary With Libraries section of the Build Phases.</p>
-<p>If you want to add a library outside of the default search path you can include the path in the Library Search Paths value in the Build Settings and add<br>-l{library_name_without_lib_and_suffix} (eg. for libz.a use -lz) to the Other Linker Flags section of Build Settings.</p>
-<p>You copy files into your project but forgot to check the target to add the files to. To resolve:</p>
-<p>Open the Build Phases for the correct target, expand Compile Sources and add the missing .m files. If this is your issue please upvote Cortex’s answer below as well.</p>
-<p>You include a static library that is built for another architecture like i386, the simulator on your host machine. To resolve:</p>
-<p>If you have multiple library files from your libraries vendor to include in the project you need to include the one for the simulator (i386) and the one for the device (armv7 for example).</p>
-<p>Optionally, you could create a fat static library that contains both architectures.</p>
-<p>###问题8:’_compress2’, referenced from:+[UMANUtil deflatedDataPrefixedWith:level:source:] in libMobClickLibrary.a(UMANUtil.o)ld: symbol(s) not found for architecture x86_64clang: error: linker command failed with exit code 1 (use -v to see invocation)</p>
-<p>解决：在Other Linker Flags里加入-lz</p>
-<p>###问题9:objc_msgSend()报错Too many arguments to function call ,expected 0,have3<br>解决：Build Setting–&gt; Apple LLVM 6.0 - Preprocessing–&gt; Enable Strict Checking of objc_msgSend Calls  改为 NO</p>
-<p>###问题10:dyld: Library not loaded: /System/Library/Frameworks/Social.framework/SocialReferenced from: /var/mobile/Applications/00D3E0A7-4FF6-451E-B11C-87D7A189F425/sample.app/sample Reason: image not found</p>
-<p>解决：把Build Phases 里Social.framework后边的选项修改成为Optional就可以了</p>
+<h3 id="问题7:The_common_causes_for_“Undefined_symbols_for_architecture_armv7”">问题7:The common causes for “Undefined symbols for architecture armv7”</h3><blockquote>
+<ul>
+<li><p>You import a header and do not link against the correct library. This is common, especially for headers for libraries like QuartzCore since it is not included in projects by default. To resolve:</p>
+</li>
+<li><p>Add the correct libraries in the Link Binary With Libraries section of the Build Phases.</p>
+</li>
+<li><p>If you want to add a library outside of the default search path you can include the path in the Library Search Paths value in the Build Settings and add<br>-l{library_name_without_lib_and_suffix} (eg. for libz.a use -lz) to the Other Linker Flags section of Build Settings.</p>
+</li>
+</ul>
+<ul>
+<li><p>You copy files into your project but forgot to check the target to add the files to. To resolve:</p>
+</li>
+<li><p>Open the Build Phases for the correct target, expand Compile Sources and add the missing .m files. If this is your issue please upvote Cortex’s answer below as well.</p>
+</li>
+<li><p>You include a static library that is built for another architecture like i386, the simulator on your host machine. To resolve:</p>
+</li>
+<li><p>If you have multiple library files from your libraries vendor to include in the project you need to include the one for the simulator (i386) and the one for the device (armv7 for example).</p>
+</li>
+<li><p>Optionally, you could create a fat static library that contains both architectures.</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="问题8:’_compress2’,_referenced_from:+[UMANUtil_deflatedDataPrefixedWith:level:source:]_in_libMobClickLibrary-a(UMANUtil-o)ld:_symbol(s)_not_found_for_architecture_x86_64clang:_error:_linker_command_failed_with_exit_code_1_(use_-v_to_see_invocation)">问题8:’_compress2’, referenced from:+[UMANUtil deflatedDataPrefixedWith:level:source:] in libMobClickLibrary.a(UMANUtil.o)ld: symbol(s) not found for architecture x86_64clang: error: linker command failed with exit code 1 (use -v to see invocation)</h3><p>解决：在Other Linker Flags里加入-lz</p>
+<h3 id="问题9:objc_msgSend()报错Too_many_arguments_to_function_call_,expected_0,have3">问题9:objc_msgSend()报错Too many arguments to function call ,expected 0,have3</h3><p>解决：Build Setting–&gt; Apple LLVM 6.0 - Preprocessing–&gt; Enable Strict Checking of objc_msgSend Calls  改为 NO</p>
+<h3 id="问题10:dyld:_Library_not_loaded:_/System/Library/Frameworks/Social-framework/SocialReferenced_from:_/var/mobile/Applications/00D3E0A7-4FF6-451E-B11C-87D7A189F425/sample-app/sample_Reason:_image_not_found">问题10:dyld: Library not loaded: /System/Library/Frameworks/Social.framework/SocialReferenced from: /var/mobile/Applications/00D3E0A7-4FF6-451E-B11C-87D7A189F425/sample.app/sample Reason: image not found</h3><p>解决：把Build Phases 里Social.framework后边的选项修改成为Optional就可以了</p>
 
       
     </div>
@@ -288,18 +308,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>##前言<br>近期在学习React Native 特开始着手遇到问题的解决方案，有问题及时留言，谢谢！！！</p>
-<p>###问题1：run 项目时遇到命令窗口出现：TypeError: Cannot read property ‘root’ of null</p>
-<p>解决：打开终端，输入 brew update成功后再输入brew upgrade watchman关掉Xcode重新运行即可。</p>
-<p>###问题2:native  的(RCTResponseSenderBlock)callback注意回调的参数设置。<br>例如：callback(@[@”hello”]);</p>
+        <h2 id="前言">前言</h2><p>近期在学习React Native 特开始着手遇到问题的解决方案，有问题及时留言，谢谢！！！</p>
+<h3 id="问题1：run_项目时遇到命令窗口出现：TypeError:_Cannot_read_property_‘root’_of_null">问题1：run 项目时遇到命令窗口出现：TypeError: Cannot read property ‘root’ of null</h3><p>解决：打开终端，输入 brew update成功后再输入brew upgrade watchman关掉Xcode重新运行即可。</p>
+<h3 id="问题2:native_的(RCTResponseSenderBlock)callback注意回调的参数设置。">问题2:native  的(RCTResponseSenderBlock)callback注意回调的参数设置。</h3><p>例如：callback(@[@”hello”]);</p>
 <p>js端：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">callback: function(ret) &#123;</span><br><span class="line">	<span class="keyword">if</span> (ret[<span class="number">0</span>]) &#123;</span><br><span class="line">		console<span class="variable">.log</span>(ret[<span class="number">0</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
 <p>打印结果为：h,如果改为callback(@[@[@”hello”]])打印结果才为hello。</p>
-<p>###问题3:iOS项目jsbundle打包，release包的js代码是混淆的。可以更改/Users/arnold/HFRCTUpdaterDemo/node_modules/react-native/local-cli/bundle/buildBundle.js 下的minify的选项。</p>
-<p>临时方案：直接更改../node_modules/react-native/packager/react-native-xcode.sh 中的–dev true即可,注意该命令的执行必须在ios的文件夹中。</p>
-<p>###问题4:iOS和安卓对图片处理的区别。<br>iOS:<br>this.setState({source}),更改Image的资源。</p>
+<h3 id="问题3:iOS项目jsbundle打包，release包的js代码是混淆的。可以更改/Users/arnold/HFRCTUpdaterDemo/node_modules/react-native/local-cli/bundle/buildBundle-js_下的minify的选项。">问题3:iOS项目jsbundle打包，release包的js代码是混淆的。可以更改/Users/arnold/HFRCTUpdaterDemo/node_modules/react-native/local-cli/bundle/buildBundle.js 下的minify的选项。</h3><p>临时方案：直接更改../node_modules/react-native/packager/react-native-xcode.sh 中的–dev true即可,注意该命令的执行必须在ios的文件夹中。</p>
+<h3 id="问题4:iOS和安卓对图片处理的区别。">问题4:iOS和安卓对图片处理的区别。</h3><p>iOS:<br>this.setState({source}),更改Image的资源。</p>
 <p>安卓:<br>this.setNativeProps({src:’’}),更改资源。</p>
-<p>###问题5:react native 调用native的代码，如何定义一个static 的变量。<br>待解决.</p>
+<h3 id="问题5:react_native_调用native的代码，如何定义一个static_的变量。">问题5:react native 调用native的代码，如何定义一个static 的变量。</h3><p>待解决.</p>
 
       
     </div>

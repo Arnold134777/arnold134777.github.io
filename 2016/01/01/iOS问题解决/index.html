@@ -5,22 +5,19 @@
   
   <title>iOS问题解决 | Arnold的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="###前言整理之前iOS开发中遇到的问题，集合一下。很大部分来自StackOverFlow。
-###问题1:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available
-解决：Build Setting中的opti">
+  <meta name="description" content="前言整理之前iOS开发中遇到的问题，集合一下。很大部分来自StackOverFlow。
+问题1:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available解决：Build Setting中的optimizatio">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS问题解决">
 <meta property="og:url" content="www.arnold134777.com/2016/01/01/iOS问题解决/index.html">
 <meta property="og:site_name" content="Arnold的技术博客">
-<meta property="og:description" content="###前言整理之前iOS开发中遇到的问题，集合一下。很大部分来自StackOverFlow。
-###问题1:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available
-解决：Build Setting中的opti">
-<meta property="og:updated_time" content="2015-12-31T17:07:34.000Z">
+<meta property="og:description" content="前言整理之前iOS开发中遇到的问题，集合一下。很大部分来自StackOverFlow。
+问题1:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available解决：Build Setting中的optimizatio">
+<meta property="og:updated_time" content="2016-01-01T03:26:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS问题解决">
-<meta name="twitter:description" content="###前言整理之前iOS开发中遇到的问题，集合一下。很大部分来自StackOverFlow。
-###问题1:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available
-解决：Build Setting中的opti">
+<meta name="twitter:description" content="前言整理之前iOS开发中遇到的问题，集合一下。很大部分来自StackOverFlow。
+问题1:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available解决：Build Setting中的optimizatio">
   
     <link rel="alternative" href="/atom.xml" title="Arnold的技术博客" type="application/atom+xml">
   
@@ -183,7 +180,7 @@
   
     <div class="article-meta">
       <a href="/2016/01/01/iOS问题解决/" class="article-date">
-  	<time datetime="2015-12-31T17:03:05.000Z" itemprop="datePublished">2016-01-01</time>
+  	<time datetime="2015-12-31T16:14:18.000Z" itemprop="datePublished">2016-01-01</time>
 </a>
     </div>
   
@@ -216,40 +213,60 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>###前言<br>整理之前iOS开发中遇到的问题，集合一下。很大部分来自StackOverFlow。</p>
-<p>###问题1:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available</p>
-<p>解决：Build Setting中的optimization level release改为与debug一样的模式。</p>
-<p>###问题2:Xcode代码中类和方法等字体变黑文件失去关联symbol not found<br>解决：Xcode用得久了，代码中类和方法等字体变黑文件失去关联symbol not found，连智能提示有时候都没有，这里是因为工程索引文件被破坏导致，可通过以下方法解决：</p>
+        <h2 id="前言">前言</h2><p>整理之前iOS开发中遇到的问题，集合一下。很大部分来自StackOverFlow。</p>
+<h3 id="问题1:Xcode_release下调试报错[Project_Name]_was_compiled_with_optimization_-_stepping_may_behave_oddly;_variables_may_not_be_available">问题1:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available</h3><p>解决：Build Setting中的optimization level release改为与debug一样的模式。</p>
+<h3 id="问题2:Xcode代码中类和方法等字体变黑文件失去关联symbol_not_found">问题2:Xcode代码中类和方法等字体变黑文件失去关联symbol not found</h3><p>解决：Xcode用得久了，代码中类和方法等字体变黑文件失去关联symbol not found，连智能提示有时候都没有，这里是因为工程索引文件被破坏导致，可通过以下方法解决：</p>
 <p>一、Organizer -&gt; Projects -&gt;把所有工程中的Derived Data 删除Delete掉。</p>
 <p>二、进入~/Library/Developer/Xcode/DerivedData 这个文件夹，把里面相关工程的文件夹删掉。</p>
-<p>###问题3:提交SVN Target没有显示出来<br>解决：需要勾选Autocreate schemes</p>
-<p>###问题4:property follows cocoa naming convention for returning ‘owned’ objects<br>注意：</p>
-<p>#####代码中不能使用retain, release, retain, autorelease</p>
-<p>#####不重载dealloc（如果是释放对象内存以外的处理，是可以重载该函数的，但是不能调用[super dealloc]）</p>
-<p>#####不能使用NSAllocateObject, NSDeallocateObject</p>
-<p>#####不能在C结构体中使用对象指针</p>
-<p>#####id与void *间的如果cast时需要用特定的方法（__bridge关键字）</p>
-<p>#####不能使用NSAutoReleasePool、而需要@autoreleasepool块</p>
-<p>#####不能使用“new”开始的属性名称 （如果使用会有下面的编译错误”Property’s synthesized getter follows Cocoa naming convention for returning ‘owned’ objects”）</p>
-<p>###问题5:”No previous prototype for function” warning警告错误<br>解决：warning:No previous prototype for function “randomPoint”。如何取消这个警告错误呢？方法尝试了这两种都可以： </p>
-<p>#####1.方法上加修饰符static</p>
-<p>#####2.或者Project-Info -&gt; TARGETS -&gt;Build Settings -&gt; LLVM GCC4.2 - Warnings组 -&gt; Missing Function Prototypes   Yes-&gt;No</p>
-<p>###问题6:Code signing is required for product type ‘Application’ in SDK ‘iOS5.1’</p>
-<p>解决:One possible solution which works for me:</p>
+<h3 id="问题3:提交SVN_Target没有显示出来">问题3:提交SVN Target没有显示出来</h3><p>解决：需要勾选Autocreate schemes</p>
+<h3 id="问题4:property_follows_cocoa_naming_convention_for_returning_‘owned’_objects">问题4:property follows cocoa naming convention for returning ‘owned’ objects</h3><p>注意：</p>
+<blockquote>
+<ul>
+<li>代码中不能使用retain, release, retain, autorelease</li>
+<li>不重载dealloc（如果是释放对象内存以外的处理，是可以重载该函数的，但是不能调用[super dealloc]）</li>
+<li>不能使用NSAllocateObject, NSDeallocateObject</li>
+<li>不能在C结构体中使用对象指针</li>
+<li>id与void *间的如果cast时需要用特定的方法（__bridge关键字）</li>
+<li>不能使用NSAutoReleasePool、而需要@autoreleasepool块</li>
+<li>不能使用“new”开始的属性名称 （如果使用会有下面的编译错误”Property’s synthesized getter follows Cocoa naming convention for returning ‘owned’ objects”）</li>
+</ul>
+</blockquote>
+<h3 id="问题5:”No_previous_prototype_for_function”_warning警告错误">问题5:”No previous prototype for function” warning警告错误</h3><p>解决：warning:No previous prototype for function “randomPoint”。如何取消这个警告错误呢？方法尝试了这两种都可以： </p>
+<blockquote>
+<ul>
+<li><p>1.方法上加修饰符static</p>
+</li>
+<li><p>2.或者Project-Info -&gt; TARGETS -&gt;Build Settings -&gt; LLVM GCC4.2 - Warnings组 -&gt; Missing Function Prototypes   Yes-&gt;No</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="问题6:Code_signing_is_required_for_product_type_‘Application’_in_SDK_‘iOS5-1’">问题6:Code signing is required for product type ‘Application’ in SDK ‘iOS5.1’</h3><p>解决:One possible solution which works for me:</p>
 <p>Search “code sign” in Build settings<br>Change everything in code signing identity to “iOS developer”, which are “Don’t code sign” originally.</p>
-<p>###问题7:The common causes for “Undefined symbols for architecture armv7”<br>You import a header and do not link against the correct library. This is common, especially for headers for libraries like QuartzCore since it is not included in projects by default. To resolve:</p>
-<p>Add the correct libraries in the Link Binary With Libraries section of the Build Phases.</p>
-<p>If you want to add a library outside of the default search path you can include the path in the Library Search Paths value in the Build Settings and add<br>-l{library_name_without_lib_and_suffix} (eg. for libz.a use -lz) to the Other Linker Flags section of Build Settings.</p>
-<p>You copy files into your project but forgot to check the target to add the files to. To resolve:</p>
-<p>Open the Build Phases for the correct target, expand Compile Sources and add the missing .m files. If this is your issue please upvote Cortex’s answer below as well.</p>
-<p>You include a static library that is built for another architecture like i386, the simulator on your host machine. To resolve:</p>
-<p>If you have multiple library files from your libraries vendor to include in the project you need to include the one for the simulator (i386) and the one for the device (armv7 for example).</p>
-<p>Optionally, you could create a fat static library that contains both architectures.</p>
-<p>###问题8:’_compress2’, referenced from:+[UMANUtil deflatedDataPrefixedWith:level:source:] in libMobClickLibrary.a(UMANUtil.o)ld: symbol(s) not found for architecture x86_64clang: error: linker command failed with exit code 1 (use -v to see invocation)</p>
-<p>解决：在Other Linker Flags里加入-lz</p>
-<p>###问题9:objc_msgSend()报错Too many arguments to function call ,expected 0,have3<br>解决：Build Setting–&gt; Apple LLVM 6.0 - Preprocessing–&gt; Enable Strict Checking of objc_msgSend Calls  改为 NO</p>
-<p>###问题10:dyld: Library not loaded: /System/Library/Frameworks/Social.framework/SocialReferenced from: /var/mobile/Applications/00D3E0A7-4FF6-451E-B11C-87D7A189F425/sample.app/sample Reason: image not found</p>
-<p>解决：把Build Phases 里Social.framework后边的选项修改成为Optional就可以了</p>
+<h3 id="问题7:The_common_causes_for_“Undefined_symbols_for_architecture_armv7”">问题7:The common causes for “Undefined symbols for architecture armv7”</h3><blockquote>
+<ul>
+<li><p>You import a header and do not link against the correct library. This is common, especially for headers for libraries like QuartzCore since it is not included in projects by default. To resolve:</p>
+</li>
+<li><p>Add the correct libraries in the Link Binary With Libraries section of the Build Phases.</p>
+</li>
+<li><p>If you want to add a library outside of the default search path you can include the path in the Library Search Paths value in the Build Settings and add<br>-l{library_name_without_lib_and_suffix} (eg. for libz.a use -lz) to the Other Linker Flags section of Build Settings.</p>
+</li>
+</ul>
+<ul>
+<li><p>You copy files into your project but forgot to check the target to add the files to. To resolve:</p>
+</li>
+<li><p>Open the Build Phases for the correct target, expand Compile Sources and add the missing .m files. If this is your issue please upvote Cortex’s answer below as well.</p>
+</li>
+<li><p>You include a static library that is built for another architecture like i386, the simulator on your host machine. To resolve:</p>
+</li>
+<li><p>If you have multiple library files from your libraries vendor to include in the project you need to include the one for the simulator (i386) and the one for the device (armv7 for example).</p>
+</li>
+<li><p>Optionally, you could create a fat static library that contains both architectures.</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="问题8:’_compress2’,_referenced_from:+[UMANUtil_deflatedDataPrefixedWith:level:source:]_in_libMobClickLibrary-a(UMANUtil-o)ld:_symbol(s)_not_found_for_architecture_x86_64clang:_error:_linker_command_failed_with_exit_code_1_(use_-v_to_see_invocation)">问题8:’_compress2’, referenced from:+[UMANUtil deflatedDataPrefixedWith:level:source:] in libMobClickLibrary.a(UMANUtil.o)ld: symbol(s) not found for architecture x86_64clang: error: linker command failed with exit code 1 (use -v to see invocation)</h3><p>解决：在Other Linker Flags里加入-lz</p>
+<h3 id="问题9:objc_msgSend()报错Too_many_arguments_to_function_call_,expected_0,have3">问题9:objc_msgSend()报错Too many arguments to function call ,expected 0,have3</h3><p>解决：Build Setting–&gt; Apple LLVM 6.0 - Preprocessing–&gt; Enable Strict Checking of objc_msgSend Calls  改为 NO</p>
+<h3 id="问题10:dyld:_Library_not_loaded:_/System/Library/Frameworks/Social-framework/SocialReferenced_from:_/var/mobile/Applications/00D3E0A7-4FF6-451E-B11C-87D7A189F425/sample-app/sample_Reason:_image_not_found">问题10:dyld: Library not loaded: /System/Library/Frameworks/Social.framework/SocialReferenced from: /var/mobile/Applications/00D3E0A7-4FF6-451E-B11C-87D7A189F425/sample.app/sample Reason: image not found</h3><p>解决：把Build Phases 里Social.framework后边的选项修改成为Optional就可以了</p>
 
       
     </div>

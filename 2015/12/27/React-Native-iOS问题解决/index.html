@@ -5,25 +5,22 @@
   
   <title>React Native iOS问题解决 | Arnold的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="##前言近期在学习React Native 特开始着手遇到问题的解决方案，有问题及时留言，谢谢！！！
-###问题1：run 项目时遇到命令窗口出现：TypeError: Cannot read property ‘root’ of null
-解决：打开终端，输入 brew update成功后再输入brew upgrade watchman关掉Xcode重新运行即可。
-###问题2:native">
+  <meta name="description" content="前言近期在学习React Native 特开始着手遇到问题的解决方案，有问题及时留言，谢谢！！！
+问题1：run 项目时遇到命令窗口出现：TypeError: Cannot read property ‘root’ of null解决：打开终端，输入 brew update成功后再输入brew upgrade watchman关掉Xcode重新运行即可。
+问题2:native  的(RCTResp">
 <meta property="og:type" content="article">
 <meta property="og:title" content="React Native iOS问题解决">
 <meta property="og:url" content="www.arnold134777.com/2015/12/27/React-Native-iOS问题解决/index.html">
 <meta property="og:site_name" content="Arnold的技术博客">
-<meta property="og:description" content="##前言近期在学习React Native 特开始着手遇到问题的解决方案，有问题及时留言，谢谢！！！
-###问题1：run 项目时遇到命令窗口出现：TypeError: Cannot read property ‘root’ of null
-解决：打开终端，输入 brew update成功后再输入brew upgrade watchman关掉Xcode重新运行即可。
-###问题2:native">
-<meta property="og:updated_time" content="2015-12-31T17:08:12.000Z">
+<meta property="og:description" content="前言近期在学习React Native 特开始着手遇到问题的解决方案，有问题及时留言，谢谢！！！
+问题1：run 项目时遇到命令窗口出现：TypeError: Cannot read property ‘root’ of null解决：打开终端，输入 brew update成功后再输入brew upgrade watchman关掉Xcode重新运行即可。
+问题2:native  的(RCTResp">
+<meta property="og:updated_time" content="2016-01-01T03:23:02.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="React Native iOS问题解决">
-<meta name="twitter:description" content="##前言近期在学习React Native 特开始着手遇到问题的解决方案，有问题及时留言，谢谢！！！
-###问题1：run 项目时遇到命令窗口出现：TypeError: Cannot read property ‘root’ of null
-解决：打开终端，输入 brew update成功后再输入brew upgrade watchman关掉Xcode重新运行即可。
-###问题2:native">
+<meta name="twitter:description" content="前言近期在学习React Native 特开始着手遇到问题的解决方案，有问题及时留言，谢谢！！！
+问题1：run 项目时遇到命令窗口出现：TypeError: Cannot read property ‘root’ of null解决：打开终端，输入 brew update成功后再输入brew upgrade watchman关掉Xcode重新运行即可。
+问题2:native  的(RCTResp">
   
     <link rel="alternative" href="/atom.xml" title="Arnold的技术博客" type="application/atom+xml">
   
@@ -219,18 +216,16 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>##前言<br>近期在学习React Native 特开始着手遇到问题的解决方案，有问题及时留言，谢谢！！！</p>
-<p>###问题1：run 项目时遇到命令窗口出现：TypeError: Cannot read property ‘root’ of null</p>
-<p>解决：打开终端，输入 brew update成功后再输入brew upgrade watchman关掉Xcode重新运行即可。</p>
-<p>###问题2:native  的(RCTResponseSenderBlock)callback注意回调的参数设置。<br>例如：callback(@[@”hello”]);</p>
+        <h2 id="前言">前言</h2><p>近期在学习React Native 特开始着手遇到问题的解决方案，有问题及时留言，谢谢！！！</p>
+<h3 id="问题1：run_项目时遇到命令窗口出现：TypeError:_Cannot_read_property_‘root’_of_null">问题1：run 项目时遇到命令窗口出现：TypeError: Cannot read property ‘root’ of null</h3><p>解决：打开终端，输入 brew update成功后再输入brew upgrade watchman关掉Xcode重新运行即可。</p>
+<h3 id="问题2:native_的(RCTResponseSenderBlock)callback注意回调的参数设置。">问题2:native  的(RCTResponseSenderBlock)callback注意回调的参数设置。</h3><p>例如：callback(@[@”hello”]);</p>
 <p>js端：</p>
 <figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">callback: function(ret) &#123;</span><br><span class="line">	<span class="keyword">if</span> (ret[<span class="number">0</span>]) &#123;</span><br><span class="line">		console<span class="variable">.log</span>(ret[<span class="number">0</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
 <p>打印结果为：h,如果改为callback(@[@[@”hello”]])打印结果才为hello。</p>
-<p>###问题3:iOS项目jsbundle打包，release包的js代码是混淆的。可以更改/Users/arnold/HFRCTUpdaterDemo/node_modules/react-native/local-cli/bundle/buildBundle.js 下的minify的选项。</p>
-<p>临时方案：直接更改../node_modules/react-native/packager/react-native-xcode.sh 中的–dev true即可,注意该命令的执行必须在ios的文件夹中。</p>
-<p>###问题4:iOS和安卓对图片处理的区别。<br>iOS:<br>this.setState({source}),更改Image的资源。</p>
+<h3 id="问题3:iOS项目jsbundle打包，release包的js代码是混淆的。可以更改/Users/arnold/HFRCTUpdaterDemo/node_modules/react-native/local-cli/bundle/buildBundle-js_下的minify的选项。">问题3:iOS项目jsbundle打包，release包的js代码是混淆的。可以更改/Users/arnold/HFRCTUpdaterDemo/node_modules/react-native/local-cli/bundle/buildBundle.js 下的minify的选项。</h3><p>临时方案：直接更改../node_modules/react-native/packager/react-native-xcode.sh 中的–dev true即可,注意该命令的执行必须在ios的文件夹中。</p>
+<h3 id="问题4:iOS和安卓对图片处理的区别。">问题4:iOS和安卓对图片处理的区别。</h3><p>iOS:<br>this.setState({source}),更改Image的资源。</p>
 <p>安卓:<br>this.setNativeProps({src:’’}),更改资源。</p>
-<p>###问题5:react native 调用native的代码，如何定义一个static 的变量。<br>待解决.</p>
+<h3 id="问题5:react_native_调用native的代码，如何定义一个static_的变量。">问题5:react native 调用native的代码，如何定义一个static 的变量。</h3><p>待解决.</p>
 
       
     </div>
