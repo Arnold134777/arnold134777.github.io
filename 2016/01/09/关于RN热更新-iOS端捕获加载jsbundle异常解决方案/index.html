@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>关于RN热更新 iOS端捕获加载jsbundle异常解决方案 | Arnold的技术博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1.监听加载jsbundle异常的处理模拟情况：合并增量后jsbundle文件出现部分错误调试发现当加载jsbundle出现异常时，RN模块RCTBatchedBridge.m中如下代码会执行：
+123456789101112131415- (void)stopLoadingWithError:(NSError *)error&amp;#123;  RCTAssertMainThread();  if (">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于RN热更新 iOS端捕获加载jsbundle异常解决方案">
+<meta property="og:url" content="www.arnold134777.com/2016/01/09/关于RN热更新-iOS端捕获加载jsbundle异常解决方案/index.html">
+<meta property="og:site_name" content="Arnold的技术博客">
+<meta property="og:description" content="1.监听加载jsbundle异常的处理模拟情况：合并增量后jsbundle文件出现部分错误调试发现当加载jsbundle出现异常时，RN模块RCTBatchedBridge.m中如下代码会执行：
+123456789101112131415- (void)stopLoadingWithError:(NSError *)error&amp;#123;  RCTAssertMainThread();  if (">
+<meta property="og:updated_time" content="2016-01-09T13:21:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于RN热更新 iOS端捕获加载jsbundle异常解决方案">
+<meta name="twitter:description" content="1.监听加载jsbundle异常的处理模拟情况：合并增量后jsbundle文件出现部分错误调试发现当加载jsbundle出现异常时，RN模块RCTBatchedBridge.m中如下代码会执行：
+123456789101112131415- (void)stopLoadingWithError:(NSError *)error&amp;#123;  RCTAssertMainThread();  if (">
+  
+    <link rel="alternative" href="/atom.xml" title="Arnold的技术博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+<script type="text/javascript">
+#申请的百度统计代码
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="/assert/avatar.png" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Arnold</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">iOS开发,喜欢算法(512509373@qq.com)</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						<div class="icon-wrap icon-link hide" data-idx="2">
+							<div class="loopback_l"></div>
+							<div class="loopback_r"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						<li>友情链接</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://arnold134777.github.io/" title="github">github</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
+					</div>
+				</section>
+				
+				
+				
+				<section class="switch-part switch-part3">
+					<div id="js-friends">
+					
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://blog.sina.com.cn/u/2423600462">Arnold的新郎博客</a>
+			        
+			        </div>
+				</section>
+				
+
+				
+				
+				<section class="switch-part switch-part4">
+				
+					<div id="js-aboutme">iOS开发，喜欢算法</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Arnold</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="/assert/avatar.png" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Arnold</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">iOS开发,喜欢算法(512509373@qq.com)</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://arnold134777.github.io/" title="github">github</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-关于RN热更新-iOS端捕获加载jsbundle异常解决方案" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/01/09/关于RN热更新-iOS端捕获加载jsbundle异常解决方案/" class="article-date">
+  	<time datetime="2016-01-09T13:18:02.000Z" itemprop="datePublished">2016-01-09</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      关于RN热更新 iOS端捕获加载jsbundle异常解决方案
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React-Native/">React Native</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="1-监听加载jsbundle异常的处理">1.监听加载jsbundle异常的处理</h4><p>模拟情况：合并增量后jsbundle文件出现部分错误<br>调试发现当加载jsbundle出现异常时，RN模块RCTBatchedBridge.m中如下代码会执行：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)stopLoadingWithError:(<span class="built_in">NSError</span> *)error</span><br><span class="line">&#123;</span><br><span class="line">  RCTAssertMainThread();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!<span class="keyword">self</span><span class="variable">.isValid</span> || !<span class="keyword">self</span><span class="variable">.loading</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _loading = <span class="literal">NO</span>;</span><br><span class="line"></span><br><span class="line">  [[<span class="built_in">NSNotificationCenter</span> defaultCenter] postNotificationName:RCTJavaScriptDidFailToLoadNotification</span><br><span class="line">                                                      object:_parentBridge</span><br><span class="line">                                                    userInfo:@&#123;<span class="string">@"bridge"</span>: <span class="keyword">self</span>, <span class="string">@"error"</span>: error&#125;];</span><br><span class="line">  RCTFatal(error);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因此native模块加入监听处理RCTJavaScriptDidFailToLoadNotification通知的方法即可:</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(backToPreVersion) name:RCTJavaScriptDidFailToLoadNotification object:<span class="literal">nil</span>];</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">BOOL</span>)backToPreVersion</span><br><span class="line">&#123;</span><br><span class="line"> <span class="comment">// rollback</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-存在加载jsbundle正常，但是RN代码执行就Crash的问题的处理方案（参考安卓的处理）">2.存在加载jsbundle正常，但是RN代码执行就Crash的问题的处理方案（参考安卓的处理）</h4><p>模拟情况：如果RN代码存在Crash bug<br>定位代码Crash时代码会执行到RCTAssert.m中如下语句：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> RCTFatal(<span class="built_in">NSError</span> *error)</span><br><span class="line">&#123;</span><br><span class="line">  _RCTLogNativeInternal(RCTLogLevelFatal, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="string">@"%@"</span>, [error localizedDescription]);</span><br><span class="line"></span><br><span class="line">  RCTFatalHandler fatalHandler = RCTGetFatalHandler();</span><br><span class="line">  <span class="keyword">if</span> (fatalHandler) &#123;</span><br><span class="line">    fatalHandler(error);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#if DEBUG</span></span><br><span class="line">    <span class="keyword">@try</span> &#123;</span><br><span class="line"><span class="preprocessor">#endif</span></span><br><span class="line">      <span class="built_in">NSString</span> *name = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@: %@"</span>, RCTFatalExceptionName, [error localizedDescription]];</span><br><span class="line">      <span class="built_in">NSString</span> *message = RCTFormatError([error localizedDescription], error<span class="variable">.userInfo</span>[RCTJSStackTraceKey], <span class="number">75</span>);</span><br><span class="line">      [<span class="built_in">NSException</span> raise:name format:<span class="string">@"%@"</span>, message];</span><br><span class="line"><span class="preprocessor">#if DEBUG</span></span><br><span class="line">    &#125; <span class="keyword">@catch</span> (<span class="built_in">NSException</span> *e) &#123;</span><br><span class="line">      </span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#endif</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试DEBUG模式下RN抛出异常后被catch，不会导致Crash,因此为保证RELEASE版本下程序不会Crash，依旧能更新增量包，因为可以将#if DEBUG的选项去掉，不让程序Crash。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/01/01/iOS问题解决/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">iOS问题解决</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="关于RN热更新-iOS端捕获加载jsbundle异常解决方案" data-title="关于RN热更新 iOS端捕获加载jsbundle异常解决方案" data-url="www.arnold134777.com/2016/01/09/关于RN热更新-iOS端捕获加载jsbundle异常解决方案/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 Arnold
+    	</div>
+      <span id="busuanzi_container_site_pv" style='display:none'>
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+       </span>
+       <span id="busuanzi_container_page_pv" style='display:none'>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+       </span>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

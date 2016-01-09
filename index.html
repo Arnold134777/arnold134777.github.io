@@ -113,7 +113,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 10px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/iOS/" style="font-size: 13.33px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 16.67px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
+						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
 					</div>
 				</section>
 				
@@ -178,6 +178,67 @@
 	</div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-关于RN热更新-iOS端捕获加载jsbundle异常解决方案" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/01/09/关于RN热更新-iOS端捕获加载jsbundle异常解决方案/" class="article-date">
+  	<time datetime="2016-01-09T13:18:02.000Z" itemprop="datePublished">2016-01-09</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/01/09/关于RN热更新-iOS端捕获加载jsbundle异常解决方案/">关于RN热更新 iOS端捕获加载jsbundle异常解决方案</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="1-监听加载jsbundle异常的处理">1.监听加载jsbundle异常的处理</h4><p>模拟情况：合并增量后jsbundle文件出现部分错误<br>调试发现当加载jsbundle出现异常时，RN模块RCTBatchedBridge.m中如下代码会执行：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)stopLoadingWithError:(<span class="built_in">NSError</span> *)error</span><br><span class="line">&#123;</span><br><span class="line">  RCTAssertMainThread();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!<span class="keyword">self</span><span class="variable">.isValid</span> || !<span class="keyword">self</span><span class="variable">.loading</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _loading = <span class="literal">NO</span>;</span><br><span class="line"></span><br><span class="line">  [[<span class="built_in">NSNotificationCenter</span> defaultCenter] postNotificationName:RCTJavaScriptDidFailToLoadNotification</span><br><span class="line">                                                      object:_parentBridge</span><br><span class="line">                                                    userInfo:@&#123;<span class="string">@"bridge"</span>: <span class="keyword">self</span>, <span class="string">@"error"</span>: error&#125;];</span><br><span class="line">  RCTFatal(error);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因此native模块加入监听处理RCTJavaScriptDidFailToLoadNotification通知的方法即可:</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(backToPreVersion) name:RCTJavaScriptDidFailToLoadNotification object:<span class="literal">nil</span>];</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">BOOL</span>)backToPreVersion</span><br><span class="line">&#123;</span><br><span class="line"> <span class="comment">// rollback</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-存在加载jsbundle正常，但是RN代码执行就Crash的问题的处理方案（参考安卓的处理）">2.存在加载jsbundle正常，但是RN代码执行就Crash的问题的处理方案（参考安卓的处理）</h4><p>模拟情况：如果RN代码存在Crash bug<br>定位代码Crash时代码会执行到RCTAssert.m中如下语句：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> RCTFatal(<span class="built_in">NSError</span> *error)</span><br><span class="line">&#123;</span><br><span class="line">  _RCTLogNativeInternal(RCTLogLevelFatal, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="string">@"%@"</span>, [error localizedDescription]);</span><br><span class="line"></span><br><span class="line">  RCTFatalHandler fatalHandler = RCTGetFatalHandler();</span><br><span class="line">  <span class="keyword">if</span> (fatalHandler) &#123;</span><br><span class="line">    fatalHandler(error);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#if DEBUG</span></span><br><span class="line">    <span class="keyword">@try</span> &#123;</span><br><span class="line"><span class="preprocessor">#endif</span></span><br><span class="line">      <span class="built_in">NSString</span> *name = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@: %@"</span>, RCTFatalExceptionName, [error localizedDescription]];</span><br><span class="line">      <span class="built_in">NSString</span> *message = RCTFormatError([error localizedDescription], error<span class="variable">.userInfo</span>[RCTJSStackTraceKey], <span class="number">75</span>);</span><br><span class="line">      [<span class="built_in">NSException</span> raise:name format:<span class="string">@"%@"</span>, message];</span><br><span class="line"><span class="preprocessor">#if DEBUG</span></span><br><span class="line">    &#125; <span class="keyword">@catch</span> (<span class="built_in">NSException</span> *e) &#123;</span><br><span class="line">      </span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#endif</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试DEBUG模式下RN抛出异常后被catch，不会导致Crash,因此为保证RELEASE版本下程序不会Crash，依旧能更新增量包，因为可以将#if DEBUG的选项去掉，不让程序Crash。</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React-Native/">React Native</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
   
     <article id="post-iOS问题解决" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -752,62 +813,6 @@
 <p>[<br>[2],<br>[3,4],<br>[6,5,7],<br>[4,1,8,3]<br>]</p>
 <p>从顶到底部的最小路径和为11 ( 2 + 3 + 5 + 1 = 11)。</p>
 <p>注意<br>如果你只用额外空间复杂度O(n)的条件下完成可以获得加分，其中n是数字三角形的总行数。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> triangle: a list of lists of integers.</span><br><span class="line">     * <span class="doctag">@return</span>: An integer, minimum path sum.</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minimumTotal</span><span class="params">(<span class="keyword">int</span>[][] triangle)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == triangle)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span> row = triangle.length;</span><br><span class="line">		<span class="keyword">if</span>(row &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span>[][] steps = <span class="keyword">new</span> <span class="keyword">int</span>[row][row];</span><br><span class="line">		<span class="keyword">int</span> min = Integer.MAX_VALUE;</span><br><span class="line">		steps[<span class="number">0</span>][<span class="number">0</span>] = triangle[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">if</span>(row == <span class="number">1</span>)</span><br><span class="line">			<span class="keyword">return</span> steps[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; row;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>;j &lt;= i;j++)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(j == <span class="number">0</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					steps[i][j] = steps[i - <span class="number">1</span>][j] + triangle[i][j];</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span> <span class="keyword">if</span>(j == i)</span><br><span class="line">				&#123;</span><br><span class="line">					steps[i][j] = steps[i - <span class="number">1</span>][j - <span class="number">1</span>] + triangle[i][j];</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					steps[i][j] = Math.min(steps[i - <span class="number">1</span>][j], steps[i - <span class="number">1</span>][j - <span class="number">1</span>]) + triangle[i][j];</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				<span class="keyword">if</span>(i == row - <span class="number">1</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="keyword">if</span>(steps[i][j] &lt; min)</span><br><span class="line">					&#123;</span><br><span class="line">						min = steps[i][j];</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> min;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-LintCode最小路径和" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/12/05/LintCode最小路径和/" class="article-date">
-  	<time datetime="2015-12-05T13:04:22.000Z" itemprop="datePublished">2015-12-05</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/05/LintCode最小路径和/">LintCode最小路径和</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>给定一个只含非负整数的m*n网格，找到一条从左上角到右下角的可以使数字和最小的路径。<br>样例<br>注意<br>你在同一时间只能向下或者向右移动一步</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> grid: a list of lists of integers.</span><br><span class="line">     * <span class="doctag">@return</span>: An integer, minimizes the sum of all numbers along its path</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minPathSum</span><span class="params">(<span class="keyword">int</span>[][] grid)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == grid)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span> row = grid.length;</span><br><span class="line">		<span class="keyword">int</span> col = grid[<span class="number">0</span>].length;</span><br><span class="line">		<span class="keyword">if</span>(row &lt;= <span class="number">0</span> || col &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span>[][] steps = <span class="keyword">new</span> <span class="keyword">int</span>[row][col];</span><br><span class="line">		steps[<span class="number">0</span>][<span class="number">0</span>] = grid[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; row;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			steps[i][<span class="number">0</span>] += steps[i - <span class="number">1</span>][<span class="number">0</span>] + grid[i][<span class="number">0</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; col;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			steps[<span class="number">0</span>][i] += steps[<span class="number">0</span>][i - <span class="number">1</span>] + grid[<span class="number">0</span>][i];</span><br><span class="line">		&#125;</span><br><span class="line">	</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; row;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt; col;j++)</span><br><span class="line">			&#123;</span><br><span class="line">				steps[i][j] = Math.min(steps[i - <span class="number">1</span>][j], steps[i][j - <span class="number">1</span>]) + grid[i][j];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	</span><br><span class="line">		<span class="keyword">return</span> steps[row - <span class="number">1</span>][col - <span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
