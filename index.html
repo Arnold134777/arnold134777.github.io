@@ -185,6 +185,134 @@ var _hmt = _hmt || [];
 </nav>
       <div class="body-wrap">
   
+    <article id="post-LintCode-跳跃游戏" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/01/10/LintCode-跳跃游戏/" class="article-date">
+  	<time datetime="2016-01-10T10:34:24.000Z" itemprop="datePublished">2016-01-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/01/10/LintCode-跳跃游戏/">LintCode 跳跃游戏</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>给出一个非负整数数组，你最初定位在数组的第一个位置。　　　</p>
+<p>数组中的每个元素代表你在那个位置可以跳跃的最大长度。　　　　</p>
+<p>判断你是否能到达数组的最后一个位置。</p>
+<p>样例<br>A = [2,3,1,1,4]，返回 true.</p>
+<p>A = [3,2,1,0,4]，返回 false.</p>
+<p>注意<br>这个问题有两个方法，一个是贪心和 动态规划。</p>
+<p>贪心方法时间复杂度为O（N）。</p>
+<p>动态规划方法的时间复杂度为为O（n^2）。</p>
+<p>我们手动设置小型数据集，使大家阔以通过测试的两种方式。这仅仅是为了让大家学会如何使用动态规划的方式解决此问题。如果您用动态规划的方式完成它，你可以尝试贪心法，以使其再次通过一次。</p>
+<h4 id="分析：">分析：</h4><h5 id="一：动态规划">一：动态规划</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canJumps[i] = (canJumps[j] &amp;&amp; (j + maxSteps[j] &gt;= i));(<span class="number">0</span> &lt;= j &lt; i)</span><br></pre></td></tr></table></figure>
+<h4 id="代码：">代码：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> A: A list of integers</span><br><span class="line">     * <span class="doctag">@return</span>: The boolean answer</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canJump</span><span class="params">(<span class="keyword">int</span>[] maxSteps)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == maxSteps || maxSteps.length &lt;= <span class="number">0</span>)</span><br><span class="line">        	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">boolean</span> canJumps[] = <span class="keyword">new</span> <span class="keyword">boolean</span>[maxSteps.length];</span><br><span class="line">        canJumps[<span class="number">0</span>] = <span class="keyword">true</span>; </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; maxSteps.length;i++)</span><br><span class="line">        &#123; </span><br><span class="line">        	<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>;j &lt; i;j++)</span><br><span class="line">        	&#123;</span><br><span class="line">        		<span class="keyword">if</span>(canJumps[i])</span><br><span class="line">        			<span class="keyword">break</span>;</span><br><span class="line">        		canJumps[i] = (canJumps[j] &amp;&amp; (j + maxSteps[j] &gt;= i));</span><br><span class="line">        	&#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> canJumps[maxSteps.length - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="二：贪心做法">二：贪心做法</h5><p>自上而下，依此寻找可以一步跳跃到该点的上一个点，且上个点离该点最远,由于是自上而下，所以当当满足最后meet_index == 0时，表示可以满足条件。</p>
+<h4 id="代码：-1">代码：</h4> <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> A: A list of integers</span><br><span class="line">     * <span class="doctag">@return</span>: The boolean answer</span><br><span class="line">     */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canJump</span><span class="params">(<span class="keyword">int</span>[] maxSteps)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == maxSteps || maxSteps.length &lt;= <span class="number">0</span>)</span><br><span class="line">        	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">int</span> meetIndex = maxSteps.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = maxSteps.length - <span class="number">1</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">        &#123;</span><br><span class="line">        	<span class="keyword">if</span>(i + maxSteps[i] &gt;= meetIndex)</span><br><span class="line">        	&#123;</span><br><span class="line">        		meetIndex = i;</span><br><span class="line">        	&#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> meetIndex == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-LintCode-打劫房屋" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/01/10/LintCode-打劫房屋/" class="article-date">
+  	<time datetime="2016-01-10T10:34:09.000Z" itemprop="datePublished">2016-01-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/01/10/LintCode-打劫房屋/">LintCode 打劫房屋</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>假设你是一个专业的窃贼，准备沿着一条街打劫房屋。每个房子都存放着特定金额的钱。你面临的唯一约束条件是：相邻的房子装着相互联系的防盗系统，且 当相邻的两个房子同一天被打劫时，该系统会自动报警。</p>
+<p>给定一个非负整数列表，表示每个房子中存放的钱， 算一算，如果今晚去打劫，你最多可以得到多少钱 在不触动报警装置的情况下。</p>
+<p>样例<br>给定 [3, 8, 4], 返回 8.</p>
+<p>挑战<br>O(n) 时间复杂度 且 O(1) 存储。</p>
+<h4 id="分析:">分析:</h4><p>定义dp[i]表示打劫第i个房间为止所获得的最大收益，而dp[i]的值只与dp[i-2] 和dp[i-3]有关 并且 dp[i] = A[i] + max(dp[i-2],dp[i-3])</p>
+<p>当求解所有的A[i]后，需要对最后两个dp[len-1] dp[len-2] 取最大值作为最后的答案,因为存储的且 O(1) ,又dp关系仅限于4个数字之间，因此只用4个数字即可。</p>
+<h4 id="代码:">代码:</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> A: An array of non-negative integers.</span><br><span class="line">     * return: The maximum amount of money you can rob tonight</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">houseRobber</span><span class="params">(<span class="keyword">int</span>[] houseMoneys)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == houseMoneys || houseMoneys.length &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">if</span>(houseMoneys.length == <span class="number">1</span>)</span><br><span class="line">			<span class="keyword">return</span> houseMoneys[<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">if</span>(houseMoneys.length == <span class="number">2</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> Math.max(houseMoneys[<span class="number">0</span>], houseMoneys[<span class="number">1</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(houseMoneys.length == <span class="number">3</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> Math.max(houseMoneys[<span class="number">1</span>], houseMoneys[<span class="number">0</span>] + houseMoneys[<span class="number">2</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">long</span>[] max = <span class="keyword">new</span> <span class="keyword">long</span>[<span class="number">4</span>];</span><br><span class="line">		max[<span class="number">0</span>] = houseMoneys[<span class="number">0</span>];</span><br><span class="line">		max[<span class="number">1</span>] = houseMoneys[<span class="number">1</span>];</span><br><span class="line">		max[<span class="number">2</span>] = Math.max(houseMoneys[<span class="number">1</span>], houseMoneys[<span class="number">0</span>] + houseMoneys[<span class="number">2</span>]);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">3</span>;i &lt; houseMoneys.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			max[<span class="number">3</span>] = houseMoneys[i] + Math.max(max[<span class="number">0</span>], max[<span class="number">1</span>]);</span><br><span class="line">			<span class="keyword">if</span>(i == houseMoneys.length - <span class="number">1</span>)</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			max[<span class="number">0</span>] = max[<span class="number">1</span>];</span><br><span class="line">			max[<span class="number">1</span>] = max[<span class="number">2</span>];</span><br><span class="line">			max[<span class="number">2</span>] = max[<span class="number">3</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> Math.max(max[<span class="number">3</span>], max[<span class="number">2</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-关于RN热更新-iOS端捕获加载jsbundle异常解决方案" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -700,125 +828,6 @@ var _hmt = _hmt || [];
 <p><strong><em>样例</em></strong><br>对于物品体积[2, 3, 5, 7]和对应的价值[1, 5, 2, 4], 假设背包大小为10的话，最大能够装入的价值为9。</p>
 <p><strong><em>注意</em></strong><br>A[i], V[i], n, m均为整数。你不能将物品进行切分。你所挑选的物品总体积需要小于等于给定的m。</p>
 <p><strong><em>代码：</em></strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> m: An integer m denotes the size of a backpack</span><br><span class="line">     * <span class="doctag">@param</span> A &amp; V: Given n items with size A[i] and value V[i]</span><br><span class="line">     * <span class="doctag">@return</span>: The maximum value</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">backPackII</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span>[] capacitys, <span class="keyword">int</span> values[])</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == capacitys || capacitys.length &lt;= <span class="number">0</span> || <span class="keyword">null</span> == values || values.length &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span>[] maxValues = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; capacitys.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = m;j &gt;= <span class="number">1</span>;j--)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(j &gt;= capacitys[i])</span><br><span class="line">				&#123;</span><br><span class="line">					maxValues[j] = Math.max(maxValues[j - capacitys[i]] + values[i], maxValues[j]);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> maxValues[m];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-LintCode-Maximal-Square" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/12/06/LintCode-Maximal-Square/" class="article-date">
-  	<time datetime="2015-12-06T11:37:03.000Z" itemprop="datePublished">2015-12-06</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/06/LintCode-Maximal-Square/">LintCode Maximal Square</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Given a 2D binary matrix filled with 0’s and 1’s, find the largest square containing all 1’s and return its area.</p>
-<p>样例<br>For example, given the following matrix:</p>
-<p>1 0 1 0 0<br>1 0 1 1 1<br>1 1 1 1 1<br>1 0 0 1 0<br>Return 4.</p>
-<p><strong><em>解题思路</em></strong><br>  初始思路是判断对角方向以及相邻的两个数,运行结果错误，然后查看错误发现需要判断整个邻边，因此想到遍历邻边判断（i，j）位置的最大面积。但是会发现（i，j）之前的点的结果已经得出，为什么会重复用到之前的点，整个过程应该可以优化。思考后想到了同时三个方向判断，因此得出转移方程：maxArea[i][j] = Math.min(maxArea[i][j - 1],Math.min(maxArea[i - 1][j - 1], maxArea[i - 1][j])) + 1；</p>
-<p><strong><em>错误代码</em></strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(matrix[i - <span class="number">1</span>][j] == <span class="number">1</span> &amp;&amp; matrix[i][j - <span class="number">1</span>] == <span class="number">1</span> &amp;&amp; matrix[i - <span class="number">1</span>][j - <span class="number">1</span>] == <span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">          maxArea[i][j] = maxArea[i - <span class="number">1</span>][j - <span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">   <span class="keyword">if</span>(maxArea[i][j] &gt; maxResultArea)</span><br><span class="line">   &#123;</span><br><span class="line">             maxResultArea = maxArea[i][j];</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong><em>正确代码</em></strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> matrix: a matrix of 0 and 1</span><br><span class="line">     * <span class="doctag">@return</span>: an integer</span><br><span class="line">     */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxSquare</span><span class="params">(<span class="keyword">int</span>[][] matrix)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == matrix)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">int</span> row = matrix.length;</span><br><span class="line">		<span class="keyword">if</span>(row &lt;= <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">int</span> col = matrix[<span class="number">0</span>].length;</span><br><span class="line">		<span class="keyword">int</span>[][] maxArea = <span class="keyword">new</span> <span class="keyword">int</span>[row][col];</span><br><span class="line">		<span class="keyword">int</span> maxResultArea = Integer.MIN_VALUE;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; row;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			maxArea[i][<span class="number">0</span>] = matrix[i][<span class="number">0</span>];</span><br><span class="line">			<span class="keyword">if</span>(maxArea[i][<span class="number">0</span>] &gt; maxResultArea)</span><br><span class="line">			&#123;</span><br><span class="line">				maxResultArea = maxArea[i][<span class="number">0</span>];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; col;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			maxArea[<span class="number">0</span>][i] = matrix[<span class="number">0</span>][i];</span><br><span class="line">			<span class="keyword">if</span>(maxArea[<span class="number">0</span>][i] &gt; maxResultArea)</span><br><span class="line">			&#123;</span><br><span class="line">				maxResultArea = maxArea[<span class="number">0</span>][i];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; row;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt; col;j++)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(matrix[i][j] == <span class="number">1</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					maxArea[i][j] = Math.min(maxArea[i][j - <span class="number">1</span>],Math.min(maxArea[i - <span class="number">1</span>][j - <span class="number">1</span>], maxArea[i - <span class="number">1</span>][j])) + <span class="number">1</span>;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span>(maxArea[i][j] &gt; maxResultArea)</span><br><span class="line">				&#123;</span><br><span class="line">					maxResultArea = maxArea[i][j];</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> maxResultArea &gt; <span class="number">0</span> ?  maxResultArea * maxResultArea : <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-LintCode数字三角形" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/12/05/LintCode数字三角形/" class="article-date">
-  	<time datetime="2015-12-05T13:06:39.000Z" itemprop="datePublished">2015-12-05</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/05/LintCode数字三角形/">LintCode数字三角形</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>给定一个数字三角形，找到从顶部到底部的最小路径和。每一步可以移动到下面一行的相邻数字上。</p>
-<p>样例<br>比如，给出下列数字三角形：</p>
-<p>[<br>[2],<br>[3,4],<br>[6,5,7],<br>[4,1,8,3]<br>]</p>
-<p>从顶到底部的最小路径和为11 ( 2 + 3 + 5 + 1 = 11)。</p>
-<p>注意<br>如果你只用额外空间复杂度O(n)的条件下完成可以获得加分，其中n是数字三角形的总行数。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> triangle: a list of lists of integers.</span><br><span class="line">     * <span class="doctag">@return</span>: An integer, minimum path sum.</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minimumTotal</span><span class="params">(<span class="keyword">int</span>[][] triangle)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == triangle)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span> row = triangle.length;</span><br><span class="line">		<span class="keyword">if</span>(row &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span>[][] steps = <span class="keyword">new</span> <span class="keyword">int</span>[row][row];</span><br><span class="line">		<span class="keyword">int</span> min = Integer.MAX_VALUE;</span><br><span class="line">		steps[<span class="number">0</span>][<span class="number">0</span>] = triangle[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">if</span>(row == <span class="number">1</span>)</span><br><span class="line">			<span class="keyword">return</span> steps[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; row;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>;j &lt;= i;j++)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(j == <span class="number">0</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					steps[i][j] = steps[i - <span class="number">1</span>][j] + triangle[i][j];</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span> <span class="keyword">if</span>(j == i)</span><br><span class="line">				&#123;</span><br><span class="line">					steps[i][j] = steps[i - <span class="number">1</span>][j - <span class="number">1</span>] + triangle[i][j];</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					steps[i][j] = Math.min(steps[i - <span class="number">1</span>][j], steps[i - <span class="number">1</span>][j - <span class="number">1</span>]) + triangle[i][j];</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				<span class="keyword">if</span>(i == row - <span class="number">1</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="keyword">if</span>(steps[i][j] &lt; min)</span><br><span class="line">					&#123;</span><br><span class="line">						min = steps[i][j];</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> min;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
