@@ -3,18 +3,27 @@
 <head>
   <meta charset="utf-8">
   
-  <title>iOS 内存泄漏处理 | Arnold的技术博客</title>
+  <title>七七八八 Tool | Arnold的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="问题1：loadNibNamed123456static NSString *cellId = @&quot;AboutTableViewCell&quot;;    AboutTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];    if(!cell)    &amp;#123;        cell = [[[NSBun">
+  <meta name="description" content="工作中常用工具1.DSYM 工具1.查看 xx.app 文件的 UUID，terminal 中输入命令 ：
+dwarfdump –uuid xx.app/xx (xx代表你的项目名)
+2.查看 xx.app.dSYM 文件的 UUID ，在 terminal 中输入命令：dwarfdump –uuid xx.app.dSYM 
+3.crash 文件内第一行 Incident Identifier">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS 内存泄漏处理">
-<meta property="og:url" content="www.arnold134777.com/2015/11/23/iOS-内存泄漏处理/index.html">
+<meta property="og:title" content="七七八八 Tool">
+<meta property="og:url" content="www.arnold134777.com/2016/02/20/七七八八 Tool/index.html">
 <meta property="og:site_name" content="Arnold的技术博客">
-<meta property="og:description" content="问题1：loadNibNamed123456static NSString *cellId = @&quot;AboutTableViewCell&quot;;    AboutTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];    if(!cell)    &amp;#123;        cell = [[[NSBun">
-<meta property="og:updated_time" content="2015-12-03T08:41:10.000Z">
+<meta property="og:description" content="工作中常用工具1.DSYM 工具1.查看 xx.app 文件的 UUID，terminal 中输入命令 ：
+dwarfdump –uuid xx.app/xx (xx代表你的项目名)
+2.查看 xx.app.dSYM 文件的 UUID ，在 terminal 中输入命令：dwarfdump –uuid xx.app.dSYM 
+3.crash 文件内第一行 Incident Identifier">
+<meta property="og:updated_time" content="2016-02-20T05:19:54.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS 内存泄漏处理">
-<meta name="twitter:description" content="问题1：loadNibNamed123456static NSString *cellId = @&quot;AboutTableViewCell&quot;;    AboutTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];    if(!cell)    &amp;#123;        cell = [[[NSBun">
+<meta name="twitter:title" content="七七八八 Tool">
+<meta name="twitter:description" content="工作中常用工具1.DSYM 工具1.查看 xx.app 文件的 UUID，terminal 中输入命令 ：
+dwarfdump –uuid xx.app/xx (xx代表你的项目名)
+2.查看 xx.app.dSYM 文件的 UUID ，在 terminal 中输入命令：dwarfdump –uuid xx.app.dSYM 
+3.crash 文件内第一行 Incident Identifier">
   
     <link rel="alternative" href="/atom.xml" title="Arnold的技术博客" type="application/atom+xml">
   
@@ -184,11 +193,11 @@ var _hmt = _hmt || [];
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-iOS-内存泄漏处理" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-七七八八 Tool" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/11/23/iOS-内存泄漏处理/" class="article-date">
-  	<time datetime="2015-11-23T09:38:44.000Z" itemprop="datePublished">2015-11-23</time>
+      <a href="/2016/02/20/七七八八 Tool/" class="article-date">
+  	<time datetime="2016-02-19T16:14:18.000Z" itemprop="datePublished">2016-02-20</time>
 </a>
     </div>
   
@@ -201,7 +210,7 @@ var _hmt = _hmt || [];
         
   
     <h1 class="article-title" itemprop="name">
-      iOS 内存泄漏处理
+      七七八八 Tool
     </h1>
   
 
@@ -210,7 +219,7 @@ var _hmt = _hmt || [];
       <div class="article-info article-info-post">
         
 	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/devTool/">devTool</a></li></ul>
 	</div>
 
         
@@ -221,15 +230,17 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <hr>
-<h3 id="问题1：loadNibNamed">问题1：loadNibNamed</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> NSString *cellId = @<span class="string">"AboutTableViewCell"</span>;</span><br><span class="line">    AboutTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];</span><br><span class="line">    <span class="keyword">if</span>(!cell)</span><br><span class="line">    &#123;</span><br><span class="line">        cell = [[[NSBundle mainBundle]loadNibNamed:@<span class="string">"AboutTableViewCell"</span> owner:self options:nil] lastObject];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>原因：I suspect that your leak may be coming from the outlets in the nib. Note this phrase in the docs on loadNibNamed::<br>To establish outlet connections, this method uses the setValue:forKey: method, which may cause the object in the outlet to be retained automatically.<br>In other words, loadNibNamed sometimes imposes an extra retain because of the odd way key-value-coding works.</p>
-<p>However, that is speculation, and there’s no need for it, because there’s no need for you to call loadNibNamed: in the first place!</p>
-<p>You’re using a custom UITableViewCell subclass, designed in a nib? Then why not do this the normal way? Make a nib containing one top-level object: the cell. Design the cell in the nib, set its class, hook up its outlets etc. In your code, call registerNib:forCellReuseIdentifier: on the table view, to tell the table view about your nib. When you later call dequeueReusableCellWithIdentifier:, if there are no free cells in the reuse pile, the table view will load your nib and hand you cell. No muss, no fuss.</p>
-<h3 id="问题2：imageWithRenderingMode">问题2：imageWithRenderingMode</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tabBarItem1.selectedImage = [[UIImage imageNamed:@<span class="string">"img_wifi_hl"</span>] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];</span><br></pre></td></tr></table></figure>
-<p>暂时未找到解决办法</p>
-<h3 id="问题3：id_bridge">问题3：id bridge</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (id)fetchSSIDInfo</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    NSArray *ifs = CFBridgingRelease(CNCopySupportedInterfaces());</span><br><span class="line">    id info = nil;</span><br><span class="line">    <span class="keyword">for</span> (NSString *ifnam in ifs) &#123;</span><br><span class="line">        info = CFBridgingRelease(CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam));</span><br><span class="line">        <span class="keyword">if</span> (info &amp;&amp; [info count]) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> info;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>CFBridgingRelease 替换掉原来的（id bridge）</p>
+        <h2 id="工作中常用工具">工作中常用工具</h2><h3 id="1-DSYM_工具">1.DSYM 工具</h3><p>1.查看 xx.app 文件的 UUID，terminal 中输入命令 ：</p>
+<p>dwarfdump –uuid xx.app/xx (xx代表你的项目名)</p>
+<p>2.查看 xx.app.dSYM 文件的 UUID ，在 terminal 中输入命令：<br>dwarfdump –uuid xx.app.dSYM </p>
+<p>3.crash 文件内第一行 Incident Identifier 就是该 crash 文件的 UUID。</p>
+<h3 id="2-分析iOS_Crash文件">2.分析iOS Crash文件</h3><p>先执行<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp <span class="regexp">/Applications/</span>Xcode.app<span class="regexp">/Contents/</span>SharedFrameworks<span class="regexp">/DTDeviceKitBase.framework/</span>Versions<span class="regexp">/A/</span>Resources<span class="regexp">/symbolicatecrash /u</span>sr<span class="regexp">/local/</span>bin<span class="regexp">/</span></span><br></pre></td></tr></table></figure></p>
+<p>再执行<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">symbolicatecrash appName<span class="class">.crash</span> appName<span class="class">.app</span> &gt; appName.log</span><br></pre></td></tr></table></figure></p>
+<h4 id="3-cocosPods主要命令">3.cocosPods主要命令</h4><p><code>pod install --verbose --no-repo-update</code><br><code>pod update --verbose --no-repo-update</code></p>
+<h4 id="4-RN_bundle_打包">4.RN bundle 打包</h4><p>react-native bundle<br> –entry-file index.ios.js<br> –platform ios<br> –dev true<br> –bundle-output ./output/index.ios.bundle<br> –assets-dest ./output/imgs</p>
+<h4 id="5-打包-a文件">5.打包.a文件</h4><p>lipo -create /Users/Travis/Desktop/libIMIUI.d.a /Users/Travis/Desktop/libIMIUI.s.a -output /Users/Travis/Desktop/libIMIUI.a </p>
+<h4 id="6_SSH_公钥生成">6 SSH 公钥生成</h4><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>ssh-keygen</span><br><span class="line"><span class="variable">$ </span>cat ~<span class="regexp">/.ssh/id</span>_rsa.pub</span><br></pre></td></tr></table></figure>
+<h4 id="7_显示隐藏文件(MAC)">7 显示隐藏文件(MAC)</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">defaults write com<span class="class">.apple</span><span class="class">.finder</span> AppleShowAllFiles -bool true</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -239,18 +250,18 @@ var _hmt = _hmt || [];
     
 <nav id="article-nav">
   
-    <a href="/2015/12/03/MSWeakTimer机制解析/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2016/02/20/Git 命令/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption"><</strong>
       <div class="article-nav-title">
         
-          MSWeakTimer机制解析
+          git常用命令
         
       </div>
     </a>
   
   
-    <a href="/2015/11/23/LintCode-最大间距/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">LintCode 最大间距</div>
+    <a href="/2016/01/10/LintCode-跳跃游戏/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">LintCode 跳跃游戏</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -279,7 +290,7 @@ var _hmt = _hmt || [];
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="iOS-内存泄漏处理" data-title="iOS 内存泄漏处理" data-url="www.arnold134777.com/2015/11/23/iOS-内存泄漏处理/"></div>
+	<div class="ds-thread" data-thread-key="七七八八 Tool" data-title="七七八八 Tool" data-url="www.arnold134777.com/2016/02/20/七七八八 Tool/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">

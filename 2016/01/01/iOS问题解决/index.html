@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="Arnold的技术博客">
 <meta property="og:description" content="前言整理之前iOS开发中遇到的问题，集合一下。很大部分来自StackOverFlow。
 问题1:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available解决：Build Setting中的optimizatio">
-<meta property="og:updated_time" content="2016-01-01T03:26:33.000Z">
+<meta property="og:updated_time" content="2016-02-20T05:15:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS问题解决">
 <meta name="twitter:description" content="前言整理之前iOS开发中遇到的问题，集合一下。很大部分来自StackOverFlow。
@@ -123,7 +123,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
+						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/devTool/" style="font-size: 12.5px;">devTool</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
 					</div>
 				</section>
 				
@@ -278,6 +278,13 @@ var _hmt = _hmt || [];
 <h3 id="问题8:’_compress2’,_referenced_from:+[UMANUtil_deflatedDataPrefixedWith:level:source:]_in_libMobClickLibrary-a(UMANUtil-o)ld:_symbol(s)_not_found_for_architecture_x86_64clang:_error:_linker_command_failed_with_exit_code_1_(use_-v_to_see_invocation)">问题8:’_compress2’, referenced from:+[UMANUtil deflatedDataPrefixedWith:level:source:] in libMobClickLibrary.a(UMANUtil.o)ld: symbol(s) not found for architecture x86_64clang: error: linker command failed with exit code 1 (use -v to see invocation)</h3><p>解决：在Other Linker Flags里加入-lz</p>
 <h3 id="问题9:objc_msgSend()报错Too_many_arguments_to_function_call_,expected_0,have3">问题9:objc_msgSend()报错Too many arguments to function call ,expected 0,have3</h3><p>解决：Build Setting–&gt; Apple LLVM 6.0 - Preprocessing–&gt; Enable Strict Checking of objc_msgSend Calls  改为 NO</p>
 <h3 id="问题10:dyld:_Library_not_loaded:_/System/Library/Frameworks/Social-framework/SocialReferenced_from:_/var/mobile/Applications/00D3E0A7-4FF6-451E-B11C-87D7A189F425/sample-app/sample_Reason:_image_not_found">问题10:dyld: Library not loaded: /System/Library/Frameworks/Social.framework/SocialReferenced from: /var/mobile/Applications/00D3E0A7-4FF6-451E-B11C-87D7A189F425/sample.app/sample Reason: image not found</h3><p>解决：把Build Phases 里Social.framework后边的选项修改成为Optional就可以了</p>
+<p>###问题11:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available</p>
+<p>解决：Build Setting中的optimization level release改为与debug一样的模式。</p>
+<h3 id="问题12：is_invalid_in_c99">问题12：is invalid in c99</h3><p>解决: build setting -&gt; c language dialect -&gt; GNU89</p>
+<h3 id="问题13:_Xcode_build_-c文件失败">问题13: Xcode build .c文件失败</h3><p>原因：对应的.pch文件中,没有针对Objecttive－C的特殊编译，是统一指定的，建议加入，</p>
+<p>#ifdef <strong>OBJC</strong></p>
+<p>#endif</p>
+<p>环绕 #import <em>*</em></p>
 
       
     </div>

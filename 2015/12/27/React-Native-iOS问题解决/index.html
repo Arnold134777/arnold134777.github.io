@@ -15,7 +15,7 @@
 <meta property="og:description" content="前言近期在学习React Native 特开始着手遇到问题的解决方案，有问题及时留言，谢谢！！！
 问题1：run 项目时遇到命令窗口出现：TypeError: Cannot read property ‘root’ of null解决：打开终端，输入 brew update成功后再输入brew upgrade watchman关掉Xcode重新运行即可。
 问题2:native  的(RCTResp">
-<meta property="og:updated_time" content="2016-01-01T03:23:02.000Z">
+<meta property="og:updated_time" content="2016-02-20T05:02:02.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="React Native iOS问题解决">
 <meta name="twitter:description" content="前言近期在学习React Native 特开始着手遇到问题的解决方案，有问题及时留言，谢谢！！！
@@ -126,7 +126,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
+						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/devTool/" style="font-size: 12.5px;">devTool</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
 					</div>
 				</section>
 				
@@ -236,8 +236,14 @@ var _hmt = _hmt || [];
 <h3 id="问题3:iOS项目jsbundle打包，release包的js代码是混淆的。可以更改/Users/arnold/HFRCTUpdaterDemo/node_modules/react-native/local-cli/bundle/buildBundle-js_下的minify的选项。">问题3:iOS项目jsbundle打包，release包的js代码是混淆的。可以更改/Users/arnold/HFRCTUpdaterDemo/node_modules/react-native/local-cli/bundle/buildBundle.js 下的minify的选项。</h3><p>临时方案：直接更改../node_modules/react-native/packager/react-native-xcode.sh 中的–dev true即可,注意该命令的执行必须在ios的文件夹中。</p>
 <h3 id="问题4:iOS和安卓对图片处理的区别。">问题4:iOS和安卓对图片处理的区别。</h3><p>iOS:<br>this.setState({source}),更改Image的资源。</p>
 <p>安卓:<br>this.setNativeProps({src:’’}),更改资源。</p>
-<h3 id="问题5:react_native_调用native的代码，如何定义一个static_的变量。">问题5:react native 调用native的代码，如何定义一个static 的变量。</h3><p>待解决.</p>
-
+<h3 id="问题5:native_的(RCTResponseSenderBlock)callback注意回调的参数设置。">问题5:native  的(RCTResponseSenderBlock)callback注意回调的参数设置。</h3><p>例如：callback(@[@”hello”]);</p>
+<p>js端：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">callback: function(ret) &#123;</span><br><span class="line">			<span class="keyword">if</span> (ret[<span class="number">0</span>]) &#123;</span><br><span class="line">				console<span class="variable">.log</span>(ret[<span class="number">0</span>]);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br></pre></td></tr></table></figure>
+<p>打印结果为：h,如果改为callback(@[@[@”hello”]])打印结果才为hello。</p>
+<h3 id="问题6:react_native_调用组件报错：invalid_directory_/Users/node_modules/">问题6:react native 调用组件报错：invalid directory /Users/node_modules/</h3><p>解决：注意@providesModule 的重要性</p>
+<h3 id="问题7:NPM_throws_error_“couldn’t_read_dependencies”?">问题7:NPM throws error “couldn’t read dependencies”?</h3><p>解决:sudo npm install -g npm</p>
+<h3 id="问题8:_No_compatible_version_found:_react-native-viewpager@^1-2-1">问题8: No compatible version found: react-native-viewpager@^1.2.1</h3><p>解决:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo npm <span class="operator"><span class="keyword">cache</span> clean -<span class="keyword">f</span></span><br><span class="line">sudo npm <span class="keyword">install</span> -<span class="keyword">g</span> <span class="keyword">n</span></span><br><span class="line">sudo <span class="keyword">n</span> stable</span></span><br></pre></td></tr></table></figure>
       
     </div>
     

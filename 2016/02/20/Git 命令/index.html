@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>git常用命令 | Arnold的技术博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="git 命令下面的$project_root代表工程根目录
+
+
+进入工程目录 cd $project_root
+初始化git仓库 git init
+添加文件到仓库 git add .
+提交代码到仓库 git commit -m &amp;#39;init commit&amp;#39;
+链接到 git server git remote add origin git@example.com:namespace/p">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git常用命令">
+<meta property="og:url" content="www.arnold134777.com/2016/02/20/Git 命令/index.html">
+<meta property="og:site_name" content="Arnold的技术博客">
+<meta property="og:description" content="git 命令下面的$project_root代表工程根目录
+
+
+进入工程目录 cd $project_root
+初始化git仓库 git init
+添加文件到仓库 git add .
+提交代码到仓库 git commit -m &amp;#39;init commit&amp;#39;
+链接到 git server git remote add origin git@example.com:namespace/p">
+<meta property="og:updated_time" content="2016-02-20T05:16:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="git常用命令">
+<meta name="twitter:description" content="git 命令下面的$project_root代表工程根目录
+
+
+进入工程目录 cd $project_root
+初始化git仓库 git init
+添加文件到仓库 git add .
+提交代码到仓库 git commit -m &amp;#39;init commit&amp;#39;
+链接到 git server git remote add origin git@example.com:namespace/p">
+  
+    <link rel="alternative" href="/atom.xml" title="Arnold的技术博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+<script type="text/javascript">
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?b751aecb362d3c2a6826d793f68d6a94";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="/assert/arnold.png" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Arnold</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">iOS开发,喜欢算法(512509373@qq.com)</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						<div class="icon-wrap icon-link hide" data-idx="2">
+							<div class="loopback_l"></div>
+							<div class="loopback_r"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						<li>友情链接</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="http://arnold134777.github.io/" title="github">github</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/devTool/" style="font-size: 12.5px;">devTool</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
+					</div>
+				</section>
+				
+				
+				
+				<section class="switch-part switch-part3">
+					<div id="js-friends">
+					
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://blog.sina.com.cn/u/2423600462">Arnold的新郎博客</a>
+			        
+			        </div>
+				</section>
+				
+
+				
+				
+				<section class="switch-part switch-part4">
+				
+					<div id="js-aboutme">iOS开发，喜欢算法</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Arnold</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="/assert/arnold.png" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Arnold</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">iOS开发,喜欢算法(512509373@qq.com)</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="http://arnold134777.github.io/" title="github">github</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-Git 命令" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/02/20/Git 命令/" class="article-date">
+  	<time datetime="2016-02-19T16:14:18.000Z" itemprop="datePublished">2016-02-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      git常用命令
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/devTool/">devTool</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="git_命令">git 命令</h3><p>下面的<code>$project_root</code>代表工程根目录</p>
+<blockquote>
+<ul>
+<li>进入工程目录 <code>cd $project_root</code></li>
+<li>初始化git仓库 <code>git init</code></li>
+<li>添加文件到仓库 <code>git add .</code></li>
+<li>提交代码到仓库 <code>git commit -m &#39;init commit&#39;</code></li>
+<li>链接到 <code>git server git remote add origin git@example.com:namespace/projectname.git</code></li>
+<li>push代码到服务器 <code>git push origin master</code></li>
+<li>我要把刚才的工程再clone到本地:<code>git clone git@example.com:namespace/projectname.git</code></li>
+</ul>
+</blockquote>
+<h4 id="查看、添加、提交、删除、找回，重置修改文件">查看、添加、提交、删除、找回，重置修改文件</h4><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">git help &lt;<span class="command"><span class="keyword">command</span>&gt;  # 显示<span class="title">command</span>的<span class="title">help</span>  </span></span><br><span class="line">git show            <span class="comment"># 显示某次提交的内容  </span></span><br><span class="line">git show $id  </span><br><span class="line">   </span><br><span class="line">git co  <span class="comment">-- &lt;file&gt;   # 抛弃工作区修改  </span></span><br><span class="line">git co  .           <span class="comment"># 抛弃工作区修改  </span></span><br><span class="line">   </span><br><span class="line">git <span class="built_in">add</span> &lt;<span class="built_in">file</span>&gt;      <span class="comment"># 将工作文件修改提交到本地暂存区  </span></span><br><span class="line">git <span class="built_in">add</span> .           <span class="comment"># 将所有修改过的工作文件提交暂存区  </span></span><br><span class="line">   </span><br><span class="line">git rm &lt;<span class="built_in">file</span>&gt;       <span class="comment"># 从版本库中删除文件  </span></span><br><span class="line">git rm &lt;<span class="built_in">file</span>&gt; <span class="comment">--cached  # 从版本库中删除文件，但不删除文件  </span></span><br><span class="line">   </span><br><span class="line">git reset &lt;<span class="built_in">file</span>&gt;    <span class="comment"># 从暂存区恢复到工作文件  </span></span><br><span class="line">git reset <span class="comment">-- .      # 从暂存区恢复到工作文件  </span></span><br><span class="line">git reset <span class="comment">--hard    # 恢复最近一次提交过的状态，即放弃上次提交后的所有本次修改  </span></span><br><span class="line">   </span><br><span class="line">git ci &lt;<span class="built_in">file</span>&gt;  </span><br><span class="line">git ci .  </span><br><span class="line">git ci -<span class="operator">a</span>           <span class="comment"># 将git add, git rm和git ci等操作都合并在一起做  </span></span><br><span class="line">git ci -am <span class="string">"some comments"</span>  </span><br><span class="line">git ci <span class="comment">--amend      # 修改最后一次提交记录  </span></span><br><span class="line">   </span><br><span class="line">git revert &lt;$id&gt;    <span class="comment"># 恢复某次提交的状态，恢复动作本身也创建了一次提交对象  </span></span><br><span class="line">git revert HEAD     <span class="comment"># 恢复最后一次提交的状态</span></span><br></pre></td></tr></table></figure>
+<h4 id="查看文件diff">查看文件diff</h4><figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git diff <span class="variable">&lt;file&gt;</span>     <span class="comment"># 比较当前文件和暂存区文件差异  </span></span><br><span class="line">git diff  </span><br><span class="line">git diff <span class="variable">&lt;$id1&gt;</span> <span class="variable">&lt;$id2&gt;</span>   <span class="comment"># 比较两次提交之间的差异  </span></span><br><span class="line">git diff <span class="variable">&lt;branch1&gt;</span>..<span class="variable">&lt;branch2&gt;</span> <span class="comment"># 在两个分支之间比较  </span></span><br><span class="line">git diff --staged   <span class="comment"># 比较暂存区和版本库差异  </span></span><br><span class="line">git diff --cached   <span class="comment"># 比较暂存区和版本库差异  </span></span><br><span class="line">git diff --stat     <span class="comment"># 仅仅比较统计信息</span></span><br></pre></td></tr></table></figure>
+<h4 id="查看提交记录">查看提交记录</h4><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git <span class="command">log</span>  </span><br><span class="line">git <span class="command">log</span> &lt;<span class="type">file</span>&gt;      <span class="comment"># 查看该文件每次提交记录  </span></span><br><span class="line">git <span class="command">log</span> -p &lt;<span class="type">file</span>&gt;   <span class="comment"># 查看每次详细修改内容的diff  </span></span><br><span class="line">git <span class="command">log</span> -p -<span class="number">2</span>       <span class="comment"># 查看最近两次详细修改内容的diff  </span></span><br><span class="line">git <span class="command">log</span> <span class="comment">--stat      #查看提交统计信息</span></span><br></pre></td></tr></table></figure>
+<h4 id="取得Git仓库">取得Git仓库</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#初始化一个版本仓库  </span><br><span class="line">git init  </span><br><span class="line">  </span><br><span class="line">#Clone远程版本库  </span><br><span class="line">git clone git@xbc<span class="class">.me</span>:wordpress<span class="class">.git</span>  </span><br><span class="line">  </span><br><span class="line">#添加远程版本库origin，语法为 git remote add [shortname] [url]  </span><br><span class="line">git remote add origin git@xbc<span class="class">.me</span>:wordpress<span class="class">.git</span>  </span><br><span class="line">  </span><br><span class="line">#查看远程仓库  </span><br><span class="line">git remote -v</span><br></pre></td></tr></table></figure>
+<h4 id="提交你的修改">提交你的修改</h4><figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#添加当前修改的文件到暂存区  </span></span><br><span class="line">git add .  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#如果你自动追踪文件，包括你已经手动删除的，状态为Deleted的文件  </span></span><br><span class="line">git add -u  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#提交你的修改  </span></span><br><span class="line">git commit –m <span class="string">"你的注释"</span>  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#推送你的更新到远程服务器,语法为 git push [远程名] [本地分支]:[远程分支]  </span></span><br><span class="line">git push origin master  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#查看文件状态  </span></span><br><span class="line">git status  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#跟踪新文件  </span></span><br><span class="line">git add readme.txt  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#从当前跟踪列表移除文件，并完全删除  </span></span><br><span class="line">git rm readme.txt  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#仅在暂存区删除，保留文件在当前目录，不再跟踪  </span></span><br><span class="line">git rm –cached readme.txt  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#重命名文件  </span></span><br><span class="line">git mv reademe.txt readme  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#查看提交的历史记录  </span></span><br><span class="line">git log  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#修改最后一次提交注释的，利用–amend参数  </span></span><br><span class="line">git commit --amend  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#忘记提交某些修改，下面的三条命令只会得到一个提交。  </span></span><br><span class="line">git commit –m &amp;quot;add readme.txt&amp;quot;  </span><br><span class="line">git add readme_forgotten  </span><br><span class="line">git commit –amend  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#假设你已经使用git add .，将修改过的文件a、b加到暂存区  </span></span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#现在你只想提交a文件，不想提交b文件，应该这样  </span></span><br><span class="line">git reset<span class="constant"> HEAD </span>b  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#取消对文件的修改  </span></span><br><span class="line">git checkout –- readme.txt</span><br></pre></td></tr></table></figure>
+<h4 id="查看、切换、创建和删除分支">查看、切换、创建和删除分支</h4><figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">git branch -r           <span class="comment"># 查看远程分支  </span></span><br><span class="line">git br <span class="variable">&lt;new_branch&gt;</span> <span class="comment"># 创建新的分支  </span></span><br><span class="line">git br -v           <span class="comment"># 查看各个分支最后提交信息  </span></span><br><span class="line">git br --merged     <span class="comment"># 查看已经被合并到当前分支的分支  </span></span><br><span class="line">git br --no-merged  <span class="comment"># 查看尚未被合并到当前分支的分支  </span></span><br><span class="line">   </span><br><span class="line">git checkout <span class="variable">&lt;branch&gt;</span>     <span class="comment"># 切换到某个分支  </span></span><br><span class="line">git co -b <span class="variable">&lt;new_branch&gt;</span> <span class="comment"># 创建新的分支，并且切换过去  </span></span><br><span class="line">git co -b <span class="variable">&lt;new_branch&gt;</span> <span class="variable">&lt;branch&gt;</span>  <span class="comment"># 基于branch创建新的new_branch  </span></span><br><span class="line">   </span><br><span class="line">git co <span class="variable">$id</span>          <span class="comment"># 把某次历史提交记录checkout出来，但无分支信息，切换到其他分支会自动删除  </span></span><br><span class="line">git co <span class="variable">$id</span> -b <span class="variable">&lt;new_branch&gt;</span>  <span class="comment"># 把某次历史提交记录checkout出来，创建成一个分支  </span></span><br><span class="line">   </span><br><span class="line">git br -d <span class="variable">&lt;branch&gt;</span>  <span class="comment"># 删除某个分支  </span></span><br><span class="line">git br -D <span class="variable">&lt;branch&gt;</span>  <span class="comment"># 强制删除某个分支 (未被合并的分支被删除的时候需要强制)</span></span><br></pre></td></tr></table></figure>
+<h4 id="分支合并和rebase">分支合并和rebase</h4><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git merge <span class="tag">&lt;branch&gt;</span>               <span class="comment"># 将branch分支合并到当前分支  </span></span><br><span class="line">git merge origin/<span class="keyword">master</span> <span class="title">--no-ff</span>  <span class="comment"># 不要Fast-Foward合并，这样可以生成merge提交  </span></span><br><span class="line">   </span><br><span class="line">git rebase <span class="keyword">master</span> <span class="title">&lt;branch</span>&gt;       <span class="comment"># 将master rebase到branch，相当于：  </span></span><br><span class="line">git co <span class="tag">&lt;branch&gt;</span> &amp;&amp; git rebase <span class="keyword">master</span> <span class="title">&amp;&amp; git</span> co <span class="keyword">master</span> <span class="title">&amp;&amp; git</span> merge <span class="tag">&lt;branch&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="Git远程分支管理">Git远程分支管理</h4><figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">git pull                         <span class="comment"># 抓取远程仓库所有分支更新并合并到本地  </span></span><br><span class="line">git pull --<span class="keyword">no</span>-ff                 <span class="comment"># 抓取远程仓库所有分支更新并合并到本地，不要快进合并  </span></span><br><span class="line">git fetch origin                 <span class="comment"># 抓取远程仓库更新  </span></span><br><span class="line">git merge origin/master          <span class="comment"># 将远程主分支合并到本地当前分支  </span></span><br><span class="line">git co --track origin/branch     <span class="comment"># 跟踪某个远程分支创建相应的本地分支  </span></span><br><span class="line">git co -b &lt;local_branch&gt; origin/&lt;remote_branch&gt;  <span class="comment"># 基于远程分支创建本地分支，功能同上  </span></span><br><span class="line">   </span><br><span class="line">git <span class="keyword">push</span>                         <span class="comment"># push所有分支  </span></span><br><span class="line">git <span class="keyword">push</span> origin master           <span class="comment"># 将本地主分支推到远程主分支  </span></span><br><span class="line">git <span class="keyword">push</span> -u origin master        <span class="comment"># 将本地主分支推到远程(如无远程主分支则创建，用于初始化远程仓库)  </span></span><br><span class="line">git <span class="keyword">push</span> origin &lt;local_branch&gt;   <span class="comment"># 创建远程分支， origin是远程仓库名  </span></span><br><span class="line">git <span class="keyword">push</span> origin &lt;local_branch&gt;:&lt;remote_branch&gt;  <span class="comment"># 创建远程分支  </span></span><br><span class="line">git <span class="keyword">push</span> origin :&lt;remote_branch&gt;  <span class="comment">#先删除本地分支(git br -d &lt;branch&gt;)，然后再push删除远程分支</span></span><br></pre></td></tr></table></figure>
+<h4 id="基本的分支管理">基本的分支管理</h4><figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#创建一个分支  </span></span><br><span class="line">git branch iss53  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#切换工作目录到iss53  </span></span><br><span class="line">git chekcout iss53  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#将上面的命令合在一起，创建iss53分支并切换到iss53  </span></span><br><span class="line">git chekcout –b iss53  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#合并iss53分支，当前工作目录为master  </span></span><br><span class="line">git merge iss53  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#合并完成后，没有出现冲突，删除iss53分支  </span></span><br><span class="line">git branch –d iss53  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#拉去远程仓库的数据，语法为 git fetch [remote-name]  </span></span><br><span class="line">git fetch  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#fetch 会拉去最新的远程仓库数据，但不会自动到当前目录下，要自动合并  </span></span><br><span class="line">git pull  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#查看远程仓库的信息  </span></span><br><span class="line">git remote show origin  </span><br><span class="line">  </span><br><span class="line"><span class="preprocessor">#建立本地的dev分支追踪远程仓库的develop分支  </span></span><br><span class="line">git checkout –b dev origin/develop</span><br></pre></td></tr></table></figure>
+<h4 id="Git远程仓库管理">Git远程仓库管理</h4><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git remote -v                    <span class="preprocessor"># 查看远程服务器地址和仓库名称  </span></span><br><span class="line">git remote show origin           <span class="preprocessor"># 查看远程服务器仓库状态  </span></span><br><span class="line">git remote <span class="keyword">add</span> origin git@ github:robbin/robbin_site.git         <span class="preprocessor"># 添加远程仓库地址  </span></span><br><span class="line">git remote <span class="keyword">set</span>-url origin git@ github.com:robbin/robbin_site.git <span class="preprocessor"># 设置远程仓库地址(用于修改远程仓库地址)  </span></span><br><span class="line">git remote rm &lt;repository&gt;       <span class="preprocessor"># 删除远程仓库</span></span><br></pre></td></tr></table></figure>
+<h4 id="创建远程仓库">创建远程仓库</h4><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git <span class="keyword">clone</span> <span class="title">--bare</span> robbin_site robbin_site.git  <span class="comment"># 用带版本的项目创建纯版本仓库  </span></span><br><span class="line">scp -r my_project.git git@ git.csdn.net:~      <span class="comment"># 将纯仓库上传到服务器上  </span></span><br><span class="line">   </span><br><span class="line">mkdir robbin_site.git &amp;&amp; cd robbin_site.git &amp;&amp; git --bare init <span class="comment"># 在服务器创建纯仓库  </span></span><br><span class="line">git remote add origin git@ github.com:robbin/robbin_site.git    <span class="comment"># 设置远程仓库地址  </span></span><br><span class="line">git push -u origin <span class="keyword">master</span>                                      <span class="title"># 客户端首次提交  </span><br><span class="line">git</span> push -u origin develop  <span class="comment"># 首次将本地develop分支提交到远程develop分支，并且track  </span></span><br><span class="line">   </span><br><span class="line">git remote set-head origin <span class="keyword">master</span>   <span class="title"># 设置远程仓库的HEAD</span>指向<span class="literal">master</span>分支</span><br></pre></td></tr></table></figure>
+<h4 id="git_submodule的使用">git submodule的使用</h4><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">添加</span><br><span class="line">为当前工程添加<span class="keyword">submodule，命令如下：</span><br><span class="line"></span></span><br><span class="line"><span class="label">git</span> <span class="keyword">submodule </span><span class="keyword">add </span>仓库地址 路径</span><br><span class="line">即</span><br><span class="line"><span class="label">git</span> <span class="keyword">submodule </span><span class="keyword">add </span>https://<span class="keyword">android.googlesource.com/platform/frameworks/volley </span>extras</span><br><span class="line">命令执行完成，会在当前工程根路径下生成一个名为“.gitmodules”的文件，其中记录了子模块的信息。添加完成以后，再将子模块所在的文件夹添加到工程中即可。</span><br><span class="line"></span><br><span class="line">更新</span><br><span class="line">如果过了一段时间volley库有更新，这时候我们的app也需要更新，命令如下：</span><br><span class="line"></span><br><span class="line"><span class="label">git</span> <span class="keyword">submodule </span>update</span><br><span class="line">删除</span><br><span class="line"><span class="label">ubmodule</span>的删除稍微麻烦点：首先，要在“.gitmodules”文件中删除相应配置信息。然后，执行“git rm –cached ”命令将子模块所在的文件从git中删除。</span><br><span class="line"></span><br><span class="line">下载的工程带有<span class="keyword">submodule</span><br><span class="line"></span>当使用git clone下来的工程中带有<span class="keyword">submodule时，初始的时候，submodule的内容并不会自动下载下来的，此时，只需执行如下命令：</span><br><span class="line"></span></span><br><span class="line"><span class="label">git</span> <span class="keyword">submodule </span>update --init --recursive</span><br><span class="line">即可将子模块内容下载下来后工程才不会缺少相应的文件。</span><br></pre></td></tr></table></figure>
+<h4 id="子模块拉取最新的代码">子模块拉取最新的代码</h4><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git submodule foreach <span class="comment">--recursive git pull origin master</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/02/20/七七八八 Tool/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">七七八八 Tool</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Git 命令" data-title="git常用命令" data-url="www.arnold134777.com/2016/02/20/Git 命令/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 Arnold
+    	</div>
+      <span id="busuanzi_container_site_pv" style='display:none'>
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+       </span>
+       <span id="busuanzi_container_page_pv" style='display:none'>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+       </span>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
