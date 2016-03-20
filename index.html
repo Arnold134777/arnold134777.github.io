@@ -185,6 +185,130 @@ var _hmt = _hmt || [];
 </nav>
       <div class="body-wrap">
   
+    <article id="post-LintCode-最长上升子序列" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/03/20/LintCode-最长上升子序列/" class="article-date">
+  	<time datetime="2016-03-20T14:28:36.000Z" itemprop="datePublished">2016-03-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/03/20/LintCode-最长上升子序列/">LintCode 最长上升子序列</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>给定一个整数序列，找到最长上升子序列（LIS），返回LIS的长度。</p>
+<h4 id="说明">说明</h4><p>最长上升子序列的定义：</p>
+<p>最长上升子序列问题是在一个无序的给定序列中找到一个尽可能长的由低到高排列的子序列，这种子序列不一定是连续的或者唯一的。<br><a href="https://en.wikipedia.org/wiki/Longest_common_subsequence_problem" target="_blank" rel="external">https://en.wikipedia.org/wiki/Longest_common_subsequence_problem</a></p>
+<h4 id="样例">样例</h4><p>给出[5,4,1,2,3]，这个LIS是[1,2,3]，返回 3</p>
+<p>给出[4,2,4,5,3,7]，这个LIS是[4,4,5,7]，返回 4</p>
+<h4 id="分析">分析</h4><p>第一种做法(常规做法):<br><br>时间复杂度:O(n^2)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> nums: The integer array</span><br><span class="line">     * <span class="doctag">@return</span>: The length of LIS (longest increasing subsequence)</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestIncreasingSubsequence</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == nums || nums.length &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span>[] logestSequences = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length + <span class="number">1</span>];</span><br><span class="line">		logestSequences[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; nums.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			logestSequences[i] = <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>;j &lt; i;j++)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(nums[i] &gt;= nums[j] &amp;&amp; (logestSequences[j] + <span class="number">1</span> &gt; logestSequences[i])) <span class="comment">// 核心代码</span></span><br><span class="line">				&#123;</span><br><span class="line">					logestSequences[i] = logestSequences[j] + <span class="number">1</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span> longestIncreasingSubsequence = -<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; nums.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(logestSequences[i] &gt; longestIncreasingSubsequence)</span><br><span class="line">			&#123;</span><br><span class="line">				longestIncreasingSubsequence = logestSequences[i];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> longestIncreasingSubsequence;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第二种做法(贪心策略)：<br><br>时间复杂度:O(n*lg(n))</p>
+<p>分析：开一个栈，每次取栈顶元素top和读到的元素temp做比较，如果temp &gt; top 则将temp入栈；如果temp &lt; top则二分查找栈中的比temp大的第1个数，并用temp替换它。 最长序列长度即为栈的大小top。<br>这也是很好理解的，对于x和y，如果x &lt; y且Stack[y] &lt; Stack[x],用Stack[x]替换Stack[y]，此时的最长序列长度没有改变但序列Q的’’潜力’’增大了。<br></p>
+<p>举例：原序列为1，5，8，3，6，7<br>栈为1，5，8，此时读到3，用3替换5，得到1，3，8； 再读6，用6替换8，得到1，3，6；再读7，得到最终栈为1，3，6，7。最长递增子序列为长度4。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> nums: The integer array</span><br><span class="line">     * <span class="doctag">@return</span>: The length of LIS (longest increasing subsequence)</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestIncreasingSubsequence</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == nums || nums.length &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">if</span>(nums.length == <span class="number">1</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span>[] subsequenceStack = <span class="keyword">new</span> <span class="keyword">int</span>[nums.length + <span class="number">1</span>];</span><br><span class="line">		<span class="keyword">int</span> top = <span class="number">0</span>;</span><br><span class="line">		subsequenceStack[<span class="number">0</span>] = -<span class="number">1</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; nums.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(nums[i] &gt;= subsequenceStack[top])</span><br><span class="line">			&#123;</span><br><span class="line">				top++;</span><br><span class="line">				subsequenceStack[top] = nums[i];</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">int</span> low = <span class="number">0</span>;</span><br><span class="line">				<span class="keyword">int</span> high = top;</span><br><span class="line">				<span class="keyword">while</span>(low &lt;= high)</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="keyword">int</span> middle = (low + high) / <span class="number">2</span>;</span><br><span class="line">					<span class="keyword">if</span>(nums[i] &lt; subsequenceStack[middle])</span><br><span class="line">					&#123;</span><br><span class="line">						high = middle - <span class="number">1</span>;</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">else</span></span><br><span class="line">					&#123;</span><br><span class="line">						low = middle + <span class="number">1</span>;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">				subsequenceStack[low] = nums[i];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> top;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-LintCode-Paint-Fence" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/03/20/LintCode-Paint-Fence/" class="article-date">
+  	<time datetime="2016-03-20T14:28:16.000Z" itemprop="datePublished">2016-03-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/03/20/LintCode-Paint-Fence/">LintCode Paint Fence</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>There is a fence with n posts, each post can be painted with one of the k colors.<br>You have to paint all the posts such that no more than two adjacent fence posts have the same color.<br>Return the total number of ways you can paint the fence.</p>
+<h5 id="样例:">样例:<br></h5><p>Given n=3, k=2 return 6</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">     post <span class="number">1</span>,   post <span class="number">2</span>, post <span class="number">3</span></span><br><span class="line">way1    <span class="number">0</span>         <span class="number">0</span>       <span class="number">1</span> </span><br><span class="line">way2    <span class="number">0</span>         <span class="number">1</span>       <span class="number">0</span></span><br><span class="line">way3    <span class="number">0</span>         <span class="number">1</span>       <span class="number">1</span></span><br><span class="line">way4    <span class="number">1</span>         <span class="number">0</span>       <span class="number">0</span></span><br><span class="line">way5    <span class="number">1</span>         <span class="number">0</span>       <span class="number">1</span></span><br><span class="line">way6    <span class="number">1</span>         <span class="number">1</span>       <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<h5 id="分析：">分析：</h5><p>影响第n种的颜色的是第n-1与第n-2种颜色的，因此可能性都为k-1种<br>因此得到如下递推式:<code>maxWays[n] = (k - 1) * (maxWays[n - 1] + maxWays[n - 2]);</code></p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public class Solution &#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * @param n non-negative integer, n posts</span><br><span class="line">     * @param k non-negative integer, k colors</span><br><span class="line">     * @return an integer, the total number of ways</span><br><span class="line">     */</span></span><br><span class="line">   public <span class="keyword">int</span> numWays(<span class="keyword">int</span> n, <span class="keyword">int</span> k) &#123;</span><br><span class="line">		<span class="keyword">if</span>(n == <span class="number">0</span> || k == <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">if</span>(n == <span class="number">1</span>)</span><br><span class="line">		    <span class="keyword">return</span> k;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span>[] maxWays = new <span class="keyword">int</span>[n + <span class="number">1</span>];</span><br><span class="line">		maxWays[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">		maxWays[<span class="number">1</span>] = k;</span><br><span class="line">		maxWays[<span class="number">2</span>] = k * k;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">3</span>;i &lt;= n;i ++)</span><br><span class="line">		&#123;</span><br><span class="line">			maxWays[i] = (k - <span class="number">1</span>) * (maxWays[i - <span class="number">1</span>] + maxWays[i - <span class="number">2</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> maxWays[n];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-Git 命令" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -735,129 +859,6 @@ var _hmt = _hmt || [];
 <p>返回 3</p>
 <p>分析:minSteps[i][j]表示word1的前i个字符改为word2的前j个字符的最少操作数，因此有转移方程<br>minSteps[i][j] =<br>{<br>   minSteps[i - 1][j - 1];(word1[i] == wrod2[j])<br>min(minSteps[i - 1][j - 1],minSteps[i][j - 1],minSteps[i - 1][j]);(word1[i] != wrod2[j])<br>} </p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minDistance</span><span class="params">(String word1, String word2)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == word1 || <span class="keyword">null</span> == word2)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span>[][] minSteps = <span class="keyword">new</span> <span class="keyword">int</span>[word1.length() + <span class="number">1</span>][word2.length() + <span class="number">1</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= word1.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			minSteps[i][<span class="number">0</span>] = i;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= word2.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			minSteps[<span class="number">0</span>][i] = i;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= word1.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= word2.length();j++)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(word1.charAt(i - <span class="number">1</span>) == word2.charAt(j - <span class="number">1</span>))</span><br><span class="line">				&#123;</span><br><span class="line">					minSteps[i][j] = minSteps[i - <span class="number">1</span>][j - <span class="number">1</span>];</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					minSteps[i][j] = Math.min(minSteps[i - <span class="number">1</span>][j - <span class="number">1</span>], Math.min(minSteps[i - <span class="number">1</span>][j], minSteps[i][j - <span class="number">1</span>])) + <span class="number">1</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> minSteps[word1.length()][word2.length()];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-LintCode-不同的子序列" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/12/20/LintCode-不同的子序列/" class="article-date">
-  	<time datetime="2015-12-20T07:32:57.000Z" itemprop="datePublished">2015-12-20</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/20/LintCode-不同的子序列/">LintCode 不同的子序列</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>给出字符串S和字符串T，计算S的不同的子序列中T出现的个数。</p>
-<p>子序列字符串是原始字符串通过删除一些(或零个)产生的一个新的字符串，并且对剩下的字符的相对位置没有影响。(比如，“ACE”是“ABCDE”的子序列字符串,而“AEC”不是)。<br>样例<br>给出S = “rabbbit”, T = “rabbit”</p>
-<p>返回 3</p>
-<p>分析：这里我们可以用f(i,j)表示S中前i个字符串中，T的前j个字符出现的次数，不管S[i]和T[j]相不相等，首先f(i,j)=f(i-1,j)，其次要是S[i]==T[j]的话，f(i,j) = f(i-1,j)+f(i-1,j-1),可以看到，i的状态只与i-1有关，于是可以用滚动数组来进行优化。代码类似01背包。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> S, T: Two string.</span><br><span class="line">     * <span class="doctag">@return</span>: Count the number of distinct subsequences</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numDistinct</span><span class="params">(String S, String T)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == S || <span class="keyword">null</span> == T)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="comment">// commons 表示S中的前i个字符包含T的前j个字符的个数</span></span><br><span class="line">		<span class="keyword">int</span>[][] commons = <span class="keyword">new</span> <span class="keyword">int</span>[S.length() + <span class="number">1</span>][T.length() + <span class="number">1</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= S.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			commons[i][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= S.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= T.length();j++)</span><br><span class="line">			&#123;</span><br><span class="line">				</span><br><span class="line">				<span class="keyword">if</span>(S.charAt(i - <span class="number">1</span>) != T.charAt(j - <span class="number">1</span>))</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="comment">// 不包含S中的第i个</span></span><br><span class="line">					commons[i][j] = commons[i - <span class="number">1</span>][j];</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					<span class="comment">// dp思想，匹配结果分为包含S中的第i个与不包含第i个两种</span></span><br><span class="line">					commons[i][j] = commons[i - <span class="number">1</span>][j - <span class="number">1</span>] +  commons[i - <span class="number">1</span>][j];</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;		</span><br><span class="line">		<span class="keyword">return</span> commons[S.length()][T.length()];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-LintCode-硬币排成线" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/12/20/LintCode-硬币排成线/" class="article-date">
-  	<time datetime="2015-12-20T07:32:11.000Z" itemprop="datePublished">2015-12-20</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/20/LintCode-硬币排成线/">LintCode 硬币排成线</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>有 n 个硬币排成一条线。两个参赛者轮流从右边依次拿走 1 或 2 个硬币，直到没有硬币为止。拿到最后一枚硬币的人获胜。</p>
-<p>请判定 第一个玩家 是输还是赢？ </p>
-<p>样例<br>n = 1, 返回 true.</p>
-<p>n = 2, 返回 true.</p>
-<p>n = 3, 返回 false.</p>
-<p>n = 4, 返回 true.</p>
-<p>n = 5, 返回 true.</p>
-<p>挑战<br>O(1) 时间复杂度且O(1) 存储。</p>
-<p>分析：博弈的思想</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> n: an integer</span><br><span class="line">     * <span class="doctag">@return</span>: a boolean which equals to true if the first player will win</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">firstWillWin</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> !(n % <span class="number">3</span> == <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
