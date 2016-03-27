@@ -3,18 +3,24 @@
 <head>
   <meta charset="utf-8">
   
-  <title>LintCode Paint Fence | Arnold的技术博客</title>
+  <title>LintCode乘积最大子序列 | Arnold的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="There is a fence with n posts, each post can be painted with one of the k colors.You have to paint all the posts such that no more than two adjacent fence posts have the same color.Return the total nu">
+  <meta name="description" content="找出一个序列中乘积最大的连续子序列（至少包含一个数）。
+样例比如, 序列 [2,3,-2,4] 中乘积最大的子序列为 [2,3] ，其乘积为6。
+1234567891011121314151617181920212223242526272829public class Solution &amp;#123;    /**     * @param nums: an array of integers">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LintCode Paint Fence">
-<meta property="og:url" content="www.arnold134777.com/2016/03/20/LintCode-Paint-Fence/index.html">
+<meta property="og:title" content="LintCode乘积最大子序列">
+<meta property="og:url" content="www.arnold134777.com/2016/03/27/LintCode乘积最大子序列/index.html">
 <meta property="og:site_name" content="Arnold的技术博客">
-<meta property="og:description" content="There is a fence with n posts, each post can be painted with one of the k colors.You have to paint all the posts such that no more than two adjacent fence posts have the same color.Return the total nu">
-<meta property="og:updated_time" content="2016-03-20T14:36:27.000Z">
+<meta property="og:description" content="找出一个序列中乘积最大的连续子序列（至少包含一个数）。
+样例比如, 序列 [2,3,-2,4] 中乘积最大的子序列为 [2,3] ，其乘积为6。
+1234567891011121314151617181920212223242526272829public class Solution &amp;#123;    /**     * @param nums: an array of integers">
+<meta property="og:updated_time" content="2016-03-27T14:07:02.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LintCode Paint Fence">
-<meta name="twitter:description" content="There is a fence with n posts, each post can be painted with one of the k colors.You have to paint all the posts such that no more than two adjacent fence posts have the same color.Return the total nu">
+<meta name="twitter:title" content="LintCode乘积最大子序列">
+<meta name="twitter:description" content="找出一个序列中乘积最大的连续子序列（至少包含一个数）。
+样例比如, 序列 [2,3,-2,4] 中乘积最大的子序列为 [2,3] ，其乘积为6。
+1234567891011121314151617181920212223242526272829public class Solution &amp;#123;    /**     * @param nums: an array of integers">
   
     <link rel="alternative" href="/atom.xml" title="Arnold的技术博客" type="application/atom+xml">
   
@@ -184,11 +190,11 @@ var _hmt = _hmt || [];
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-LintCode-Paint-Fence" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-LintCode乘积最大子序列" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/03/20/LintCode-Paint-Fence/" class="article-date">
-  	<time datetime="2016-03-20T14:28:16.000Z" itemprop="datePublished">2016-03-20</time>
+      <a href="/2016/03/27/LintCode乘积最大子序列/" class="article-date">
+  	<time datetime="2016-03-27T14:05:53.000Z" itemprop="datePublished">2016-03-27</time>
 </a>
     </div>
   
@@ -201,7 +207,7 @@ var _hmt = _hmt || [];
         
   
     <h1 class="article-title" itemprop="name">
-      LintCode Paint Fence
+      LintCode乘积最大子序列
     </h1>
   
 
@@ -221,11 +227,9 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>There is a fence with n posts, each post can be painted with one of the k colors.<br>You have to paint all the posts such that no more than two adjacent fence posts have the same color.<br>Return the total number of ways you can paint the fence.</p>
-<h5 id="样例:">样例:<br></h5><p>Given n=3, k=2 return 6</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">     post <span class="number">1</span>,   post <span class="number">2</span>, post <span class="number">3</span></span><br><span class="line">way1    <span class="number">0</span>         <span class="number">0</span>       <span class="number">1</span> </span><br><span class="line">way2    <span class="number">0</span>         <span class="number">1</span>       <span class="number">0</span></span><br><span class="line">way3    <span class="number">0</span>         <span class="number">1</span>       <span class="number">1</span></span><br><span class="line">way4    <span class="number">1</span>         <span class="number">0</span>       <span class="number">0</span></span><br><span class="line">way5    <span class="number">1</span>         <span class="number">0</span>       <span class="number">1</span></span><br><span class="line">way6    <span class="number">1</span>         <span class="number">1</span>       <span class="number">0</span></span><br></pre></td></tr></table></figure>
-<h5 id="分析：">分析：</h5><p>影响第n种的颜色的是第n-1与第n-2种颜色的，因此可能性都为k-1种<br>因此得到如下递推式:<code>maxWays[n] = (k - 1) * (maxWays[n - 1] + maxWays[n - 2]);</code></p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public class Solution &#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * @param n non-negative integer, n posts</span><br><span class="line">     * @param k non-negative integer, k colors</span><br><span class="line">     * @return an integer, the total number of ways</span><br><span class="line">     */</span></span><br><span class="line">   public <span class="keyword">int</span> numWays(<span class="keyword">int</span> n, <span class="keyword">int</span> k) &#123;</span><br><span class="line">		<span class="keyword">if</span>(n == <span class="number">0</span> || k == <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">if</span>(n == <span class="number">1</span>)</span><br><span class="line">		    <span class="keyword">return</span> k;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span>[] maxWays = new <span class="keyword">int</span>[n + <span class="number">1</span>];</span><br><span class="line">		maxWays[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">		maxWays[<span class="number">1</span>] = k;</span><br><span class="line">		maxWays[<span class="number">2</span>] = k * k;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">3</span>;i &lt;= n;i ++)</span><br><span class="line">		&#123;</span><br><span class="line">			maxWays[i] = (k - <span class="number">1</span>) * (maxWays[i - <span class="number">1</span>] + maxWays[i - <span class="number">2</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> maxWays[n];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p>找出一个序列中乘积最大的连续子序列（至少包含一个数）。</p>
+<h4 id="样例">样例</h4><p>比如, 序列 [2,3,-2,4] 中乘积最大的子序列为 [2,3] ，其乘积为6。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> nums: an array of integers</span><br><span class="line">     * <span class="doctag">@return</span>: an integer</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProduct</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == nums || nums.length &lt;= <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span> max = nums[<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">int</span> min = nums[<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">int</span> mostMax = max;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; nums.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">int</span> tempMax = max;</span><br><span class="line">			max = Math.max(Math.max(nums[i], tempMax * nums[i]),min * nums[i]);</span><br><span class="line">			min = Math.min(Math.min(nums[i], tempMax * nums[i]),min * nums[i]);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span>(max &gt; mostMax)</span><br><span class="line">			&#123;</span><br><span class="line">				mostMax = max;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> mostMax;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -235,18 +239,18 @@ var _hmt = _hmt || [];
     
 <nav id="article-nav">
   
-    <a href="/2016/03/20/LintCode-最长上升子序列/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2016/03/27/LintCode-Decode-Ways/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption"><</strong>
       <div class="article-nav-title">
         
-          LintCode 最长上升子序列
+          LintCode Decode Ways
         
       </div>
     </a>
   
   
-    <a href="/2016/02/20/七七八八 Tool/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">七七八八 Tool</div>
+    <a href="/2016/03/20/LintCode-最长上升子序列/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">LintCode 最长上升子序列</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -275,7 +279,7 @@ var _hmt = _hmt || [];
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="LintCode-Paint-Fence" data-title="LintCode Paint Fence" data-url="www.arnold134777.com/2016/03/20/LintCode-Paint-Fence/"></div>
+	<div class="ds-thread" data-thread-key="LintCode乘积最大子序列" data-title="LintCode乘积最大子序列" data-url="www.arnold134777.com/2016/03/27/LintCode乘积最大子序列/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">

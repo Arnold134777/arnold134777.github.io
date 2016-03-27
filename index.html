@@ -185,6 +185,122 @@ var _hmt = _hmt || [];
 </nav>
       <div class="body-wrap">
   
+    <article id="post-LintCode-Decode-Ways" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/03/27/LintCode-Decode-Ways/" class="article-date">
+  	<time datetime="2016-03-27T14:06:02.000Z" itemprop="datePublished">2016-03-27</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/03/27/LintCode-Decode-Ways/">LintCode Decode Ways</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>A message containing letters from A-Z is being encoded to numbers using the following mapping:</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'A'</span> <span class="subst">-&gt; </span><span class="number">1</span></span><br><span class="line"><span class="string">'B'</span> <span class="subst">-&gt; </span><span class="number">2</span></span><br><span class="line"><span class="attribute">...</span></span><br><span class="line"><span class="string">'Z'</span> <span class="subst">-&gt; </span><span class="number">26</span></span><br></pre></td></tr></table></figure>
+<h4 id="样例">样例</h4><p>Given encoded message 12, it could be decoded as AB (1 2) or L (12).<br>The number of ways decoding 12 is 2.</p>
+<p>Given an encoded message containing digits, determine the total number of ways to decode it.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> s a string,  encoded message</span><br><span class="line">     * <span class="doctag">@return</span> an integer, the number of ways decoding</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numDecodings</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == s || s.length() &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(s.length() == <span class="number">1</span> &amp;&amp; s.charAt(<span class="number">0</span>) == <span class="string">'0'</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span>[] numDecodings = <span class="keyword">new</span> <span class="keyword">int</span>[s.length() + <span class="number">1</span>];</span><br><span class="line">		numDecodings[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= s.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(s.charAt(i - <span class="number">1</span>) == <span class="string">'0'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(i- <span class="number">2</span> &gt;= <span class="number">0</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="comment">// 如果出现类似"50"这样的数字直接返回0</span></span><br><span class="line">					<span class="keyword">if</span>(s.charAt(i - <span class="number">2</span>) != <span class="string">'1'</span> &amp;&amp; s.charAt(i - <span class="number">2</span>) != <span class="string">'2'</span>)</span><br><span class="line">					&#123;</span><br><span class="line">						<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">else</span></span><br><span class="line">					&#123;</span><br><span class="line">						numDecodings[i] += numDecodings[i - <span class="number">2</span>];</span><br><span class="line">						<span class="keyword">continue</span>;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			numDecodings[i] += numDecodings[i - <span class="number">1</span>];</span><br><span class="line">			<span class="keyword">if</span>(i - <span class="number">2</span> &gt;= <span class="number">0</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>((s.charAt(i - <span class="number">2</span>) == <span class="string">'1'</span>) || (s.charAt(i - <span class="number">2</span>) == <span class="string">'2'</span> </span><br><span class="line">						&amp;&amp; s.charAt(i - <span class="number">1</span>) &gt;= <span class="string">'1'</span> &amp;&amp; s.charAt(i - <span class="number">1</span>) &lt;= <span class="string">'6'</span>))</span><br><span class="line">				&#123;</span><br><span class="line">					numDecodings[i] += numDecodings[i - <span class="number">2</span>];</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> numDecodings[s.length()];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-LintCode乘积最大子序列" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/03/27/LintCode乘积最大子序列/" class="article-date">
+  	<time datetime="2016-03-27T14:05:53.000Z" itemprop="datePublished">2016-03-27</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/03/27/LintCode乘积最大子序列/">LintCode乘积最大子序列</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>找出一个序列中乘积最大的连续子序列（至少包含一个数）。</p>
+<h4 id="样例">样例</h4><p>比如, 序列 [2,3,-2,4] 中乘积最大的子序列为 [2,3] ，其乘积为6。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> nums: an array of integers</span><br><span class="line">     * <span class="doctag">@return</span>: an integer</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxProduct</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == nums || nums.length &lt;= <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span> max = nums[<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">int</span> min = nums[<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">int</span> mostMax = max;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; nums.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">int</span> tempMax = max;</span><br><span class="line">			max = Math.max(Math.max(nums[i], tempMax * nums[i]),min * nums[i]);</span><br><span class="line">			min = Math.min(Math.min(nums[i], tempMax * nums[i]),min * nums[i]);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span>(max &gt; mostMax)</span><br><span class="line">			&#123;</span><br><span class="line">				mostMax = max;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> mostMax;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-LintCode-最长上升子序列" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -309,6 +425,71 @@ var _hmt = _hmt || [];
 
 
   
+    <article id="post-七七八八 Tool" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/02/20/七七八八 Tool/" class="article-date">
+  	<time datetime="2016-02-19T16:14:18.000Z" itemprop="datePublished">2016-02-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/20/七七八八 Tool/">七七八八 Tool</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="工作中常用工具">工作中常用工具</h2><h3 id="1-DSYM_工具">1.DSYM 工具</h3><p>1.查看 xx.app 文件的 UUID，terminal 中输入命令 ：</p>
+<p>dwarfdump –uuid xx.app/xx (xx代表你的项目名)</p>
+<p>2.查看 xx.app.dSYM 文件的 UUID ，在 terminal 中输入命令：<br>dwarfdump –uuid xx.app.dSYM </p>
+<p>3.crash 文件内第一行 Incident Identifier 就是该 crash 文件的 UUID。</p>
+<h3 id="2-分析iOS_Crash文件">2.分析iOS Crash文件</h3><p>先执行<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp <span class="regexp">/Applications/</span>Xcode.app<span class="regexp">/Contents/</span>SharedFrameworks<span class="regexp">/DTDeviceKitBase.framework/</span>Versions<span class="regexp">/A/</span>Resources<span class="regexp">/symbolicatecrash /u</span>sr<span class="regexp">/local/</span>bin<span class="regexp">/</span></span><br></pre></td></tr></table></figure></p>
+<p>再执行<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">symbolicatecrash appName<span class="class">.crash</span> appName<span class="class">.app</span> &gt; appName.log</span><br></pre></td></tr></table></figure></p>
+<h4 id="3-cocosPods主要命令">3.cocosPods主要命令</h4><p><code>pod install --verbose --no-repo-update</code><br><code>pod update --verbose --no-repo-update</code></p>
+<h4 id="4-RN_bundle_打包">4.RN bundle 打包</h4><p>react-native bundle<br> –entry-file index.ios.js<br> –platform ios<br> –dev true<br> –bundle-output ./output/index.ios.bundle<br> –assets-dest ./output/imgs</p>
+<h4 id="5-打包-a文件">5.打包.a文件</h4><p>lipo -create /Users/Travis/Desktop/libIMIUI.d.a /Users/Travis/Desktop/libIMIUI.s.a -output /Users/Travis/Desktop/libIMIUI.a </p>
+<h4 id="6_SSH_公钥生成">6 SSH 公钥生成</h4><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>ssh-keygen</span><br><span class="line"><span class="variable">$ </span>cat ~<span class="regexp">/.ssh/id</span>_rsa.pub</span><br></pre></td></tr></table></figure>
+<h4 id="7_显示隐藏文件(MAC)">7 显示隐藏文件(MAC)</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">defaults write com<span class="class">.apple</span><span class="class">.finder</span> AppleShowAllFiles -bool true</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/devTool/">devTool</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-Git 命令" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -368,71 +549,6 @@ var _hmt = _hmt || [];
       
 	<div class="article-tag tagcloud">
 		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/devTool/">devTool</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-七七八八 Tool" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/02/20/七七八八 Tool/" class="article-date">
-  	<time datetime="2016-02-19T16:14:18.000Z" itemprop="datePublished">2016-02-20</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/02/20/七七八八 Tool/">七七八八 Tool</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="工作中常用工具">工作中常用工具</h2><h3 id="1-DSYM_工具">1.DSYM 工具</h3><p>1.查看 xx.app 文件的 UUID，terminal 中输入命令 ：</p>
-<p>dwarfdump –uuid xx.app/xx (xx代表你的项目名)</p>
-<p>2.查看 xx.app.dSYM 文件的 UUID ，在 terminal 中输入命令：<br>dwarfdump –uuid xx.app.dSYM </p>
-<p>3.crash 文件内第一行 Incident Identifier 就是该 crash 文件的 UUID。</p>
-<h3 id="2-分析iOS_Crash文件">2.分析iOS Crash文件</h3><p>先执行<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp <span class="regexp">/Applications/</span>Xcode.app<span class="regexp">/Contents/</span>SharedFrameworks<span class="regexp">/DTDeviceKitBase.framework/</span>Versions<span class="regexp">/A/</span>Resources<span class="regexp">/symbolicatecrash /u</span>sr<span class="regexp">/local/</span>bin<span class="regexp">/</span></span><br></pre></td></tr></table></figure></p>
-<p>再执行<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">symbolicatecrash appName<span class="class">.crash</span> appName<span class="class">.app</span> &gt; appName.log</span><br></pre></td></tr></table></figure></p>
-<h4 id="3-cocosPods主要命令">3.cocosPods主要命令</h4><p><code>pod install --verbose --no-repo-update</code><br><code>pod update --verbose --no-repo-update</code></p>
-<h4 id="4-RN_bundle_打包">4.RN bundle 打包</h4><p>react-native bundle<br> –entry-file index.ios.js<br> –platform ios<br> –dev true<br> –bundle-output ./output/index.ios.bundle<br> –assets-dest ./output/imgs</p>
-<h4 id="5-打包-a文件">5.打包.a文件</h4><p>lipo -create /Users/Travis/Desktop/libIMIUI.d.a /Users/Travis/Desktop/libIMIUI.s.a -output /Users/Travis/Desktop/libIMIUI.a </p>
-<h4 id="6_SSH_公钥生成">6 SSH 公钥生成</h4><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>ssh-keygen</span><br><span class="line"><span class="variable">$ </span>cat ~<span class="regexp">/.ssh/id</span>_rsa.pub</span><br></pre></td></tr></table></figure>
-<h4 id="7_显示隐藏文件(MAC)">7 显示隐藏文件(MAC)</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">defaults write com<span class="class">.apple</span><span class="class">.finder</span> AppleShowAllFiles -bool true</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/devTool/">devTool</a></li></ul>
 	</div>
 
       
@@ -737,137 +853,6 @@ var _hmt = _hmt || [];
       
 	<div class="article-tag tagcloud">
 		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Xcode/">Xcode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-React-Native-iOS问题解决" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/12/27/React-Native-iOS问题解决/" class="article-date">
-  	<time datetime="2015-12-26T16:42:36.000Z" itemprop="datePublished">2015-12-27</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/27/React-Native-iOS问题解决/">React Native iOS问题解决</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言">前言</h2><p>近期在学习React Native 特开始着手遇到问题的解决方案，有问题及时留言，谢谢！！！</p>
-<h3 id="问题1：run_项目时遇到命令窗口出现：TypeError:_Cannot_read_property_‘root’_of_null">问题1：run 项目时遇到命令窗口出现：TypeError: Cannot read property ‘root’ of null</h3><p>解决：打开终端，输入 brew update成功后再输入brew upgrade watchman关掉Xcode重新运行即可。</p>
-<h3 id="问题2:native_的(RCTResponseSenderBlock)callback注意回调的参数设置。">问题2:native  的(RCTResponseSenderBlock)callback注意回调的参数设置。</h3><p>例如：callback(@[@”hello”]);</p>
-<p>js端：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">callback: function(ret) &#123;</span><br><span class="line">	<span class="keyword">if</span> (ret[<span class="number">0</span>]) &#123;</span><br><span class="line">		console<span class="variable">.log</span>(ret[<span class="number">0</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-<p>打印结果为：h,如果改为callback(@[@[@”hello”]])打印结果才为hello。</p>
-<h3 id="问题3:iOS项目jsbundle打包，release包的js代码是混淆的。可以更改/Users/arnold/HFRCTUpdaterDemo/node_modules/react-native/local-cli/bundle/buildBundle-js_下的minify的选项。">问题3:iOS项目jsbundle打包，release包的js代码是混淆的。可以更改/Users/arnold/HFRCTUpdaterDemo/node_modules/react-native/local-cli/bundle/buildBundle.js 下的minify的选项。</h3><p>临时方案：直接更改../node_modules/react-native/packager/react-native-xcode.sh 中的–dev true即可,注意该命令的执行必须在ios的文件夹中。</p>
-<h3 id="问题4:iOS和安卓对图片处理的区别。">问题4:iOS和安卓对图片处理的区别。</h3><p>iOS:<br>this.setState({source}),更改Image的资源。</p>
-<p>安卓:<br>this.setNativeProps({src:’’}),更改资源。</p>
-<h3 id="问题5:native_的(RCTResponseSenderBlock)callback注意回调的参数设置。">问题5:native  的(RCTResponseSenderBlock)callback注意回调的参数设置。</h3><p>例如：callback(@[@”hello”]);</p>
-<p>js端：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">callback: function(ret) &#123;</span><br><span class="line">			<span class="keyword">if</span> (ret[<span class="number">0</span>]) &#123;</span><br><span class="line">				console<span class="variable">.log</span>(ret[<span class="number">0</span>]);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br></pre></td></tr></table></figure>
-<p>打印结果为：h,如果改为callback(@[@[@”hello”]])打印结果才为hello。</p>
-<h3 id="问题6:react_native_调用组件报错：invalid_directory_/Users/node_modules/">问题6:react native 调用组件报错：invalid directory /Users/node_modules/</h3><p>解决：注意@providesModule 的重要性</p>
-<h3 id="问题7:NPM_throws_error_“couldn’t_read_dependencies”?">问题7:NPM throws error “couldn’t read dependencies”?</h3><p>解决:sudo npm install -g npm</p>
-<h3 id="问题8:_No_compatible_version_found:_react-native-viewpager@^1-2-1">问题8: No compatible version found: react-native-viewpager@^1.2.1</h3><p>解决:</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo npm <span class="operator"><span class="keyword">cache</span> clean -<span class="keyword">f</span></span><br><span class="line">sudo npm <span class="keyword">install</span> -<span class="keyword">g</span> <span class="keyword">n</span></span><br><span class="line">sudo <span class="keyword">n</span> stable</span></span><br></pre></td></tr></table></figure>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React-Native/">React Native</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-LintCode-编辑距离" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/12/20/LintCode-编辑距离/" class="article-date">
-  	<time datetime="2015-12-20T11:26:44.000Z" itemprop="datePublished">2015-12-20</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/20/LintCode-编辑距离/">LintCode 编辑距离</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>给出两个单词word1和word2，计算出将word1 转换为word2的最少操作次数。</p>
-<p>你总共三种操作方法：</p>
-<p>插入一个字符<br>删除一个字符<br>替换一个字符</p>
-<p>样例<br>给出 work1=”mart” 和 work2=”karma”</p>
-<p>返回 3</p>
-<p>分析:minSteps[i][j]表示word1的前i个字符改为word2的前j个字符的最少操作数，因此有转移方程<br>minSteps[i][j] =<br>{<br>   minSteps[i - 1][j - 1];(word1[i] == wrod2[j])<br>min(minSteps[i - 1][j - 1],minSteps[i][j - 1],minSteps[i - 1][j]);(word1[i] != wrod2[j])<br>} </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minDistance</span><span class="params">(String word1, String word2)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == word1 || <span class="keyword">null</span> == word2)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span>[][] minSteps = <span class="keyword">new</span> <span class="keyword">int</span>[word1.length() + <span class="number">1</span>][word2.length() + <span class="number">1</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= word1.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			minSteps[i][<span class="number">0</span>] = i;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= word2.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			minSteps[<span class="number">0</span>][i] = i;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= word1.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= word2.length();j++)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(word1.charAt(i - <span class="number">1</span>) == word2.charAt(j - <span class="number">1</span>))</span><br><span class="line">				&#123;</span><br><span class="line">					minSteps[i][j] = minSteps[i - <span class="number">1</span>][j - <span class="number">1</span>];</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					minSteps[i][j] = Math.min(minSteps[i - <span class="number">1</span>][j - <span class="number">1</span>], Math.min(minSteps[i - <span class="number">1</span>][j], minSteps[i][j - <span class="number">1</span>])) + <span class="number">1</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> minSteps[word1.length()][word2.length()];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
 	</div>
 
       

@@ -3,18 +3,24 @@
 <head>
   <meta charset="utf-8">
   
-  <title>LintCode Paint Fence | Arnold的技术博客</title>
+  <title>LintCode Decode Ways | Arnold的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="There is a fence with n posts, each post can be painted with one of the k colors.You have to paint all the posts such that no more than two adjacent fence posts have the same color.Return the total nu">
+  <meta name="description" content="A message containing letters from A-Z is being encoded to numbers using the following mapping:
+1234&apos;A&apos; -&amp;gt; 1&apos;B&apos; -&amp;gt; 2...&apos;Z&apos; -&amp;gt; 26
+样例Given encoded message 12, it could be decoded as AB (1 2) or">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LintCode Paint Fence">
-<meta property="og:url" content="www.arnold134777.com/2016/03/20/LintCode-Paint-Fence/index.html">
+<meta property="og:title" content="LintCode Decode Ways">
+<meta property="og:url" content="www.arnold134777.com/2016/03/27/LintCode-Decode-Ways/index.html">
 <meta property="og:site_name" content="Arnold的技术博客">
-<meta property="og:description" content="There is a fence with n posts, each post can be painted with one of the k colors.You have to paint all the posts such that no more than two adjacent fence posts have the same color.Return the total nu">
-<meta property="og:updated_time" content="2016-03-20T14:36:27.000Z">
+<meta property="og:description" content="A message containing letters from A-Z is being encoded to numbers using the following mapping:
+1234&apos;A&apos; -&amp;gt; 1&apos;B&apos; -&amp;gt; 2...&apos;Z&apos; -&amp;gt; 26
+样例Given encoded message 12, it could be decoded as AB (1 2) or">
+<meta property="og:updated_time" content="2016-03-27T14:06:32.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LintCode Paint Fence">
-<meta name="twitter:description" content="There is a fence with n posts, each post can be painted with one of the k colors.You have to paint all the posts such that no more than two adjacent fence posts have the same color.Return the total nu">
+<meta name="twitter:title" content="LintCode Decode Ways">
+<meta name="twitter:description" content="A message containing letters from A-Z is being encoded to numbers using the following mapping:
+1234&apos;A&apos; -&amp;gt; 1&apos;B&apos; -&amp;gt; 2...&apos;Z&apos; -&amp;gt; 26
+样例Given encoded message 12, it could be decoded as AB (1 2) or">
   
     <link rel="alternative" href="/atom.xml" title="Arnold的技术博客" type="application/atom+xml">
   
@@ -184,11 +190,11 @@ var _hmt = _hmt || [];
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-LintCode-Paint-Fence" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-LintCode-Decode-Ways" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/03/20/LintCode-Paint-Fence/" class="article-date">
-  	<time datetime="2016-03-20T14:28:16.000Z" itemprop="datePublished">2016-03-20</time>
+      <a href="/2016/03/27/LintCode-Decode-Ways/" class="article-date">
+  	<time datetime="2016-03-27T14:06:02.000Z" itemprop="datePublished">2016-03-27</time>
 </a>
     </div>
   
@@ -201,7 +207,7 @@ var _hmt = _hmt || [];
         
   
     <h1 class="article-title" itemprop="name">
-      LintCode Paint Fence
+      LintCode Decode Ways
     </h1>
   
 
@@ -221,11 +227,11 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>There is a fence with n posts, each post can be painted with one of the k colors.<br>You have to paint all the posts such that no more than two adjacent fence posts have the same color.<br>Return the total number of ways you can paint the fence.</p>
-<h5 id="样例:">样例:<br></h5><p>Given n=3, k=2 return 6</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">     post <span class="number">1</span>,   post <span class="number">2</span>, post <span class="number">3</span></span><br><span class="line">way1    <span class="number">0</span>         <span class="number">0</span>       <span class="number">1</span> </span><br><span class="line">way2    <span class="number">0</span>         <span class="number">1</span>       <span class="number">0</span></span><br><span class="line">way3    <span class="number">0</span>         <span class="number">1</span>       <span class="number">1</span></span><br><span class="line">way4    <span class="number">1</span>         <span class="number">0</span>       <span class="number">0</span></span><br><span class="line">way5    <span class="number">1</span>         <span class="number">0</span>       <span class="number">1</span></span><br><span class="line">way6    <span class="number">1</span>         <span class="number">1</span>       <span class="number">0</span></span><br></pre></td></tr></table></figure>
-<h5 id="分析：">分析：</h5><p>影响第n种的颜色的是第n-1与第n-2种颜色的，因此可能性都为k-1种<br>因此得到如下递推式:<code>maxWays[n] = (k - 1) * (maxWays[n - 1] + maxWays[n - 2]);</code></p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public class Solution &#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * @param n non-negative integer, n posts</span><br><span class="line">     * @param k non-negative integer, k colors</span><br><span class="line">     * @return an integer, the total number of ways</span><br><span class="line">     */</span></span><br><span class="line">   public <span class="keyword">int</span> numWays(<span class="keyword">int</span> n, <span class="keyword">int</span> k) &#123;</span><br><span class="line">		<span class="keyword">if</span>(n == <span class="number">0</span> || k == <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">if</span>(n == <span class="number">1</span>)</span><br><span class="line">		    <span class="keyword">return</span> k;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span>[] maxWays = new <span class="keyword">int</span>[n + <span class="number">1</span>];</span><br><span class="line">		maxWays[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">		maxWays[<span class="number">1</span>] = k;</span><br><span class="line">		maxWays[<span class="number">2</span>] = k * k;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">3</span>;i &lt;= n;i ++)</span><br><span class="line">		&#123;</span><br><span class="line">			maxWays[i] = (k - <span class="number">1</span>) * (maxWays[i - <span class="number">1</span>] + maxWays[i - <span class="number">2</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> maxWays[n];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p>A message containing letters from A-Z is being encoded to numbers using the following mapping:</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'A'</span> <span class="subst">-&gt; </span><span class="number">1</span></span><br><span class="line"><span class="string">'B'</span> <span class="subst">-&gt; </span><span class="number">2</span></span><br><span class="line"><span class="attribute">...</span></span><br><span class="line"><span class="string">'Z'</span> <span class="subst">-&gt; </span><span class="number">26</span></span><br></pre></td></tr></table></figure>
+<h4 id="样例">样例</h4><p>Given encoded message 12, it could be decoded as AB (1 2) or L (12).<br>The number of ways decoding 12 is 2.</p>
+<p>Given an encoded message containing digits, determine the total number of ways to decode it.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> s a string,  encoded message</span><br><span class="line">     * <span class="doctag">@return</span> an integer, the number of ways decoding</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numDecodings</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == s || s.length() &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(s.length() == <span class="number">1</span> &amp;&amp; s.charAt(<span class="number">0</span>) == <span class="string">'0'</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span>[] numDecodings = <span class="keyword">new</span> <span class="keyword">int</span>[s.length() + <span class="number">1</span>];</span><br><span class="line">		numDecodings[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= s.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(s.charAt(i - <span class="number">1</span>) == <span class="string">'0'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(i- <span class="number">2</span> &gt;= <span class="number">0</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="comment">// 如果出现类似"50"这样的数字直接返回0</span></span><br><span class="line">					<span class="keyword">if</span>(s.charAt(i - <span class="number">2</span>) != <span class="string">'1'</span> &amp;&amp; s.charAt(i - <span class="number">2</span>) != <span class="string">'2'</span>)</span><br><span class="line">					&#123;</span><br><span class="line">						<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">else</span></span><br><span class="line">					&#123;</span><br><span class="line">						numDecodings[i] += numDecodings[i - <span class="number">2</span>];</span><br><span class="line">						<span class="keyword">continue</span>;</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			numDecodings[i] += numDecodings[i - <span class="number">1</span>];</span><br><span class="line">			<span class="keyword">if</span>(i - <span class="number">2</span> &gt;= <span class="number">0</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>((s.charAt(i - <span class="number">2</span>) == <span class="string">'1'</span>) || (s.charAt(i - <span class="number">2</span>) == <span class="string">'2'</span> </span><br><span class="line">						&amp;&amp; s.charAt(i - <span class="number">1</span>) &gt;= <span class="string">'1'</span> &amp;&amp; s.charAt(i - <span class="number">1</span>) &lt;= <span class="string">'6'</span>))</span><br><span class="line">				&#123;</span><br><span class="line">					numDecodings[i] += numDecodings[i - <span class="number">2</span>];</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> numDecodings[s.length()];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -235,18 +241,9 @@ var _hmt = _hmt || [];
     
 <nav id="article-nav">
   
-    <a href="/2016/03/20/LintCode-最长上升子序列/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption"><</strong>
-      <div class="article-nav-title">
-        
-          LintCode 最长上升子序列
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/02/20/七七八八 Tool/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">七七八八 Tool</div>
+    <a href="/2016/03/27/LintCode乘积最大子序列/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">LintCode乘积最大子序列</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -275,7 +272,7 @@ var _hmt = _hmt || [];
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="LintCode-Paint-Fence" data-title="LintCode Paint Fence" data-url="www.arnold134777.com/2016/03/20/LintCode-Paint-Fence/"></div>
+	<div class="ds-thread" data-thread-key="LintCode-Decode-Ways" data-title="LintCode Decode Ways" data-url="www.arnold134777.com/2016/03/27/LintCode-Decode-Ways/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
