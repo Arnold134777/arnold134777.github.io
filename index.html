@@ -119,7 +119,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/devTool/" style="font-size: 12.5px;">devTool</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
+						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/JSpatch/" style="font-size: 10px;">JSpatch</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/devTool/" style="font-size: 12.5px;">devTool</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
 					</div>
 				</section>
 				
@@ -184,6 +184,301 @@ var _hmt = _hmt || [];
 	</div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-JSPatch-源码解析-一" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/04/10/JSPatch-源码解析-一/" class="article-date">
+  	<time datetime="2016-04-10T14:27:38.000Z" itemprop="datePublished">2016-04-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/10/JSPatch-源码解析-一/">JSPatch 源码解析(一)</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-前言">1.前言</h3><p>前一段时间在公司做了一个iOS热补丁的模块，就用到了<a href="https://github.com/bang590/JSPatch" target="_blank" rel="external">JSPatch框架</a>,期间有了解过一些关于框架的源码分析的博客：<br><br><a href="http://albert43.net/2015/06/19/JSPatch%E5%AD%A6%E4%B9%A0-%E6%A0%B8%E5%BF%83%E5%92%8C%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_blank" rel="external">1.JSPatch学习:JSPatch核心和实现原理分析</a></p>
+<p><a href="http://www.jianshu.com/p/564bdb35f3f3" target="_blank" rel="external">2.JSPatch defineProtocol部分实现详解</a><br><br>思考再三还是决定自己调试了解一下整体的实现机制。</p>
+<h3 id="2-准备工具">2.准备工具</h3><ul>
+<li><a href="https://github.com/bang590/JSPatch" target="_blank" rel="external">DemoCode</a> <br></li>
+<li><a href="https://github.com/bang590/JSPatch/wiki/JS-%E6%96%AD%E7%82%B9%E8%B0%83%E8%AF%95" target="_blank" rel="external">js调试</a></li>
+</ul>
+<h3 id="3-项目文件">3.项目文件</h3><h5 id="3-1_项目文件图">3.1 项目文件图</h5><p><img src="https://dn-arnold.qbox.me/jspatch_1.png" width="160" height="400"></p>
+<h5 id="3-2_具体文件分析">3.2 具体文件分析</h5><ul>
+<li>JPEngine.m 核心的Native端实现。</li>
+<li>JSpatch.js 核心的js端实现。</li>
+<li>Extensions 扩展的方法提供给js端调用，内部是OC实现。</li>
+<li>Loader 一套热补丁动态更新补丁脚本的客户端实现，需要配合服务端才能实现整个更新框架。（本文不对此作多赘述）</li>
+</ul>
+<h3 id="4-调试分析">4.调试分析</h3><h4 id="4-1_调用代码">4.1 调用代码</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[JPEngine startEngine];</span><br><span class="line"><span class="built_in">NSString</span> *sourcePath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"demo"</span> ofType:<span class="string">@"js"</span>];</span><br><span class="line"><span class="built_in">NSString</span> *script = [<span class="built_in">NSString</span> stringWithContentsOfFile:sourcePath encoding:<span class="built_in">NSUTF8StringEncoding</span> error:<span class="literal">nil</span>];</span><br><span class="line">[JPEngine evaluateScript:script];</span><br></pre></td></tr></table></figure>
+<h4 id="4-2_JPEngine初始化">4.2 JPEngine初始化</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[JPEngine startEngine];</span><br></pre></td></tr></table></figure>
+<p>我们来看看具体的代码实现，</p>
+<ul>
+<li>代码片段一：</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="keyword">void</span>)startEngine</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (![JSContext class] || _context) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    JSContext *context = [[JSContext alloc] init];</span><br><span class="line">    </span><br><span class="line">    context[<span class="string">@"_OC_defineClass"</span>] = ^(<span class="built_in">NSString</span> *classDeclaration, JSValue *instanceMethods, JSValue *classMethods) &#123;</span><br><span class="line">        <span class="keyword">return</span> defineClass(classDeclaration, instanceMethods, classMethods);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    context[<span class="string">@"_OC_defineProtocol"</span>] = ^(<span class="built_in">NSString</span> *protocolDeclaration, JSValue *instProtocol, JSValue *clsProtocol) &#123;</span><br><span class="line">        <span class="keyword">return</span> defineProtocol(protocolDeclaration, instProtocol,clsProtocol);</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/*.... 分块分析，暂时省略以下代码*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>_content 为JSContect的实例，根据苹果官方文档 :</p>
+<p><img src="http://dn-arnold.qbox.me/jspatch_2.png" width="400" height="100"></p>
+<p>我们知道JSContext为js的执行环境。因此例如：<br><code>context[@&quot;_OC_defineProtocol&quot;]=block实现</code>这样的调用就很好的理解为为js的上下文注入了全局的<code>_OC_defineProtocol</code>方法，而具体的实现对应着Native端的block的实现。</p>
+<ul>
+<li>代码片段二：</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *path = [[<span class="built_in">NSBundle</span> bundleForClass:[<span class="keyword">self</span> class]] pathForResource:<span class="string">@"JSPatch"</span> ofType:<span class="string">@"js"</span>];</span><br><span class="line"><span class="built_in">NSAssert</span>(path, <span class="string">@"can't find JSPatch.js"</span>);</span><br><span class="line"><span class="built_in">NSString</span> *jsCore = [[<span class="built_in">NSString</span> alloc] initWithData:[[<span class="built_in">NSFileManager</span> defaultManager] contentsAtPath:path] encoding:<span class="built_in">NSUTF8StringEncoding</span>];</span><br><span class="line">    </span><br><span class="line"> <span class="keyword">if</span> ([_context respondsToSelector:<span class="keyword">@selector</span>(evaluateScript:withSourceURL:)]) &#123;</span><br><span class="line">        [_context evaluateScript:jsCore withSourceURL:[<span class="built_in">NSURL</span> URLWithString:<span class="string">@"JSPatch.js"</span>]];</span><br><span class="line"> &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        [_context evaluateScript:jsCore];</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>加载核心的JSPatch.js代码完成初始化，具体js代码后续具体调用再作分析。</p>
+<h4 id="4-3_具体修复代码">4.3 具体修复代码</h4><p>我们来看看Demo的修复代码：</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">defineClass<span class="list">(<span class="quoted">'JPViewController</span>', &#123;</span><br><span class="line">  handleBtn: function<span class="list">(<span class="keyword">sender</span>)</span> &#123;</span><br><span class="line">    var tableViewCtrl = JPTableViewController.alloc<span class="list">()</span>.init<span class="list">()</span></span><br><span class="line">    self.navigationController<span class="list">()</span>.pushViewController_animated<span class="list">(<span class="keyword">tableViewCtrl</span>, YES)</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span></span><br></pre></td></tr></table></figure>
+<p>调试看看执行步骤：</p>
+<h5 id="4-3-1_首先执行global-defineClass_(js端)">4.3.1 首先执行global.defineClass (js端)</h5><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">global<span class="class">.defineClass</span> = <span class="function"><span class="title">function</span><span class="params">(declaration, properties, instMethods, clsMethods)</span></span></span><br></pre></td></tr></table></figure>
+<p>我们断点到<code>var ret = _OC_defineClass(declaration, newInstMethods, newClsMethods)</code>处，查看局部变量表<br><img src="http://7xlsmx.com1.z0.glb.clouddn.com/jspatch_3.png" width="400" height="300">会发现<code>newInstMethods``newClsMethods</code>均被赋值，且其中每个实例或类方法的js对象被修改添加参数的个数的说明，只是好奇为什么需要加入参数个数的说明呢？？？</p>
+<h5 id="4-3-2_执行_OC_defineClass_(js端_-&gt;_Native端)">4.3.2 执行<code>_OC_defineClass</code> (js端 -&gt; Native端)</h5><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">context[@<span class="string">"_OC_defineClass"</span>] = ^(NSString *classDeclaration, JSValue *instanceMethods, JSValue *classMethods) &#123;</span><br><span class="line">       <span class="function"><span class="keyword">return</span> <span class="title">defineClass</span><span class="params">(classDeclaration, instanceMethods, classMethods)</span></span>;</span><br><span class="line">   &#125;;</span><br></pre></td></tr></table></figure>
+<p>实际执行的是Native的 <code>static NSDictionary *defineClass(NSString *classDeclaration, JSValue *instanceMethods, JSValue *classMethods)</code> 方法,以下分代码片段解析。</p>
+<ul>
+<li>代码片段一：</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSScanner</span> *scanner = [<span class="built_in">NSScanner</span> scannerWithString:classDeclaration];</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSString</span> *className;</span><br><span class="line">    <span class="built_in">NSString</span> *superClassName;</span><br><span class="line">    <span class="built_in">NSString</span> *protocolNames;</span><br><span class="line">    [scanner scanUpToString:<span class="string">@":"</span> intoString:&amp;className];</span><br><span class="line">    <span class="keyword">if</span> (!scanner<span class="variable">.isAtEnd</span>) &#123;</span><br><span class="line">        scanner<span class="variable">.scanLocation</span> = scanner<span class="variable">.scanLocation</span> + <span class="number">1</span>;</span><br><span class="line">        [scanner scanUpToString:<span class="string">@"&lt;"</span> intoString:&amp;superClassName];</span><br><span class="line">        <span class="keyword">if</span> (!scanner<span class="variable">.isAtEnd</span>) &#123;</span><br><span class="line">            scanner<span class="variable">.scanLocation</span> = scanner<span class="variable">.scanLocation</span> + <span class="number">1</span>;</span><br><span class="line">            [scanner scanUpToString:<span class="string">@"&gt;"</span> intoString:&amp;protocolNames];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!superClassName) superClassName = <span class="string">@"NSObject"</span>;</span><br><span class="line">    className = trim(className);</span><br><span class="line">    superClassName = trim(superClassName);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSArray</span> *protocols = [protocolNames length] ? [protocolNames componentsSeparatedByString:<span class="string">@","</span>] : <span class="literal">nil</span>;</span><br><span class="line">    </span><br><span class="line">    Class cls = <span class="built_in">NSClassFromString</span>(className);</span><br><span class="line">    <span class="keyword">if</span> (!cls) &#123;</span><br><span class="line">        Class superCls = <span class="built_in">NSClassFromString</span>(superClassName);</span><br><span class="line">        <span class="keyword">if</span> (!superCls) &#123;</span><br><span class="line">            <span class="built_in">NSCAssert</span>(<span class="literal">NO</span>, <span class="string">@"can't find the super class %@"</span>, superClassName);</span><br><span class="line">            <span class="keyword">return</span> @&#123;<span class="string">@"cls"</span>: className&#125;;</span><br><span class="line">        &#125;</span><br><span class="line">        cls = objc_allocateClassPair(superCls, className<span class="variable">.UTF8String</span>, <span class="number">0</span>);</span><br><span class="line">        objc_registerClassPair(cls);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (protocols<span class="variable">.count</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">NSString</span>* protocolName <span class="keyword">in</span> protocols) &#123;</span><br><span class="line">            Protocol *protocol = objc_getProtocol([trim(protocolName) cStringUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>]);</span><br><span class="line">            class_addProtocol (cls, protocol);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>通过传递的classDeclaration解析相应的className,superClassName,protocols,</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1.</span></span><br><span class="line">cls = objc_allocateClassPair(superCls, className<span class="variable">.UTF8String</span>, <span class="number">0</span>);</span><br><span class="line">objc_registerClassPair(cls);</span><br><span class="line"> </span><br><span class="line"> <span class="comment">//2.</span></span><br><span class="line"> <span class="keyword">if</span> (protocols<span class="variable">.count</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">NSString</span>* protocolName <span class="keyword">in</span> protocols) &#123;</span><br><span class="line">            Protocol *protocol = objc_getProtocol([trim(protocolName) cStringUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>]);</span><br><span class="line">            class_addProtocol (cls, protocol);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>1.运行期间创建一个新类，并完成注册. 2.遍历协议名，依此初始化并完成对类的协议的添加。</p>
+<ul>
+<li>代码片段二：</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span>; i ++) &#123;</span><br><span class="line">        <span class="built_in">BOOL</span> isInstance = i == <span class="number">0</span>;</span><br><span class="line">        JSValue *jsMethods = isInstance ? instanceMethods: classMethods;</span><br><span class="line">        </span><br><span class="line">        Class currCls = isInstance ? cls: objc_getMetaClass(className<span class="variable">.UTF8String</span>);</span><br><span class="line">        <span class="built_in">NSDictionary</span> *methodDict = [jsMethods toDictionary];</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">NSString</span> *jsMethodName <span class="keyword">in</span> methodDict<span class="variable">.allKeys</span>) &#123;</span><br><span class="line">            JSValue *jsMethodArr = [jsMethods valueForProperty:jsMethodName];</span><br><span class="line">            <span class="keyword">int</span> numberOfArg = [jsMethodArr[<span class="number">0</span>] toInt32];</span><br><span class="line">            <span class="built_in">NSString</span> *selectorName = convertJPSelectorString(jsMethodName);</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> ([selectorName componentsSeparatedByString:<span class="string">@":"</span>]<span class="variable">.count</span> - <span class="number">1</span> &lt; numberOfArg) &#123;</span><br><span class="line">                selectorName = [selectorName stringByAppendingString:<span class="string">@":"</span>];</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            JSValue *jsMethod = jsMethodArr[<span class="number">1</span>];</span><br><span class="line">            <span class="keyword">if</span> (class_respondsToSelector(currCls, <span class="built_in">NSSelectorFromString</span>(selectorName))) &#123;</span><br><span class="line">                overrideMethod(currCls, selectorName, jsMethod, !isInstance, <span class="literal">NULL</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="built_in">BOOL</span> overrided = <span class="literal">NO</span>;</span><br><span class="line">                <span class="keyword">for</span> (<span class="built_in">NSString</span> *protocolName <span class="keyword">in</span> protocols) &#123;</span><br><span class="line">                    <span class="keyword">char</span> *types = methodTypesInProtocol(protocolName, selectorName, isInstance, <span class="literal">YES</span>);</span><br><span class="line">                    <span class="keyword">if</span> (!types) types = methodTypesInProtocol(protocolName, selectorName, isInstance, <span class="literal">NO</span>);</span><br><span class="line">                    <span class="keyword">if</span> (types) &#123;</span><br><span class="line">                        overrideMethod(currCls, selectorName, jsMethod, !isInstance, types);</span><br><span class="line">                        free(types);</span><br><span class="line">                        overrided = <span class="literal">YES</span>;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (!overrided) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (![[jsMethodName substringToIndex:<span class="number">1</span>] isEqualToString:<span class="string">@"_"</span>]) &#123;</span><br><span class="line">                        <span class="built_in">NSMutableString</span> *typeDescStr = [<span class="string">@"@@:"</span> mutableCopy];</span><br><span class="line">                        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numberOfArg; i ++) &#123;</span><br><span class="line">                            [typeDescStr appendString:<span class="string">@"@"</span>];</span><br><span class="line">                        &#125;</span><br><span class="line">                        overrideMethod(currCls, selectorName, jsMethod, !isInstance, [typeDescStr cStringUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>]);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>遍历传递过过来的实例方法，类方法的js实例，然后依次遍历方法字典，完成方法名js命名到native命名的转换。</li>
+<li>通过转换后的方法名，用<code>class_respondsToSelector</code>判断是否该类的方法列表中是否已经存在该方法的实现，存在即调用<code>overrideMethod(currCls, selectorName, jsMethod, !isInstance, NULL);</code>覆盖方法实现。</li>
+<li><p>如果类的方法列表中不存在该方法的实现，则通过实现的协议的列表查找，依次判断方法是否在协议的实现方法中,如果以上都不是说明是新添加的方法.</p>
+</li>
+<li><p>代码片段三：</p>
+</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#pragma clang diagnostic push</span></span><br><span class="line"><span class="preprocessor">#pragma clang diagnostic ignored <span class="title">"-Wundeclared-selector"</span></span></span><br><span class="line">    class_addMethod(cls, <span class="keyword">@selector</span>(getProp:), (IMP)getPropIMP, <span class="string">"@@:@"</span>);</span><br><span class="line">    class_addMethod(cls, <span class="keyword">@selector</span>(setProp:forKey:), (IMP)setPropIMP, <span class="string">"v@:@@"</span>);</span><br><span class="line"><span class="preprocessor">#pragma clang diagnostic pop</span></span><br></pre></td></tr></table></figure>
+<p>添加类的<code>getProp:``setProp:forKey:</code>的方法及实现。</p>
+<ul>
+<li>代码片段四：</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> overrideMethod(Class cls, <span class="built_in">NSString</span> *selectorName, JSValue *function, <span class="built_in">BOOL</span> isClassMethod, <span class="keyword">const</span> <span class="keyword">char</span> *typeDescription)</span><br><span class="line">&#123;</span><br><span class="line">    SEL selector = <span class="built_in">NSSelectorFromString</span>(selectorName);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!typeDescription) &#123;</span><br><span class="line">        Method method = class_getInstanceMethod(cls, selector);</span><br><span class="line">        typeDescription = (<span class="keyword">char</span> *)method_getTypeEncoding(method);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    IMP originalImp = class_respondsToSelector(cls, selector) ? class_getMethodImplementation(cls, selector) : <span class="literal">NULL</span>;</span><br><span class="line">    </span><br><span class="line">    IMP msgForwardIMP = _objc_msgForward;</span><br><span class="line">    <span class="preprocessor">#if !defined(__arm64__)</span></span><br><span class="line">        <span class="keyword">if</span> (typeDescription[<span class="number">0</span>] == <span class="string">'&#123;'</span>) &#123;</span><br><span class="line">            <span class="comment">//In some cases that returns struct, we should use the '_stret' API:</span></span><br><span class="line">            <span class="comment">//http://sealiesoftware.com/blog/archive/2008/10/30/objc_explain_objc_msgSend_stret.html</span></span><br><span class="line">            <span class="comment">//NSMethodSignature knows the detail but has no API to return, we can only get the info from debugDescription.</span></span><br><span class="line">            <span class="built_in">NSMethodSignature</span> *methodSignature = [<span class="built_in">NSMethodSignature</span> signatureWithObjCTypes:typeDescription];</span><br><span class="line">            <span class="keyword">if</span> ([methodSignature<span class="variable">.debugDescription</span> rangeOfString:<span class="string">@"is special struct return? YES"</span>]<span class="variable">.location</span> != <span class="built_in">NSNotFound</span>) &#123;</span><br><span class="line">                msgForwardIMP = (IMP)_objc_msgForward_stret;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="preprocessor">#endif</span></span><br><span class="line"></span><br><span class="line">    class_replaceMethod(cls, selector, msgForwardIMP, typeDescription);</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#pragma clang diagnostic push</span></span><br><span class="line"><span class="preprocessor">#pragma clang diagnostic ignored <span class="title">"-Wundeclared-selector"</span></span></span><br><span class="line">    <span class="keyword">if</span> (class_getMethodImplementation(cls, <span class="keyword">@selector</span>(forwardInvocation:)) != (IMP)JPForwardInvocation) &#123;</span><br><span class="line">        IMP originalForwardImp = class_replaceMethod(cls, <span class="keyword">@selector</span>(forwardInvocation:), (IMP)JPForwardInvocation, <span class="string">"v@:@"</span>);</span><br><span class="line">        class_addMethod(cls, <span class="keyword">@selector</span>(ORIGforwardInvocation:), originalForwardImp, <span class="string">"v@:@"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#pragma clang diagnostic pop</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (class_respondsToSelector(cls, selector)) &#123;</span><br><span class="line">        <span class="built_in">NSString</span> *originalSelectorName = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"ORIG%@"</span>, selectorName];</span><br><span class="line">        SEL originalSelector = <span class="built_in">NSSelectorFromString</span>(originalSelectorName);</span><br><span class="line">        <span class="keyword">if</span>(!class_respondsToSelector(cls, originalSelector)) &#123;</span><br><span class="line">            class_addMethod(cls, originalSelector, originalImp, typeDescription);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSString</span> *JPSelectorName = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"_JP%@"</span>, selectorName];</span><br><span class="line">    SEL JPSelector = <span class="built_in">NSSelectorFromString</span>(JPSelectorName);</span><br><span class="line"></span><br><span class="line">    _initJPOverideMethods(cls);</span><br><span class="line">    _JSOverideMethods[cls][JPSelectorName] = function;</span><br><span class="line">    </span><br><span class="line">    class_addMethod(cls, JPSelector, msgForwardIMP, typeDescription);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>核心的替换添加方法实现的方法：</p>
+<ul>
+<li>把原始的方法的实现替换为<code>_objc_msgForward</code>,即该方法的调用会走消息转发的路径.</li>
+<li>类的<code>forwardInvocation:</code>方法的实现被替换为<code>JPForwardInvocation</code>的实现</li>
+<li>添加的方法<code>ORIGforwardInvocation</code>指向原始的实现IMP.</li>
+<li>添加的方法<code>ORIG+selector</code>指向原始的实现的IMP.</li>
+<li>添加<code>_JP+selector</code>指向新的函数的实现.</li>
+</ul>
+<h4 id="上述代码只是讲解了替换添加方法的实现，而新的实现方法是一个个js的对象，如何关联到Native端的调用？后续会继续更新，分析_调用核心方法JPForwardInvocation,JPExtension等其他部分的实现，对于上述的分析有问题处欢迎及时指出，谢谢！">上述代码只是讲解了替换添加方法的实现，而新的实现方法是一个个js的对象，如何关联到Native端的调用？后续会继续更新，分析 调用核心方法JPForwardInvocation,JPExtension等其他部分的实现，对于上述的分析有问题处欢迎及时指出，谢谢！</h4><h4 id="补充：4-3-1_中为什么需要加入参数个数的说明呢，与方法的签名有关，具体下次更新作分析！！！">补充：4.3.1 中为什么需要加入参数个数的说明呢，与方法的签名有关，具体下次更新作分析！！！</h4>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JSpatch/">JSpatch</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-LintCode-Perfect-Squares" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/04/10/LintCode-Perfect-Squares/" class="article-date">
+  	<time datetime="2016-04-10T14:20:54.000Z" itemprop="datePublished">2016-04-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/10/LintCode-Perfect-Squares/">LintCode Perfect Squares</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Given a positive integer n, find the least number of perfect square numbers (for example, 1, 4, 9, 16, …) which sum to n.</p>
+<p>样例<br><br>Given n = 12, return 3 because 12 = 4 + 4 + 4<br>Given n = 13, return 2 because 13 = 4 + 9</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> n a positive integer</span><br><span class="line">     * <span class="doctag">@return</span> an integer</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">numSquares</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Write your code here</span></span><br><span class="line">        <span class="keyword">int</span>[] maxSquares = <span class="keyword">new</span> <span class="keyword">int</span>[n + <span class="number">1</span>];</span><br><span class="line">        maxSquares[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">        maxSquares[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt;= n;i++)&#123;</span><br><span class="line">            maxSquares[i] = Integer.MAX_VALUE;</span><br><span class="line">            <span class="keyword">int</span> sqrtNum = (<span class="keyword">int</span>) Math.sqrt(i);</span><br><span class="line">            <span class="keyword">if</span>(sqrtNum * sqrtNum == i)&#123;</span><br><span class="line">                maxSquares[i] = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= sqrtNum;j++)&#123;</span><br><span class="line">                <span class="keyword">int</span> minusNum = i - j * j;</span><br><span class="line">                <span class="keyword">if</span>(maxSquares[i] &gt; maxSquares[minusNum] + <span class="number">1</span>)&#123;</span><br><span class="line">                    maxSquares[i] = maxSquares[minusNum] + <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> maxSquares[n];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-LintCode-最小调整代价" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/04/10/LintCode-最小调整代价/" class="article-date">
+  	<time datetime="2016-04-10T14:20:41.000Z" itemprop="datePublished">2016-04-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/10/LintCode-最小调整代价/">LintCode 最小调整代价</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>给一个整数数组，调整每个数的大小，使得相邻的两个数的差小于一个给定的整数target，调整每个数的代价为调整前后的差的绝对值，求调整代价之和最小是多少。</p>
+<p>样例<br><br>对于数组[1, 4, 2, 3]和target=1，最小的调整方案是调整为[2, 3, 2, 3]，调整代价之和是2。返回2。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> A: An integer array.</span><br><span class="line">     * <span class="doctag">@param</span> target: An integer.</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">MinAdjustmentCost</span><span class="params">(ArrayList&lt;Integer&gt; list, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == list || list.size() &lt;= <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span>[][] minAdjustmentCosts = <span class="keyword">new</span> <span class="keyword">int</span>[list.size()][<span class="number">101</span>];</span><br><span class="line">		<span class="keyword">int</span> result = Integer.MAX_VALUE;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= <span class="number">100</span>;i ++) <span class="comment">// 最大值100</span></span><br><span class="line">		&#123;</span><br><span class="line">			minAdjustmentCosts[<span class="number">0</span>][i] = Math.abs(i - list.get(<span class="number">0</span>));</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; list.size();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>;j &lt;= <span class="number">100</span>;j++)</span><br><span class="line">			&#123;</span><br><span class="line">				minAdjustmentCosts[i][j] = Integer.MAX_VALUE;</span><br><span class="line">				<span class="keyword">int</span> left = Math.max(j - target, <span class="number">0</span>);</span><br><span class="line">				<span class="keyword">int</span> right = Math.min(j + target, <span class="number">100</span>);</span><br><span class="line">				<span class="keyword">int</span> diff = Math.abs(j - list.get(i));</span><br><span class="line">				<span class="keyword">for</span>(<span class="keyword">int</span> k = left;k &lt;= right;k++)</span><br><span class="line">				&#123;</span><br><span class="line">					minAdjustmentCosts[i][j] = Math.min(minAdjustmentCosts[i][j], minAdjustmentCosts[i - <span class="number">1</span>][k] + diff); </span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= <span class="number">100</span>;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(minAdjustmentCosts[list.size() - <span class="number">1</span>][i] &lt; result)</span><br><span class="line">			&#123;</span><br><span class="line">				result = minAdjustmentCosts[list.size() - <span class="number">1</span>][i] ;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> result;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-LintCode-Paint-House" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/04/10/LintCode-Paint-House/" class="article-date">
+  	<time datetime="2016-04-10T14:20:19.000Z" itemprop="datePublished">2016-04-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/10/LintCode-Paint-House/">LintCode  Paint House</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>There are a row of n houses, each house can be painted with one of the three colors: red, blue or green. The cost of painting each house with a certain color is different. You have to paint all the houses such that no two adjacent houses have the same color.</p>
+<p>The cost of painting each house with a certain color is represented by a n x 3 cost matrix. For example, costs[0][0] is the cost of painting house 0 with color red; costs[1][2] is the cost of painting house 1 with color green, and so on… Find the minimum cost to paint all houses.</p>
+<p>样例<br><br>Given costs = [[14,2,11],[11,14,5],[14,3,10]] return 10</p>
+<p>house 0 is blue, house 1 is green, house 2 is blue, 2 + 5 + 3 = 10</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> costs n x 3 cost matrix</span><br><span class="line">     * <span class="doctag">@return</span> an integer, the minimum cost to paint all houses</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minCost</span><span class="params">(<span class="keyword">int</span>[][] costs)</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == costs || costs.length &lt;= <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span> minRedCost = costs[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">int</span> minBlueCost = costs[<span class="number">0</span>][<span class="number">1</span>];</span><br><span class="line">		<span class="keyword">int</span> minGreenCost = costs[<span class="number">0</span>][<span class="number">2</span>];</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; costs.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">int</span> tempRedCost = minRedCost;</span><br><span class="line">			<span class="keyword">int</span> tempBlueCost = minBlueCost;</span><br><span class="line">			<span class="keyword">int</span> tempGreenCost = minGreenCost;</span><br><span class="line">			minRedCost = Math.min(tempBlueCost + costs[i][<span class="number">0</span>], tempGreenCost + costs[i][<span class="number">0</span>]);</span><br><span class="line">			minBlueCost = Math.min(tempRedCost+ costs[i][<span class="number">1</span>], tempGreenCost + costs[i][<span class="number">1</span>]);</span><br><span class="line">			minGreenCost = Math.min(tempRedCost + costs[i][<span class="number">2</span>], tempBlueCost+ costs[i][<span class="number">2</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> Math.min(Math.min(minRedCost, minBlueCost), minGreenCost);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
   
     <article id="post-LintCode-Decode-Ways" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -549,310 +844,6 @@ var _hmt = _hmt || [];
       
 	<div class="article-tag tagcloud">
 		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/devTool/">devTool</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-LintCode-跳跃游戏" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/01/10/LintCode-跳跃游戏/" class="article-date">
-  	<time datetime="2016-01-10T10:34:24.000Z" itemprop="datePublished">2016-01-10</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/01/10/LintCode-跳跃游戏/">LintCode 跳跃游戏</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>给出一个非负整数数组，你最初定位在数组的第一个位置。　　　</p>
-<p>数组中的每个元素代表你在那个位置可以跳跃的最大长度。　　　　</p>
-<p>判断你是否能到达数组的最后一个位置。</p>
-<p>样例<br>A = [2,3,1,1,4]，返回 true.</p>
-<p>A = [3,2,1,0,4]，返回 false.</p>
-<p>注意<br>这个问题有两个方法，一个是贪心和 动态规划。</p>
-<p>贪心方法时间复杂度为O（N）。</p>
-<p>动态规划方法的时间复杂度为为O（n^2）。</p>
-<p>我们手动设置小型数据集，使大家阔以通过测试的两种方式。这仅仅是为了让大家学会如何使用动态规划的方式解决此问题。如果您用动态规划的方式完成它，你可以尝试贪心法，以使其再次通过一次。</p>
-<h4 id="分析：">分析：</h4><h5 id="一：动态规划">一：动态规划</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canJumps[i] = (canJumps[j] &amp;&amp; (j + maxSteps[j] &gt;= i));(<span class="number">0</span> &lt;= j &lt; i)</span><br></pre></td></tr></table></figure>
-<h4 id="代码：">代码：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> A: A list of integers</span><br><span class="line">     * <span class="doctag">@return</span>: The boolean answer</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canJump</span><span class="params">(<span class="keyword">int</span>[] maxSteps)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == maxSteps || maxSteps.length &lt;= <span class="number">0</span>)</span><br><span class="line">        	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">boolean</span> canJumps[] = <span class="keyword">new</span> <span class="keyword">boolean</span>[maxSteps.length];</span><br><span class="line">        canJumps[<span class="number">0</span>] = <span class="keyword">true</span>; </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; maxSteps.length;i++)</span><br><span class="line">        &#123; </span><br><span class="line">        	<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>;j &lt; i;j++)</span><br><span class="line">        	&#123;</span><br><span class="line">        		<span class="keyword">if</span>(canJumps[i])</span><br><span class="line">        			<span class="keyword">break</span>;</span><br><span class="line">        		canJumps[i] = (canJumps[j] &amp;&amp; (j + maxSteps[j] &gt;= i));</span><br><span class="line">        	&#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> canJumps[maxSteps.length - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h5 id="二：贪心做法">二：贪心做法</h5><p>自上而下，依此寻找可以一步跳跃到该点的上一个点，且上个点离该点最远,由于是自上而下，所以当当满足最后meet_index == 0时，表示可以满足条件。</p>
-<h4 id="代码：-1">代码：</h4> <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> A: A list of integers</span><br><span class="line">     * <span class="doctag">@return</span>: The boolean answer</span><br><span class="line">     */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canJump</span><span class="params">(<span class="keyword">int</span>[] maxSteps)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == maxSteps || maxSteps.length &lt;= <span class="number">0</span>)</span><br><span class="line">        	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">int</span> meetIndex = maxSteps.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = maxSteps.length - <span class="number">1</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">        &#123;</span><br><span class="line">        	<span class="keyword">if</span>(i + maxSteps[i] &gt;= meetIndex)</span><br><span class="line">        	&#123;</span><br><span class="line">        		meetIndex = i;</span><br><span class="line">        	&#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> meetIndex == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-LintCode-打劫房屋" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/01/10/LintCode-打劫房屋/" class="article-date">
-  	<time datetime="2016-01-10T10:34:09.000Z" itemprop="datePublished">2016-01-10</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/01/10/LintCode-打劫房屋/">LintCode 打劫房屋</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>假设你是一个专业的窃贼，准备沿着一条街打劫房屋。每个房子都存放着特定金额的钱。你面临的唯一约束条件是：相邻的房子装着相互联系的防盗系统，且 当相邻的两个房子同一天被打劫时，该系统会自动报警。</p>
-<p>给定一个非负整数列表，表示每个房子中存放的钱， 算一算，如果今晚去打劫，你最多可以得到多少钱 在不触动报警装置的情况下。</p>
-<p>样例<br>给定 [3, 8, 4], 返回 8.</p>
-<p>挑战<br>O(n) 时间复杂度 且 O(1) 存储。</p>
-<h4 id="分析:">分析:</h4><p>定义dp[i]表示打劫第i个房间为止所获得的最大收益，而dp[i]的值只与dp[i-2] 和dp[i-3]有关 并且 dp[i] = A[i] + max(dp[i-2],dp[i-3])</p>
-<p>当求解所有的A[i]后，需要对最后两个dp[len-1] dp[len-2] 取最大值作为最后的答案,因为存储的且 O(1) ,又dp关系仅限于4个数字之间，因此只用4个数字即可。</p>
-<h4 id="代码:">代码:</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> A: An array of non-negative integers.</span><br><span class="line">     * return: The maximum amount of money you can rob tonight</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">houseRobber</span><span class="params">(<span class="keyword">int</span>[] houseMoneys)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == houseMoneys || houseMoneys.length &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">if</span>(houseMoneys.length == <span class="number">1</span>)</span><br><span class="line">			<span class="keyword">return</span> houseMoneys[<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">if</span>(houseMoneys.length == <span class="number">2</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> Math.max(houseMoneys[<span class="number">0</span>], houseMoneys[<span class="number">1</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(houseMoneys.length == <span class="number">3</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> Math.max(houseMoneys[<span class="number">1</span>], houseMoneys[<span class="number">0</span>] + houseMoneys[<span class="number">2</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">long</span>[] max = <span class="keyword">new</span> <span class="keyword">long</span>[<span class="number">4</span>];</span><br><span class="line">		max[<span class="number">0</span>] = houseMoneys[<span class="number">0</span>];</span><br><span class="line">		max[<span class="number">1</span>] = houseMoneys[<span class="number">1</span>];</span><br><span class="line">		max[<span class="number">2</span>] = Math.max(houseMoneys[<span class="number">1</span>], houseMoneys[<span class="number">0</span>] + houseMoneys[<span class="number">2</span>]);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">3</span>;i &lt; houseMoneys.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			max[<span class="number">3</span>] = houseMoneys[i] + Math.max(max[<span class="number">0</span>], max[<span class="number">1</span>]);</span><br><span class="line">			<span class="keyword">if</span>(i == houseMoneys.length - <span class="number">1</span>)</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			max[<span class="number">0</span>] = max[<span class="number">1</span>];</span><br><span class="line">			max[<span class="number">1</span>] = max[<span class="number">2</span>];</span><br><span class="line">			max[<span class="number">2</span>] = max[<span class="number">3</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> Math.max(max[<span class="number">3</span>], max[<span class="number">2</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-关于RN热更新-iOS端捕获加载jsbundle异常解决方案" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/01/09/关于RN热更新-iOS端捕获加载jsbundle异常解决方案/" class="article-date">
-  	<time datetime="2016-01-09T13:18:02.000Z" itemprop="datePublished">2016-01-09</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/01/09/关于RN热更新-iOS端捕获加载jsbundle异常解决方案/">关于RN热更新 iOS端捕获加载jsbundle异常解决方案</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="1-监听加载jsbundle异常的处理">1.监听加载jsbundle异常的处理</h4><p>模拟情况：合并增量后jsbundle文件出现部分错误<br>调试发现当加载jsbundle出现异常时，RN模块RCTBatchedBridge.m中如下代码会执行：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)stopLoadingWithError:(<span class="built_in">NSError</span> *)error</span><br><span class="line">&#123;</span><br><span class="line">  RCTAssertMainThread();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!<span class="keyword">self</span><span class="variable">.isValid</span> || !<span class="keyword">self</span><span class="variable">.loading</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _loading = <span class="literal">NO</span>;</span><br><span class="line"></span><br><span class="line">  [[<span class="built_in">NSNotificationCenter</span> defaultCenter] postNotificationName:RCTJavaScriptDidFailToLoadNotification</span><br><span class="line">                                                      object:_parentBridge</span><br><span class="line">                                                    userInfo:@&#123;<span class="string">@"bridge"</span>: <span class="keyword">self</span>, <span class="string">@"error"</span>: error&#125;];</span><br><span class="line">  RCTFatal(error);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>因此native模块加入监听处理RCTJavaScriptDidFailToLoadNotification通知的方法即可:</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(backToPreVersion) name:RCTJavaScriptDidFailToLoadNotification object:<span class="literal">nil</span>];</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">BOOL</span>)backToPreVersion</span><br><span class="line">&#123;</span><br><span class="line"> <span class="comment">// rollback</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="2-存在加载jsbundle正常，但是RN代码执行就Crash的问题的处理方案（参考安卓的处理）">2.存在加载jsbundle正常，但是RN代码执行就Crash的问题的处理方案（参考安卓的处理）</h4><p>模拟情况：如果RN代码存在Crash bug<br>定位代码Crash时代码会执行到RCTAssert.m中如下语句：</p>
-<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> RCTFatal(<span class="built_in">NSError</span> *error)</span><br><span class="line">&#123;</span><br><span class="line">  _RCTLogNativeInternal(RCTLogLevelFatal, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="string">@"%@"</span>, [error localizedDescription]);</span><br><span class="line"></span><br><span class="line">  RCTFatalHandler fatalHandler = RCTGetFatalHandler();</span><br><span class="line">  <span class="keyword">if</span> (fatalHandler) &#123;</span><br><span class="line">    fatalHandler(error);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#if DEBUG</span></span><br><span class="line">    <span class="keyword">@try</span> &#123;</span><br><span class="line"><span class="preprocessor">#endif</span></span><br><span class="line">      <span class="built_in">NSString</span> *name = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@: %@"</span>, RCTFatalExceptionName, [error localizedDescription]];</span><br><span class="line">      <span class="built_in">NSString</span> *message = RCTFormatError([error localizedDescription], error<span class="variable">.userInfo</span>[RCTJSStackTraceKey], <span class="number">75</span>);</span><br><span class="line">      [<span class="built_in">NSException</span> raise:name format:<span class="string">@"%@"</span>, message];</span><br><span class="line"><span class="preprocessor">#if DEBUG</span></span><br><span class="line">    &#125; <span class="keyword">@catch</span> (<span class="built_in">NSException</span> *e) &#123;</span><br><span class="line">      </span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#endif</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>测试DEBUG模式下RN抛出异常后被catch，不会导致Crash,因此为保证RELEASE版本下程序不会Crash，依旧能更新增量包，因为可以将#if DEBUG的选项去掉，不让程序Crash。</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React-Native/">React Native</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-iOS问题解决" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/01/01/iOS问题解决/" class="article-date">
-  	<time datetime="2015-12-31T16:14:18.000Z" itemprop="datePublished">2016-01-01</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/01/01/iOS问题解决/">iOS问题解决</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言">前言</h2><p>整理之前iOS开发中遇到的问题，集合一下。很大部分来自StackOverFlow。</p>
-<h3 id="问题1:Xcode_release下调试报错[Project_Name]_was_compiled_with_optimization_-_stepping_may_behave_oddly;_variables_may_not_be_available">问题1:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available</h3><p>解决：Build Setting中的optimization level release改为与debug一样的模式。</p>
-<h3 id="问题2:Xcode代码中类和方法等字体变黑文件失去关联symbol_not_found">问题2:Xcode代码中类和方法等字体变黑文件失去关联symbol not found</h3><p>解决：Xcode用得久了，代码中类和方法等字体变黑文件失去关联symbol not found，连智能提示有时候都没有，这里是因为工程索引文件被破坏导致，可通过以下方法解决：</p>
-<p>一、Organizer -&gt; Projects -&gt;把所有工程中的Derived Data 删除Delete掉。</p>
-<p>二、进入~/Library/Developer/Xcode/DerivedData 这个文件夹，把里面相关工程的文件夹删掉。</p>
-<h3 id="问题3:提交SVN_Target没有显示出来">问题3:提交SVN Target没有显示出来</h3><p>解决：需要勾选Autocreate schemes</p>
-<h3 id="问题4:property_follows_cocoa_naming_convention_for_returning_‘owned’_objects">问题4:property follows cocoa naming convention for returning ‘owned’ objects</h3><p>注意：</p>
-<blockquote>
-<ul>
-<li>代码中不能使用retain, release, retain, autorelease</li>
-<li>不重载dealloc（如果是释放对象内存以外的处理，是可以重载该函数的，但是不能调用[super dealloc]）</li>
-<li>不能使用NSAllocateObject, NSDeallocateObject</li>
-<li>不能在C结构体中使用对象指针</li>
-<li>id与void *间的如果cast时需要用特定的方法（__bridge关键字）</li>
-<li>不能使用NSAutoReleasePool、而需要@autoreleasepool块</li>
-<li>不能使用“new”开始的属性名称 （如果使用会有下面的编译错误”Property’s synthesized getter follows Cocoa naming convention for returning ‘owned’ objects”）</li>
-</ul>
-</blockquote>
-<h3 id="问题5:”No_previous_prototype_for_function”_warning警告错误">问题5:”No previous prototype for function” warning警告错误</h3><p>解决：warning:No previous prototype for function “randomPoint”。如何取消这个警告错误呢？方法尝试了这两种都可以： </p>
-<blockquote>
-<ul>
-<li><p>1.方法上加修饰符static</p>
-</li>
-<li><p>2.或者Project-Info -&gt; TARGETS -&gt;Build Settings -&gt; LLVM GCC4.2 - Warnings组 -&gt; Missing Function Prototypes   Yes-&gt;No</p>
-</li>
-</ul>
-</blockquote>
-<h3 id="问题6:Code_signing_is_required_for_product_type_‘Application’_in_SDK_‘iOS5-1’">问题6:Code signing is required for product type ‘Application’ in SDK ‘iOS5.1’</h3><p>解决:One possible solution which works for me:</p>
-<p>Search “code sign” in Build settings<br>Change everything in code signing identity to “iOS developer”, which are “Don’t code sign” originally.</p>
-<h3 id="问题7:The_common_causes_for_“Undefined_symbols_for_architecture_armv7”">问题7:The common causes for “Undefined symbols for architecture armv7”</h3><blockquote>
-<ul>
-<li><p>You import a header and do not link against the correct library. This is common, especially for headers for libraries like QuartzCore since it is not included in projects by default. To resolve:</p>
-</li>
-<li><p>Add the correct libraries in the Link Binary With Libraries section of the Build Phases.</p>
-</li>
-<li><p>If you want to add a library outside of the default search path you can include the path in the Library Search Paths value in the Build Settings and add<br>-l{library_name_without_lib_and_suffix} (eg. for libz.a use -lz) to the Other Linker Flags section of Build Settings.</p>
-</li>
-</ul>
-<ul>
-<li><p>You copy files into your project but forgot to check the target to add the files to. To resolve:</p>
-</li>
-<li><p>Open the Build Phases for the correct target, expand Compile Sources and add the missing .m files. If this is your issue please upvote Cortex’s answer below as well.</p>
-</li>
-<li><p>You include a static library that is built for another architecture like i386, the simulator on your host machine. To resolve:</p>
-</li>
-<li><p>If you have multiple library files from your libraries vendor to include in the project you need to include the one for the simulator (i386) and the one for the device (armv7 for example).</p>
-</li>
-<li><p>Optionally, you could create a fat static library that contains both architectures.</p>
-</li>
-</ul>
-</blockquote>
-<h3 id="问题8:’_compress2’,_referenced_from:+[UMANUtil_deflatedDataPrefixedWith:level:source:]_in_libMobClickLibrary-a(UMANUtil-o)ld:_symbol(s)_not_found_for_architecture_x86_64clang:_error:_linker_command_failed_with_exit_code_1_(use_-v_to_see_invocation)">问题8:’_compress2’, referenced from:+[UMANUtil deflatedDataPrefixedWith:level:source:] in libMobClickLibrary.a(UMANUtil.o)ld: symbol(s) not found for architecture x86_64clang: error: linker command failed with exit code 1 (use -v to see invocation)</h3><p>解决：在Other Linker Flags里加入-lz</p>
-<h3 id="问题9:objc_msgSend()报错Too_many_arguments_to_function_call_,expected_0,have3">问题9:objc_msgSend()报错Too many arguments to function call ,expected 0,have3</h3><p>解决：Build Setting–&gt; Apple LLVM 6.0 - Preprocessing–&gt; Enable Strict Checking of objc_msgSend Calls  改为 NO</p>
-<h3 id="问题10:dyld:_Library_not_loaded:_/System/Library/Frameworks/Social-framework/SocialReferenced_from:_/var/mobile/Applications/00D3E0A7-4FF6-451E-B11C-87D7A189F425/sample-app/sample_Reason:_image_not_found">问题10:dyld: Library not loaded: /System/Library/Frameworks/Social.framework/SocialReferenced from: /var/mobile/Applications/00D3E0A7-4FF6-451E-B11C-87D7A189F425/sample.app/sample Reason: image not found</h3><p>解决：把Build Phases 里Social.framework后边的选项修改成为Optional就可以了</p>
-<p>###问题11:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available</p>
-<p>解决：Build Setting中的optimization level release改为与debug一样的模式。</p>
-<h3 id="问题12：is_invalid_in_c99">问题12：is invalid in c99</h3><p>解决: build setting -&gt; c language dialect -&gt; GNU89</p>
-<h3 id="问题13:_Xcode_build_-c文件失败">问题13: Xcode build .c文件失败</h3><p>原因：对应的.pch文件中,没有针对Objecttive－C的特殊编译，是统一指定的，建议加入，</p>
-<p>#ifdef <strong>OBJC</strong></p>
-<p>#endif</p>
-<p>环绕 #import <em>*</em></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Xcode/">Xcode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
 	</div>
 
       

@@ -119,7 +119,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/devTool/" style="font-size: 12.5px;">devTool</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
+						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/JSpatch/" style="font-size: 10px;">JSpatch</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/devTool/" style="font-size: 12.5px;">devTool</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
 					</div>
 				</section>
 				
@@ -184,6 +184,310 @@ var _hmt = _hmt || [];
 	</div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-LintCode-跳跃游戏" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/01/10/LintCode-跳跃游戏/" class="article-date">
+  	<time datetime="2016-01-10T10:34:24.000Z" itemprop="datePublished">2016-01-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/01/10/LintCode-跳跃游戏/">LintCode 跳跃游戏</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>给出一个非负整数数组，你最初定位在数组的第一个位置。　　　</p>
+<p>数组中的每个元素代表你在那个位置可以跳跃的最大长度。　　　　</p>
+<p>判断你是否能到达数组的最后一个位置。</p>
+<p>样例<br>A = [2,3,1,1,4]，返回 true.</p>
+<p>A = [3,2,1,0,4]，返回 false.</p>
+<p>注意<br>这个问题有两个方法，一个是贪心和 动态规划。</p>
+<p>贪心方法时间复杂度为O（N）。</p>
+<p>动态规划方法的时间复杂度为为O（n^2）。</p>
+<p>我们手动设置小型数据集，使大家阔以通过测试的两种方式。这仅仅是为了让大家学会如何使用动态规划的方式解决此问题。如果您用动态规划的方式完成它，你可以尝试贪心法，以使其再次通过一次。</p>
+<h4 id="分析：">分析：</h4><h5 id="一：动态规划">一：动态规划</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canJumps[i] = (canJumps[j] &amp;&amp; (j + maxSteps[j] &gt;= i));(<span class="number">0</span> &lt;= j &lt; i)</span><br></pre></td></tr></table></figure>
+<h4 id="代码：">代码：</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> A: A list of integers</span><br><span class="line">     * <span class="doctag">@return</span>: The boolean answer</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canJump</span><span class="params">(<span class="keyword">int</span>[] maxSteps)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == maxSteps || maxSteps.length &lt;= <span class="number">0</span>)</span><br><span class="line">        	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">boolean</span> canJumps[] = <span class="keyword">new</span> <span class="keyword">boolean</span>[maxSteps.length];</span><br><span class="line">        canJumps[<span class="number">0</span>] = <span class="keyword">true</span>; </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; maxSteps.length;i++)</span><br><span class="line">        &#123; </span><br><span class="line">        	<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>;j &lt; i;j++)</span><br><span class="line">        	&#123;</span><br><span class="line">        		<span class="keyword">if</span>(canJumps[i])</span><br><span class="line">        			<span class="keyword">break</span>;</span><br><span class="line">        		canJumps[i] = (canJumps[j] &amp;&amp; (j + maxSteps[j] &gt;= i));</span><br><span class="line">        	&#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> canJumps[maxSteps.length - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="二：贪心做法">二：贪心做法</h5><p>自上而下，依此寻找可以一步跳跃到该点的上一个点，且上个点离该点最远,由于是自上而下，所以当当满足最后meet_index == 0时，表示可以满足条件。</p>
+<h4 id="代码：-1">代码：</h4> <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> A: A list of integers</span><br><span class="line">     * <span class="doctag">@return</span>: The boolean answer</span><br><span class="line">     */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canJump</span><span class="params">(<span class="keyword">int</span>[] maxSteps)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == maxSteps || maxSteps.length &lt;= <span class="number">0</span>)</span><br><span class="line">        	<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">int</span> meetIndex = maxSteps.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = maxSteps.length - <span class="number">1</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">        &#123;</span><br><span class="line">        	<span class="keyword">if</span>(i + maxSteps[i] &gt;= meetIndex)</span><br><span class="line">        	&#123;</span><br><span class="line">        		meetIndex = i;</span><br><span class="line">        	&#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> meetIndex == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-LintCode-打劫房屋" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/01/10/LintCode-打劫房屋/" class="article-date">
+  	<time datetime="2016-01-10T10:34:09.000Z" itemprop="datePublished">2016-01-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/01/10/LintCode-打劫房屋/">LintCode 打劫房屋</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>假设你是一个专业的窃贼，准备沿着一条街打劫房屋。每个房子都存放着特定金额的钱。你面临的唯一约束条件是：相邻的房子装着相互联系的防盗系统，且 当相邻的两个房子同一天被打劫时，该系统会自动报警。</p>
+<p>给定一个非负整数列表，表示每个房子中存放的钱， 算一算，如果今晚去打劫，你最多可以得到多少钱 在不触动报警装置的情况下。</p>
+<p>样例<br>给定 [3, 8, 4], 返回 8.</p>
+<p>挑战<br>O(n) 时间复杂度 且 O(1) 存储。</p>
+<h4 id="分析:">分析:</h4><p>定义dp[i]表示打劫第i个房间为止所获得的最大收益，而dp[i]的值只与dp[i-2] 和dp[i-3]有关 并且 dp[i] = A[i] + max(dp[i-2],dp[i-3])</p>
+<p>当求解所有的A[i]后，需要对最后两个dp[len-1] dp[len-2] 取最大值作为最后的答案,因为存储的且 O(1) ,又dp关系仅限于4个数字之间，因此只用4个数字即可。</p>
+<h4 id="代码:">代码:</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> A: An array of non-negative integers.</span><br><span class="line">     * return: The maximum amount of money you can rob tonight</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">houseRobber</span><span class="params">(<span class="keyword">int</span>[] houseMoneys)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == houseMoneys || houseMoneys.length &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">if</span>(houseMoneys.length == <span class="number">1</span>)</span><br><span class="line">			<span class="keyword">return</span> houseMoneys[<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">if</span>(houseMoneys.length == <span class="number">2</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> Math.max(houseMoneys[<span class="number">0</span>], houseMoneys[<span class="number">1</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span>(houseMoneys.length == <span class="number">3</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> Math.max(houseMoneys[<span class="number">1</span>], houseMoneys[<span class="number">0</span>] + houseMoneys[<span class="number">2</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">long</span>[] max = <span class="keyword">new</span> <span class="keyword">long</span>[<span class="number">4</span>];</span><br><span class="line">		max[<span class="number">0</span>] = houseMoneys[<span class="number">0</span>];</span><br><span class="line">		max[<span class="number">1</span>] = houseMoneys[<span class="number">1</span>];</span><br><span class="line">		max[<span class="number">2</span>] = Math.max(houseMoneys[<span class="number">1</span>], houseMoneys[<span class="number">0</span>] + houseMoneys[<span class="number">2</span>]);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">3</span>;i &lt; houseMoneys.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			max[<span class="number">3</span>] = houseMoneys[i] + Math.max(max[<span class="number">0</span>], max[<span class="number">1</span>]);</span><br><span class="line">			<span class="keyword">if</span>(i == houseMoneys.length - <span class="number">1</span>)</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			max[<span class="number">0</span>] = max[<span class="number">1</span>];</span><br><span class="line">			max[<span class="number">1</span>] = max[<span class="number">2</span>];</span><br><span class="line">			max[<span class="number">2</span>] = max[<span class="number">3</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> Math.max(max[<span class="number">3</span>], max[<span class="number">2</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-关于RN热更新-iOS端捕获加载jsbundle异常解决方案" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/01/09/关于RN热更新-iOS端捕获加载jsbundle异常解决方案/" class="article-date">
+  	<time datetime="2016-01-09T13:18:02.000Z" itemprop="datePublished">2016-01-09</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/01/09/关于RN热更新-iOS端捕获加载jsbundle异常解决方案/">关于RN热更新 iOS端捕获加载jsbundle异常解决方案</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="1-监听加载jsbundle异常的处理">1.监听加载jsbundle异常的处理</h4><p>模拟情况：合并增量后jsbundle文件出现部分错误<br>调试发现当加载jsbundle出现异常时，RN模块RCTBatchedBridge.m中如下代码会执行：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)stopLoadingWithError:(<span class="built_in">NSError</span> *)error</span><br><span class="line">&#123;</span><br><span class="line">  RCTAssertMainThread();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!<span class="keyword">self</span><span class="variable">.isValid</span> || !<span class="keyword">self</span><span class="variable">.loading</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _loading = <span class="literal">NO</span>;</span><br><span class="line"></span><br><span class="line">  [[<span class="built_in">NSNotificationCenter</span> defaultCenter] postNotificationName:RCTJavaScriptDidFailToLoadNotification</span><br><span class="line">                                                      object:_parentBridge</span><br><span class="line">                                                    userInfo:@&#123;<span class="string">@"bridge"</span>: <span class="keyword">self</span>, <span class="string">@"error"</span>: error&#125;];</span><br><span class="line">  RCTFatal(error);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因此native模块加入监听处理RCTJavaScriptDidFailToLoadNotification通知的方法即可:</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserver:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(backToPreVersion) name:RCTJavaScriptDidFailToLoadNotification object:<span class="literal">nil</span>];</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">BOOL</span>)backToPreVersion</span><br><span class="line">&#123;</span><br><span class="line"> <span class="comment">// rollback</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-存在加载jsbundle正常，但是RN代码执行就Crash的问题的处理方案（参考安卓的处理）">2.存在加载jsbundle正常，但是RN代码执行就Crash的问题的处理方案（参考安卓的处理）</h4><p>模拟情况：如果RN代码存在Crash bug<br>定位代码Crash时代码会执行到RCTAssert.m中如下语句：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> RCTFatal(<span class="built_in">NSError</span> *error)</span><br><span class="line">&#123;</span><br><span class="line">  _RCTLogNativeInternal(RCTLogLevelFatal, <span class="literal">NULL</span>, <span class="number">0</span>, <span class="string">@"%@"</span>, [error localizedDescription]);</span><br><span class="line"></span><br><span class="line">  RCTFatalHandler fatalHandler = RCTGetFatalHandler();</span><br><span class="line">  <span class="keyword">if</span> (fatalHandler) &#123;</span><br><span class="line">    fatalHandler(error);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#if DEBUG</span></span><br><span class="line">    <span class="keyword">@try</span> &#123;</span><br><span class="line"><span class="preprocessor">#endif</span></span><br><span class="line">      <span class="built_in">NSString</span> *name = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@: %@"</span>, RCTFatalExceptionName, [error localizedDescription]];</span><br><span class="line">      <span class="built_in">NSString</span> *message = RCTFormatError([error localizedDescription], error<span class="variable">.userInfo</span>[RCTJSStackTraceKey], <span class="number">75</span>);</span><br><span class="line">      [<span class="built_in">NSException</span> raise:name format:<span class="string">@"%@"</span>, message];</span><br><span class="line"><span class="preprocessor">#if DEBUG</span></span><br><span class="line">    &#125; <span class="keyword">@catch</span> (<span class="built_in">NSException</span> *e) &#123;</span><br><span class="line">      </span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#endif</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试DEBUG模式下RN抛出异常后被catch，不会导致Crash,因此为保证RELEASE版本下程序不会Crash，依旧能更新增量包，因为可以将#if DEBUG的选项去掉，不让程序Crash。</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React-Native/">React Native</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-iOS问题解决" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/01/01/iOS问题解决/" class="article-date">
+  	<time datetime="2015-12-31T16:14:18.000Z" itemprop="datePublished">2016-01-01</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/01/01/iOS问题解决/">iOS问题解决</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言">前言</h2><p>整理之前iOS开发中遇到的问题，集合一下。很大部分来自StackOverFlow。</p>
+<h3 id="问题1:Xcode_release下调试报错[Project_Name]_was_compiled_with_optimization_-_stepping_may_behave_oddly;_variables_may_not_be_available">问题1:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available</h3><p>解决：Build Setting中的optimization level release改为与debug一样的模式。</p>
+<h3 id="问题2:Xcode代码中类和方法等字体变黑文件失去关联symbol_not_found">问题2:Xcode代码中类和方法等字体变黑文件失去关联symbol not found</h3><p>解决：Xcode用得久了，代码中类和方法等字体变黑文件失去关联symbol not found，连智能提示有时候都没有，这里是因为工程索引文件被破坏导致，可通过以下方法解决：</p>
+<p>一、Organizer -&gt; Projects -&gt;把所有工程中的Derived Data 删除Delete掉。</p>
+<p>二、进入~/Library/Developer/Xcode/DerivedData 这个文件夹，把里面相关工程的文件夹删掉。</p>
+<h3 id="问题3:提交SVN_Target没有显示出来">问题3:提交SVN Target没有显示出来</h3><p>解决：需要勾选Autocreate schemes</p>
+<h3 id="问题4:property_follows_cocoa_naming_convention_for_returning_‘owned’_objects">问题4:property follows cocoa naming convention for returning ‘owned’ objects</h3><p>注意：</p>
+<blockquote>
+<ul>
+<li>代码中不能使用retain, release, retain, autorelease</li>
+<li>不重载dealloc（如果是释放对象内存以外的处理，是可以重载该函数的，但是不能调用[super dealloc]）</li>
+<li>不能使用NSAllocateObject, NSDeallocateObject</li>
+<li>不能在C结构体中使用对象指针</li>
+<li>id与void *间的如果cast时需要用特定的方法（__bridge关键字）</li>
+<li>不能使用NSAutoReleasePool、而需要@autoreleasepool块</li>
+<li>不能使用“new”开始的属性名称 （如果使用会有下面的编译错误”Property’s synthesized getter follows Cocoa naming convention for returning ‘owned’ objects”）</li>
+</ul>
+</blockquote>
+<h3 id="问题5:”No_previous_prototype_for_function”_warning警告错误">问题5:”No previous prototype for function” warning警告错误</h3><p>解决：warning:No previous prototype for function “randomPoint”。如何取消这个警告错误呢？方法尝试了这两种都可以： </p>
+<blockquote>
+<ul>
+<li><p>1.方法上加修饰符static</p>
+</li>
+<li><p>2.或者Project-Info -&gt; TARGETS -&gt;Build Settings -&gt; LLVM GCC4.2 - Warnings组 -&gt; Missing Function Prototypes   Yes-&gt;No</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="问题6:Code_signing_is_required_for_product_type_‘Application’_in_SDK_‘iOS5-1’">问题6:Code signing is required for product type ‘Application’ in SDK ‘iOS5.1’</h3><p>解决:One possible solution which works for me:</p>
+<p>Search “code sign” in Build settings<br>Change everything in code signing identity to “iOS developer”, which are “Don’t code sign” originally.</p>
+<h3 id="问题7:The_common_causes_for_“Undefined_symbols_for_architecture_armv7”">问题7:The common causes for “Undefined symbols for architecture armv7”</h3><blockquote>
+<ul>
+<li><p>You import a header and do not link against the correct library. This is common, especially for headers for libraries like QuartzCore since it is not included in projects by default. To resolve:</p>
+</li>
+<li><p>Add the correct libraries in the Link Binary With Libraries section of the Build Phases.</p>
+</li>
+<li><p>If you want to add a library outside of the default search path you can include the path in the Library Search Paths value in the Build Settings and add<br>-l{library_name_without_lib_and_suffix} (eg. for libz.a use -lz) to the Other Linker Flags section of Build Settings.</p>
+</li>
+</ul>
+<ul>
+<li><p>You copy files into your project but forgot to check the target to add the files to. To resolve:</p>
+</li>
+<li><p>Open the Build Phases for the correct target, expand Compile Sources and add the missing .m files. If this is your issue please upvote Cortex’s answer below as well.</p>
+</li>
+<li><p>You include a static library that is built for another architecture like i386, the simulator on your host machine. To resolve:</p>
+</li>
+<li><p>If you have multiple library files from your libraries vendor to include in the project you need to include the one for the simulator (i386) and the one for the device (armv7 for example).</p>
+</li>
+<li><p>Optionally, you could create a fat static library that contains both architectures.</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="问题8:’_compress2’,_referenced_from:+[UMANUtil_deflatedDataPrefixedWith:level:source:]_in_libMobClickLibrary-a(UMANUtil-o)ld:_symbol(s)_not_found_for_architecture_x86_64clang:_error:_linker_command_failed_with_exit_code_1_(use_-v_to_see_invocation)">问题8:’_compress2’, referenced from:+[UMANUtil deflatedDataPrefixedWith:level:source:] in libMobClickLibrary.a(UMANUtil.o)ld: symbol(s) not found for architecture x86_64clang: error: linker command failed with exit code 1 (use -v to see invocation)</h3><p>解决：在Other Linker Flags里加入-lz</p>
+<h3 id="问题9:objc_msgSend()报错Too_many_arguments_to_function_call_,expected_0,have3">问题9:objc_msgSend()报错Too many arguments to function call ,expected 0,have3</h3><p>解决：Build Setting–&gt; Apple LLVM 6.0 - Preprocessing–&gt; Enable Strict Checking of objc_msgSend Calls  改为 NO</p>
+<h3 id="问题10:dyld:_Library_not_loaded:_/System/Library/Frameworks/Social-framework/SocialReferenced_from:_/var/mobile/Applications/00D3E0A7-4FF6-451E-B11C-87D7A189F425/sample-app/sample_Reason:_image_not_found">问题10:dyld: Library not loaded: /System/Library/Frameworks/Social.framework/SocialReferenced from: /var/mobile/Applications/00D3E0A7-4FF6-451E-B11C-87D7A189F425/sample.app/sample Reason: image not found</h3><p>解决：把Build Phases 里Social.framework后边的选项修改成为Optional就可以了</p>
+<p>###问题11:Xcode release下调试报错[Project Name] was compiled with optimization - stepping may behave oddly; variables may not be available</p>
+<p>解决：Build Setting中的optimization level release改为与debug一样的模式。</p>
+<h3 id="问题12：is_invalid_in_c99">问题12：is invalid in c99</h3><p>解决: build setting -&gt; c language dialect -&gt; GNU89</p>
+<h3 id="问题13:_Xcode_build_-c文件失败">问题13: Xcode build .c文件失败</h3><p>原因：对应的.pch文件中,没有针对Objecttive－C的特殊编译，是统一指定的，建议加入，</p>
+<p>#ifdef <strong>OBJC</strong></p>
+<p>#endif</p>
+<p>环绕 #import <em>*</em></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Xcode/">Xcode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
   
     <article id="post-React-Native-iOS问题解决" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -537,242 +841,6 @@ var _hmt = _hmt || [];
 <p><strong><em>样例</em></strong><br>对于物品体积[2, 3, 5, 7]和对应的价值[1, 5, 2, 4], 假设背包大小为10的话，最大能够装入的价值为9。</p>
 <p><strong><em>注意</em></strong><br>A[i], V[i], n, m均为整数。你不能将物品进行切分。你所挑选的物品总体积需要小于等于给定的m。</p>
 <p><strong><em>代码：</em></strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> m: An integer m denotes the size of a backpack</span><br><span class="line">     * <span class="doctag">@param</span> A &amp; V: Given n items with size A[i] and value V[i]</span><br><span class="line">     * <span class="doctag">@return</span>: The maximum value</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">backPackII</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span>[] capacitys, <span class="keyword">int</span> values[])</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == capacitys || capacitys.length &lt;= <span class="number">0</span> || <span class="keyword">null</span> == values || values.length &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span>[] maxValues = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; capacitys.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = m;j &gt;= <span class="number">1</span>;j--)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(j &gt;= capacitys[i])</span><br><span class="line">				&#123;</span><br><span class="line">					maxValues[j] = Math.max(maxValues[j - capacitys[i]] + values[i], maxValues[j]);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> maxValues[m];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-LintCode-Maximal-Square" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/12/06/LintCode-Maximal-Square/" class="article-date">
-  	<time datetime="2015-12-06T11:37:03.000Z" itemprop="datePublished">2015-12-06</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/06/LintCode-Maximal-Square/">LintCode Maximal Square</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Given a 2D binary matrix filled with 0’s and 1’s, find the largest square containing all 1’s and return its area.</p>
-<p>样例<br>For example, given the following matrix:</p>
-<p>1 0 1 0 0<br>1 0 1 1 1<br>1 1 1 1 1<br>1 0 0 1 0<br>Return 4.</p>
-<p><strong><em>解题思路</em></strong><br>  初始思路是判断对角方向以及相邻的两个数,运行结果错误，然后查看错误发现需要判断整个邻边，因此想到遍历邻边判断（i，j）位置的最大面积。但是会发现（i，j）之前的点的结果已经得出，为什么会重复用到之前的点，整个过程应该可以优化。思考后想到了同时三个方向判断，因此得出转移方程：maxArea[i][j] = Math.min(maxArea[i][j - 1],Math.min(maxArea[i - 1][j - 1], maxArea[i - 1][j])) + 1；</p>
-<p><strong><em>错误代码</em></strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(matrix[i - <span class="number">1</span>][j] == <span class="number">1</span> &amp;&amp; matrix[i][j - <span class="number">1</span>] == <span class="number">1</span> &amp;&amp; matrix[i - <span class="number">1</span>][j - <span class="number">1</span>] == <span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">          maxArea[i][j] = maxArea[i - <span class="number">1</span>][j - <span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">   <span class="keyword">if</span>(maxArea[i][j] &gt; maxResultArea)</span><br><span class="line">   &#123;</span><br><span class="line">             maxResultArea = maxArea[i][j];</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong><em>正确代码</em></strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> matrix: a matrix of 0 and 1</span><br><span class="line">     * <span class="doctag">@return</span>: an integer</span><br><span class="line">     */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxSquare</span><span class="params">(<span class="keyword">int</span>[][] matrix)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == matrix)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">int</span> row = matrix.length;</span><br><span class="line">		<span class="keyword">if</span>(row &lt;= <span class="number">0</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">int</span> col = matrix[<span class="number">0</span>].length;</span><br><span class="line">		<span class="keyword">int</span>[][] maxArea = <span class="keyword">new</span> <span class="keyword">int</span>[row][col];</span><br><span class="line">		<span class="keyword">int</span> maxResultArea = Integer.MIN_VALUE;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; row;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			maxArea[i][<span class="number">0</span>] = matrix[i][<span class="number">0</span>];</span><br><span class="line">			<span class="keyword">if</span>(maxArea[i][<span class="number">0</span>] &gt; maxResultArea)</span><br><span class="line">			&#123;</span><br><span class="line">				maxResultArea = maxArea[i][<span class="number">0</span>];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; col;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			maxArea[<span class="number">0</span>][i] = matrix[<span class="number">0</span>][i];</span><br><span class="line">			<span class="keyword">if</span>(maxArea[<span class="number">0</span>][i] &gt; maxResultArea)</span><br><span class="line">			&#123;</span><br><span class="line">				maxResultArea = maxArea[<span class="number">0</span>][i];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; row;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt; col;j++)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(matrix[i][j] == <span class="number">1</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					maxArea[i][j] = Math.min(maxArea[i][j - <span class="number">1</span>],Math.min(maxArea[i - <span class="number">1</span>][j - <span class="number">1</span>], maxArea[i - <span class="number">1</span>][j])) + <span class="number">1</span>;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span>(maxArea[i][j] &gt; maxResultArea)</span><br><span class="line">				&#123;</span><br><span class="line">					maxResultArea = maxArea[i][j];</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> maxResultArea &gt; <span class="number">0</span> ?  maxResultArea * maxResultArea : <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-LintCode数字三角形" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/12/05/LintCode数字三角形/" class="article-date">
-  	<time datetime="2015-12-05T13:06:39.000Z" itemprop="datePublished">2015-12-05</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/05/LintCode数字三角形/">LintCode数字三角形</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>给定一个数字三角形，找到从顶部到底部的最小路径和。每一步可以移动到下面一行的相邻数字上。</p>
-<p>样例<br>比如，给出下列数字三角形：</p>
-<p>[<br>[2],<br>[3,4],<br>[6,5,7],<br>[4,1,8,3]<br>]</p>
-<p>从顶到底部的最小路径和为11 ( 2 + 3 + 5 + 1 = 11)。</p>
-<p>注意<br>如果你只用额外空间复杂度O(n)的条件下完成可以获得加分，其中n是数字三角形的总行数。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> triangle: a list of lists of integers.</span><br><span class="line">     * <span class="doctag">@return</span>: An integer, minimum path sum.</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minimumTotal</span><span class="params">(<span class="keyword">int</span>[][] triangle)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == triangle)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span> row = triangle.length;</span><br><span class="line">		<span class="keyword">if</span>(row &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span>[][] steps = <span class="keyword">new</span> <span class="keyword">int</span>[row][row];</span><br><span class="line">		<span class="keyword">int</span> min = Integer.MAX_VALUE;</span><br><span class="line">		steps[<span class="number">0</span>][<span class="number">0</span>] = triangle[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">if</span>(row == <span class="number">1</span>)</span><br><span class="line">			<span class="keyword">return</span> steps[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; row;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>;j &lt;= i;j++)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(j == <span class="number">0</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					steps[i][j] = steps[i - <span class="number">1</span>][j] + triangle[i][j];</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span> <span class="keyword">if</span>(j == i)</span><br><span class="line">				&#123;</span><br><span class="line">					steps[i][j] = steps[i - <span class="number">1</span>][j - <span class="number">1</span>] + triangle[i][j];</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span></span><br><span class="line">				&#123;</span><br><span class="line">					steps[i][j] = Math.min(steps[i - <span class="number">1</span>][j], steps[i - <span class="number">1</span>][j - <span class="number">1</span>]) + triangle[i][j];</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				<span class="keyword">if</span>(i == row - <span class="number">1</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="keyword">if</span>(steps[i][j] &lt; min)</span><br><span class="line">					&#123;</span><br><span class="line">						min = steps[i][j];</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> min;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-LintCode最小路径和" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/12/05/LintCode最小路径和/" class="article-date">
-  	<time datetime="2015-12-05T13:04:22.000Z" itemprop="datePublished">2015-12-05</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/05/LintCode最小路径和/">LintCode最小路径和</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>给定一个只含非负整数的m*n网格，找到一条从左上角到右下角的可以使数字和最小的路径。<br>样例<br>注意<br>你在同一时间只能向下或者向右移动一步</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> grid: a list of lists of integers.</span><br><span class="line">     * <span class="doctag">@return</span>: An integer, minimizes the sum of all numbers along its path</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minPathSum</span><span class="params">(<span class="keyword">int</span>[][] grid)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == grid)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span> row = grid.length;</span><br><span class="line">		<span class="keyword">int</span> col = grid[<span class="number">0</span>].length;</span><br><span class="line">		<span class="keyword">if</span>(row &lt;= <span class="number">0</span> || col &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span>[][] steps = <span class="keyword">new</span> <span class="keyword">int</span>[row][col];</span><br><span class="line">		steps[<span class="number">0</span>][<span class="number">0</span>] = grid[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; row;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			steps[i][<span class="number">0</span>] += steps[i - <span class="number">1</span>][<span class="number">0</span>] + grid[i][<span class="number">0</span>];</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; col;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			steps[<span class="number">0</span>][i] += steps[<span class="number">0</span>][i - <span class="number">1</span>] + grid[<span class="number">0</span>][i];</span><br><span class="line">		&#125;</span><br><span class="line">	</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; row;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt; col;j++)</span><br><span class="line">			&#123;</span><br><span class="line">				steps[i][j] = Math.min(steps[i - <span class="number">1</span>][j], steps[i][j - <span class="number">1</span>]) + grid[i][j];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	</span><br><span class="line">		<span class="keyword">return</span> steps[row - <span class="number">1</span>][col - <span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-LintCode交叉字符串" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/12/05/LintCode交叉字符串/" class="article-date">
-  	<time datetime="2015-12-05T13:01:50.000Z" itemprop="datePublished">2015-12-05</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/05/LintCode交叉字符串/">LintCode交叉字符串</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>给出三个字符串:s1、s2、s3，判断s3是否由s1和s2交叉构成。</p>
-<p>样例<br>比如 s1 = “aabcc” s2 = “dbbca”</p>
-<pre><code>-<span class="ruby"> 当 s3 = <span class="string">"aadbbcbcac"</span>，返回  <span class="keyword">true</span>.
-</span>
--<span class="ruby"> 当 s3 = <span class="string">"aadbbbaccc"</span>， 返回 <span class="keyword">false</span>.</span>
-</code></pre><p>挑战<br>要求时间复杂度为O(n^2)或者更好</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * Determine whether s3 is formed by interleaving of s1 and s2.</span><br><span class="line">     * <span class="doctag">@param</span> s1, s2, s3: As description.</span><br><span class="line">     * <span class="doctag">@return</span>: true or false.</span><br><span class="line">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isInterleave</span><span class="params">(String s1, String s2, String s3)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == s1 || <span class="keyword">null</span> == s2 || <span class="keyword">null</span> == s3 || s1.length() + s2.length() != s3.length())</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">		<span class="keyword">if</span>(s1.length() &lt;= <span class="number">0</span> &amp;&amp; s2.length() &lt;= <span class="number">0</span> &amp;&amp; s3.length() &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">boolean</span>[][] common = <span class="keyword">new</span> <span class="keyword">boolean</span>[s1.length() + <span class="number">1</span>][s2.length() + <span class="number">1</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= s1.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(s1.charAt(i - <span class="number">1</span>) == s3.charAt(i - <span class="number">1</span>))</span><br><span class="line">			&#123;</span><br><span class="line">				common[i][<span class="number">0</span>] = <span class="keyword">true</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= s2.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(s2.charAt(i - <span class="number">1</span>) == s3.charAt(i - <span class="number">1</span>))</span><br><span class="line">			&#123;</span><br><span class="line">				common[<span class="number">0</span>][i] = <span class="keyword">true</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= s1.length();i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= s2.length();j++)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(s1.charAt(i - <span class="number">1</span>) == s3.charAt(i + j - <span class="number">1</span>))</span><br><span class="line">				&#123;</span><br><span class="line">					common[i][j] = common[i - <span class="number">1</span>][j];</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				<span class="keyword">if</span>(common[i][j])</span><br><span class="line">				&#123;</span><br><span class="line">					<span class="keyword">continue</span>;</span><br><span class="line">				&#125;</span><br><span class="line">				</span><br><span class="line">				<span class="keyword">if</span>(s2.charAt(j - <span class="number">1</span>) == s3.charAt(i + j - <span class="number">1</span>))</span><br><span class="line">				&#123;</span><br><span class="line">					common[i][j] = common[i][j - <span class="number">1</span>];</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> common[s1.length()][s2.length()];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
