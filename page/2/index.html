@@ -119,7 +119,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/JSpatch/" style="font-size: 10px;">JSpatch</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/devTool/" style="font-size: 12.5px;">devTool</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
+						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/JSpatch/" style="font-size: 12.5px;">JSpatch</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/devTool/" style="font-size: 12.5px;">devTool</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
 					</div>
 				</section>
 				
@@ -184,6 +184,71 @@ var _hmt = _hmt || [];
 	</div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-七七八八 Tool" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/02/20/七七八八 Tool/" class="article-date">
+  	<time datetime="2016-02-19T16:14:18.000Z" itemprop="datePublished">2016-02-20</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/20/七七八八 Tool/">七七八八 Tool</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="工作中常用工具">工作中常用工具</h2><h3 id="1-DSYM_工具">1.DSYM 工具</h3><p>1.查看 xx.app 文件的 UUID，terminal 中输入命令 ：</p>
+<p>dwarfdump –uuid xx.app/xx (xx代表你的项目名)</p>
+<p>2.查看 xx.app.dSYM 文件的 UUID ，在 terminal 中输入命令：<br>dwarfdump –uuid xx.app.dSYM </p>
+<p>3.crash 文件内第一行 Incident Identifier 就是该 crash 文件的 UUID。</p>
+<h3 id="2-分析iOS_Crash文件">2.分析iOS Crash文件</h3><p>先执行<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo cp <span class="regexp">/Applications/</span>Xcode.app<span class="regexp">/Contents/</span>SharedFrameworks<span class="regexp">/DTDeviceKitBase.framework/</span>Versions<span class="regexp">/A/</span>Resources<span class="regexp">/symbolicatecrash /u</span>sr<span class="regexp">/local/</span>bin<span class="regexp">/</span></span><br></pre></td></tr></table></figure></p>
+<p>再执行<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">symbolicatecrash appName<span class="class">.crash</span> appName<span class="class">.app</span> &gt; appName.log</span><br></pre></td></tr></table></figure></p>
+<h4 id="3-cocosPods主要命令">3.cocosPods主要命令</h4><p><code>pod install --verbose --no-repo-update</code><br><code>pod update --verbose --no-repo-update</code></p>
+<h4 id="4-RN_bundle_打包">4.RN bundle 打包</h4><p>react-native bundle<br> –entry-file index.ios.js<br> –platform ios<br> –dev true<br> –bundle-output ./output/index.ios.bundle<br> –assets-dest ./output/imgs</p>
+<h4 id="5-打包-a文件">5.打包.a文件</h4><p>lipo -create /Users/Travis/Desktop/libIMIUI.d.a /Users/Travis/Desktop/libIMIUI.s.a -output /Users/Travis/Desktop/libIMIUI.a </p>
+<h4 id="6_SSH_公钥生成">6 SSH 公钥生成</h4><figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>ssh-keygen</span><br><span class="line"><span class="variable">$ </span>cat ~<span class="regexp">/.ssh/id</span>_rsa.pub</span><br></pre></td></tr></table></figure>
+<h4 id="7_显示隐藏文件(MAC)">7 显示隐藏文件(MAC)</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">defaults write com<span class="class">.apple</span><span class="class">.finder</span> AppleShowAllFiles -bool true</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/devTool/">devTool</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
   
     <article id="post-LintCode-跳跃游戏" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -804,74 +869,9 @@ var _hmt = _hmt || [];
 
 
   
-    <article id="post-LintCode背包问题" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/12/13/LintCode背包问题/" class="article-date">
-  	<time datetime="2015-12-13T11:40:06.000Z" itemprop="datePublished">2015-12-13</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/13/LintCode背包问题/">LintCode背包问题</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><strong><em>一：</em></strong><br>在n个物品中挑选若干物品装入背包，最多能装多满？假设背包的大小为m，每个物品的大小为A[i]</p>
-<p><strong>样例</strong><br>如果有4个物品[2, 3, 5, 7]</p>
-<p>如果背包的大小为11，可以选择[2, 3, 5]装入背包，最多可以装满10的空间。</p>
-<p>如果背包的大小为12，可以选择[2, 3, 7]装入背包，最多可以装满12的空间。</p>
-<p>函数需要返回最多能装满的空间大小。</p>
-<p><strong>注意</strong><br>你不可以将物品进行切割。</p>
-<p><strong>代码：</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> m: An integer m denotes the size of a backpack</span><br><span class="line">     * <span class="doctag">@param</span> A: Given n items with size A[i]</span><br><span class="line">     * <span class="doctag">@return</span>: The maximum size</span><br><span class="line">     */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">backPack</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span>[] capacitys)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(capacitys == <span class="keyword">null</span> || capacitys.length &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span>[] maxCapacity = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; capacitys.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = m;j &gt;= <span class="number">1</span>;j--)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(j &gt;= capacitys[i])</span><br><span class="line">				&#123;</span><br><span class="line">					maxCapacity[j] = Math.max(maxCapacity[j - capacitys[i]] + capacitys[i], maxCapacity[j]);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> maxCapacity[m];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong><em>二：</em></strong><br>给出n个物品的体积A[i]和其价值V[i]，将他们装入一个大小为m的背包，最多能装入的总价值有多大？</p>
-<p><strong><em>样例</em></strong><br>对于物品体积[2, 3, 5, 7]和对应的价值[1, 5, 2, 4], 假设背包大小为10的话，最大能够装入的价值为9。</p>
-<p><strong><em>注意</em></strong><br>A[i], V[i], n, m均为整数。你不能将物品进行切分。你所挑选的物品总体积需要小于等于给定的m。</p>
-<p><strong><em>代码：</em></strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> m: An integer m denotes the size of a backpack</span><br><span class="line">     * <span class="doctag">@param</span> A &amp; V: Given n items with size A[i] and value V[i]</span><br><span class="line">     * <span class="doctag">@return</span>: The maximum value</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">backPackII</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span>[] capacitys, <span class="keyword">int</span> values[])</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == capacitys || capacitys.length &lt;= <span class="number">0</span> || <span class="keyword">null</span> == values || values.length &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span>[] maxValues = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; capacitys.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = m;j &gt;= <span class="number">1</span>;j--)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(j &gt;= capacitys[i])</span><br><span class="line">				&#123;</span><br><span class="line">					maxValues[j] = Math.max(maxValues[j - capacitys[i]] + values[i], maxValues[j]);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> maxValues[m];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
     </nav>
   
 </div>

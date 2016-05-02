@@ -119,7 +119,7 @@ var _hmt = _hmt || [];
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/JSpatch/" style="font-size: 10px;">JSpatch</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/devTool/" style="font-size: 12.5px;">devTool</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
+						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/JSpatch/" style="font-size: 12.5px;">JSpatch</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/devTool/" style="font-size: 12.5px;">devTool</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
 					</div>
 				</section>
 				
@@ -184,6 +184,71 @@ var _hmt = _hmt || [];
 	</div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-LintCode背包问题" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/12/13/LintCode背包问题/" class="article-date">
+  	<time datetime="2015-12-13T11:40:06.000Z" itemprop="datePublished">2015-12-13</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/12/13/LintCode背包问题/">LintCode背包问题</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong><em>一：</em></strong><br>在n个物品中挑选若干物品装入背包，最多能装多满？假设背包的大小为m，每个物品的大小为A[i]</p>
+<p><strong>样例</strong><br>如果有4个物品[2, 3, 5, 7]</p>
+<p>如果背包的大小为11，可以选择[2, 3, 5]装入背包，最多可以装满10的空间。</p>
+<p>如果背包的大小为12，可以选择[2, 3, 7]装入背包，最多可以装满12的空间。</p>
+<p>函数需要返回最多能装满的空间大小。</p>
+<p><strong>注意</strong><br>你不可以将物品进行切割。</p>
+<p><strong>代码：</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> m: An integer m denotes the size of a backpack</span><br><span class="line">     * <span class="doctag">@param</span> A: Given n items with size A[i]</span><br><span class="line">     * <span class="doctag">@return</span>: The maximum size</span><br><span class="line">     */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">backPack</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span>[] capacitys)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(capacitys == <span class="keyword">null</span> || capacitys.length &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span>[] maxCapacity = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; capacitys.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = m;j &gt;= <span class="number">1</span>;j--)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(j &gt;= capacitys[i])</span><br><span class="line">				&#123;</span><br><span class="line">					maxCapacity[j] = Math.max(maxCapacity[j - capacitys[i]] + capacitys[i], maxCapacity[j]);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> maxCapacity[m];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong><em>二：</em></strong><br>给出n个物品的体积A[i]和其价值V[i]，将他们装入一个大小为m的背包，最多能装入的总价值有多大？</p>
+<p><strong><em>样例</em></strong><br>对于物品体积[2, 3, 5, 7]和对应的价值[1, 5, 2, 4], 假设背包大小为10的话，最大能够装入的价值为9。</p>
+<p><strong><em>注意</em></strong><br>A[i], V[i], n, m均为整数。你不能将物品进行切分。你所挑选的物品总体积需要小于等于给定的m。</p>
+<p><strong><em>代码：</em></strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> m: An integer m denotes the size of a backpack</span><br><span class="line">     * <span class="doctag">@param</span> A &amp; V: Given n items with size A[i] and value V[i]</span><br><span class="line">     * <span class="doctag">@return</span>: The maximum value</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">backPackII</span><span class="params">(<span class="keyword">int</span> m, <span class="keyword">int</span>[] capacitys, <span class="keyword">int</span> values[])</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == capacitys || capacitys.length &lt;= <span class="number">0</span> || <span class="keyword">null</span> == values || values.length &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">int</span>[] maxValues = <span class="keyword">new</span> <span class="keyword">int</span>[m + <span class="number">1</span>];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; capacitys.length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = m;j &gt;= <span class="number">1</span>;j--)</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span>(j &gt;= capacitys[i])</span><br><span class="line">				&#123;</span><br><span class="line">					maxValues[j] = Math.max(maxValues[j - capacitys[i]] + values[i], maxValues[j]);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> maxValues[m];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态规划/">动态规划</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
   
     <article id="post-LintCode-Maximal-Square" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -764,72 +829,9 @@ var _hmt = _hmt || [];
 
 
   
-    <article id="post-LintCode-最大间距" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/11/23/LintCode-最大间距/" class="article-date">
-  	<time datetime="2015-11-23T04:25:25.000Z" itemprop="datePublished">2015-11-23</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/11/23/LintCode-最大间距/">LintCode 最大间距</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<p><a href="http://www.lintcode.com/zh-cn/problem/maximum-gap/" target="_blank" rel="external">http://www.lintcode.com/zh-cn/problem/maximum-gap/</a></p>
-<p>最大间距 查看运行结果 </p>
-<p>给定一个未经排序的数组，请找出其排序表中连续两个要素的最大间距。</p>
-<p>如果数组中的要素少于 2 个，请返回 0.</p>
-<p>您在真实的面试中是否遇到过这个题？ Yes<br>样例<br>给定数组 [1, 9, 2, 5]，其排序表为 [1, 2, 5, 9]，其最大的间距是在 5 和 9 之间，= 4.</p>
-<p>注意<br>可以假定数组中的所有要素都是非负整数，且最大不超过 32 位整数。</p>
-<p>挑战<br>排序十分简单，但将使用 O(nlogn) 时间复杂度。请避免使用线性时间复杂度和空间。</p>
-<p>##代码:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span><br><span class="line">     * <span class="doctag">@param</span> nums: an array of integers</span><br><span class="line">     * <span class="doctag">@return</span>: the maximum difference</span><br><span class="line">     */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maximumGap</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">null</span> == nums || nums.length &lt; <span class="number">2</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">int</span> length = nums.length;</span><br><span class="line">		<span class="keyword">int</span> min = Integer.MAX_VALUE;</span><br><span class="line">		<span class="keyword">int</span> max = Integer.MIN_VALUE;   </span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(nums[i] &lt; min)</span><br><span class="line">			&#123;</span><br><span class="line">				min = nums[i];</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">			<span class="keyword">if</span>(nums[i] &gt; max)</span><br><span class="line">			&#123;</span><br><span class="line">				max = nums[i];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 桶的概念</span></span><br><span class="line">		<span class="keyword">int</span> bucketCapacity = (max - min) / length + <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span> bucketNumber = (max - min) / bucketCapacity + <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span>[] minBuckets = <span class="keyword">new</span> <span class="keyword">int</span>[bucketNumber];</span><br><span class="line">		<span class="keyword">int</span>[] maxBuckets = <span class="keyword">new</span> <span class="keyword">int</span>[bucketNumber];</span><br><span class="line">		<span class="keyword">int</span> maxDistance = <span class="number">0</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; bucketNumber;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			minBuckets[i] = Integer.MAX_VALUE;</span><br><span class="line">			maxBuckets[i] = Integer.MIN_VALUE;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; length;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">int</span> index = (nums[i] - min) / bucketCapacity;</span><br><span class="line">			<span class="keyword">if</span>(minBuckets[index] &gt; nums[i])</span><br><span class="line">			&#123;</span><br><span class="line">				minBuckets[index] = nums[i];</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">			<span class="keyword">if</span>(maxBuckets[index] &lt; nums[i])</span><br><span class="line">			&#123;</span><br><span class="line">				maxBuckets[index] = nums[i];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	</span><br><span class="line">		<span class="keyword">int</span> pre = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; bucketNumber;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(minBuckets[i] == Integer.MAX_VALUE &amp;&amp; maxBuckets[i] == Integer.MIN_VALUE)</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			<span class="keyword">if</span>(minBuckets[i] - maxBuckets[pre] &gt; maxDistance)</span><br><span class="line">			&#123;</span><br><span class="line">				maxDistance = minBuckets[i] - maxBuckets[pre]; <span class="comment">// 因为最大间距不可能在一个桶内，否则bucketNumber ＊ maxDistance &gt; length;</span></span><br><span class="line">			&#125;</span><br><span class="line">			pre = i;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span>  maxDistance;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LintCode/">LintCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
-	</div>
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
     </nav>
   
 </div>

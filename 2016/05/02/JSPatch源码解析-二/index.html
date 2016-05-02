@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>JSPatch源码解析(二) | Arnold的技术博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="上篇文章简单分析了修复部分的代码实现，本文直接开始由调用过程入手。
+调用过程1.1 JPForwardInvocation1.1.2 入口还是以上篇文章的handleBtn方法作为例子阐述整个的调用过程。
+当点击模拟器的Push JPTableViewController按钮时，handleBtn的方法被调用，由上篇文章4.3.2中以下代码我们已经知道selector的实现实际走消息转发的流程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JSPatch源码解析(二)">
+<meta property="og:url" content="www.arnold134777.com/2016/05/02/JSPatch源码解析-二/index.html">
+<meta property="og:site_name" content="Arnold的技术博客">
+<meta property="og:description" content="上篇文章简单分析了修复部分的代码实现，本文直接开始由调用过程入手。
+调用过程1.1 JPForwardInvocation1.1.2 入口还是以上篇文章的handleBtn方法作为例子阐述整个的调用过程。
+当点击模拟器的Push JPTableViewController按钮时，handleBtn的方法被调用，由上篇文章4.3.2中以下代码我们已经知道selector的实现实际走消息转发的流程。">
+<meta property="og:updated_time" content="2016-05-02T14:09:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JSPatch源码解析(二)">
+<meta name="twitter:description" content="上篇文章简单分析了修复部分的代码实现，本文直接开始由调用过程入手。
+调用过程1.1 JPForwardInvocation1.1.2 入口还是以上篇文章的handleBtn方法作为例子阐述整个的调用过程。
+当点击模拟器的Push JPTableViewController按钮时，handleBtn的方法被调用，由上篇文章4.3.2中以下代码我们已经知道selector的实现实际走消息转发的流程。">
+  
+    <link rel="alternative" href="/atom.xml" title="Arnold的技术博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+<script type="text/javascript">
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?b751aecb362d3c2a6826d793f68d6a94";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="/assert/arnold.png" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Arnold</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">iOS开发,喜欢算法(512509373@qq.com)</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						<div class="icon-wrap icon-link hide" data-idx="2">
+							<div class="loopback_l"></div>
+							<div class="loopback_r"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						<li>友情链接</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="http://arnold134777.github.io/" title="github">github</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/JSpatch/" style="font-size: 12.5px;">JSpatch</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/devTool/" style="font-size: 12.5px;">devTool</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
+					</div>
+				</section>
+				
+				
+				
+				<section class="switch-part switch-part3">
+					<div id="js-friends">
+					
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://blog.sina.com.cn/u/2423600462">Arnold的新郎博客</a>
+			        
+			        </div>
+				</section>
+				
+
+				
+				
+				<section class="switch-part switch-part4">
+				
+					<div id="js-aboutme">iOS开发，喜欢算法</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Arnold</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="/assert/arnold.png" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Arnold</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">iOS开发,喜欢算法(512509373@qq.com)</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="http://arnold134777.github.io/" title="github">github</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-JSPatch源码解析-二" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/05/02/JSPatch源码解析-二/" class="article-date">
+  	<time datetime="2016-05-02T14:08:17.000Z" itemprop="datePublished">2016-05-02</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      JSPatch源码解析(二)
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JSpatch/">JSpatch</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>上篇文章简单分析了修复部分的代码实现，本文直接开始由调用过程入手。</p>
+<h1 id="调用过程">调用过程</h1><h2 id="1-1_JPForwardInvocation">1.1 JPForwardInvocation</h2><h3 id="1-1-2_入口">1.1.2 入口</h3><p>还是以上篇文章的<code>handleBtn</code>方法作为例子阐述整个的调用过程。</p>
+<p>当点击模拟器的<code>Push JPTableViewController</code>按钮时，<code>handleBtn</code>的方法被调用，由上篇文章4.3.2中以下代码我们已经知道<code>selector</code>的实现实际走消息转发的流程。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">IMP msgForwardIMP = _objc_msgForward;</span><br><span class="line">class_replaceMethod(cls, selector, msgForwardIMP, typeDescription);</span><br></pre></td></tr></table></figure>
+<p>同样4.3.2中的以下代码我们知道消息转发的实现已经替换为静态方法<code>JPForwardInvocation</code>的具体实现，因此下面我们具体看看这里的实现。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (class_getMethodImplementation(cls, <span class="keyword">@selector</span>(forwardInvocation:)) != (IMP)JPForwardInvocation) &#123;</span><br><span class="line">        IMP originalForwardImp = class_replaceMethod(cls, <span class="keyword">@selector</span>(forwardInvocation:), (IMP)JPForwardInvocation, <span class="string">"v@:@"</span>);</span><br><span class="line">        class_addMethod(cls, <span class="keyword">@selector</span>(ORIGforwardInvocation:), originalForwardImp, <span class="string">"v@:@"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="1-1-1_实现">1.1.1 实现</h3><p>代码片段一：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">id</span> slf = assignSlf;</span><br><span class="line"><span class="built_in">NSMethodSignature</span> *methodSignature = [invocation methodSignature];</span><br><span class="line"><span class="built_in">NSInteger</span> numberOfArguments = [methodSignature numberOfArguments];</span><br><span class="line">    </span><br><span class="line"><span class="built_in">NSString</span> *selectorName = <span class="built_in">NSStringFromSelector</span>(invocation<span class="variable">.selector</span>);</span><br><span class="line"><span class="built_in">NSString</span> *JPSelectorName = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"_JP%@"</span>, selectorName];</span><br><span class="line">SEL JPSelector = <span class="built_in">NSSelectorFromString</span>(JPSelectorName);</span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> (!class_respondsToSelector(object_getClass(slf), JPSelector)) &#123;</span><br><span class="line">    JPExcuteORIGForwardInvocation(slf, selector, invocation);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>判断新的selector是否在该类中已经实现，否则就走原始方法的消息转发的流程。<br><br></p>
+<p>代码片段二：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSMutableArray</span> *argList = [[<span class="built_in">NSMutableArray</span> alloc] init];</span><br><span class="line"><span class="keyword">if</span> ([slf class] == slf) &#123;</span><br><span class="line">    [argList addObject:[JSValue valueWithObject:@&#123;<span class="string">@"__clsName"</span>: <span class="built_in">NSStringFromClass</span>([slf class])&#125; inContext:_context]];</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> ([selectorName isEqualToString:<span class="string">@"dealloc"</span>]) &#123;</span><br><span class="line">    [argList addObject:[JPBoxing boxAssignObj:slf]];</span><br><span class="line">    deallocFlag = <span class="literal">YES</span>;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    [argList addObject:[JPBoxing boxWeakObj:slf]];</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span> (_currInvokeSuperClsName) &#123;</span><br><span class="line">    Class cls = <span class="built_in">NSClassFromString</span>(_currInvokeSuperClsName);</span><br><span class="line">    <span class="built_in">NSString</span> *tmpSelectorName = [[selectorName stringByReplacingOccurrencesOfString:<span class="string">@"_JPSUPER_"</span> withString:<span class="string">@"_JP"</span>] stringByReplacingOccurrencesOfString:<span class="string">@"SUPER_"</span> withString:<span class="string">@"_JP"</span>];</span><br><span class="line">    <span class="keyword">if</span> (!_JSOverideMethods[cls][tmpSelectorName]) &#123;</span><br><span class="line">        <span class="built_in">NSString</span> *ORIGSelectorName = [selectorName stringByReplacingOccurrencesOfString:<span class="string">@"SUPER_"</span> withString:<span class="string">@"ORIG"</span>];</span><br><span class="line">        [argList removeObjectAtIndex:<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">id</span> retObj = callSelector(_currInvokeSuperClsName, ORIGSelectorName, [JSValue valueWithObject:argList inContext:_context], [JSValue valueWithObject:@&#123;<span class="string">@"__obj"</span>: slf, <span class="string">@"__realClsName"</span>: <span class="string">@""</span>&#125; inContext:_context], <span class="literal">NO</span>);</span><br><span class="line">        <span class="keyword">id</span> __autoreleasing ret = formatJSToOC([JSValue valueWithObject:retObj inContext:_context]);</span><br><span class="line">        [invocation setReturnValue:&amp;ret];</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>把self与相应的参数都添加到一个集合中。<br><br></p>
+<p>代码片段三：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSArray</span> *params = _formatOCToJSList(argList);</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *returnType = [methodSignature methodReturnType];</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#define JP_FWD_RET_CALL_JS \</span></span><br><span class="line">JSValue *fun = getJSFunctionInObjectHierachy(slf, JPSelectorName); \</span><br><span class="line">JSValue *jsval; \</span><br><span class="line">[_JSMethodForwardCallLock lock];   \</span><br><span class="line">jsval = [fun callWithArguments:params]; \</span><br><span class="line">[_JSMethodForwardCallLock unlock]; \</span><br><span class="line"><span class="keyword">while</span> (![jsval isNull] &amp;&amp; ![jsval isUndefined] &amp;&amp; [jsval hasProperty:<span class="string">@"__isPerformInOC"</span>]) &#123; \</span><br><span class="line">    <span class="built_in">NSArray</span> *args = <span class="literal">nil</span>;  \</span><br><span class="line">    JSValue *cb = jsval[<span class="string">@"cb"</span>]; \</span><br><span class="line">    <span class="keyword">if</span> ([jsval hasProperty:<span class="string">@"sel"</span>]) &#123;   \</span><br><span class="line">        <span class="keyword">id</span> callRet = callSelector(![jsval[<span class="string">@"clsName"</span>] isUndefined] ? [jsval[<span class="string">@"clsName"</span>] toString] : <span class="literal">nil</span>, [jsval[<span class="string">@"sel"</span>] toString], jsval[<span class="string">@"args"</span>], ![jsval[<span class="string">@"obj"</span>] isUndefined] ? jsval[<span class="string">@"obj"</span>] : <span class="literal">nil</span>, <span class="literal">NO</span>);  \</span><br><span class="line">        args = @[[_context[<span class="string">@"_formatOCToJS"</span>] callWithArguments:callRet ? @[callRet] : _formatOCToJSList(@[_nilObj])]];  \</span><br><span class="line">    &#125;   \</span><br><span class="line">    [_JSMethodForwardCallLock lock];    \</span><br><span class="line">    jsval = [cb callWithArguments:args];  \</span><br><span class="line">    [_JSMethodForwardCallLock unlock];  \</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>把包含self与调用的参数转换为js对象，<code>getJSFunctionInObjectHierachy</code>获取对应的js重写的函数，直接调用<code>callWithArgument</code>方法，执行函数。<br><br></p>
+<p>以上部分我们发现<code>handleBtn</code>的实现部分实际上是<code>_JPhandleBtn</code>对应的方法的实现，调用的流程基本了解，而此时我们有疑问，Demo中<code>handleBtn</code>具体的替换实现(见代码)是如何执行的呢？</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">var</span> tableViewCtrl = JPTableViewController.<span class="function"><span class="title">alloc</span><span class="params">()</span></span>.<span class="function"><span class="title">init</span><span class="params">()</span></span></span><br><span class="line">self.<span class="function"><span class="title">navigationController</span><span class="params">()</span></span>.<span class="function"><span class="title">pushViewController_animated</span><span class="params">(tableViewCtrl, YES)</span></span></span><br></pre></td></tr></table></figure>
+<h2 id="1-2_callSelector">1.2 callSelector</h2><h3 id="1-2-1_入口">1.2.1 入口</h3><p>代码片段一：分析JSPatch.js的代码部分时我们发现会有如下一段代码,给js对象基类 Object 的 prototype 加上 <strong>c 成员，这样所有对象都可以调用到 </strong>c,为什么这么做可以查看原作者<br><a href="https://github.com/bang590/JSPatch/wiki/JSPatch-%E5%AE%9E%E7%8E" target="_blank" rel="external">wiki详解</a></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">Object</span><span class="class">.defineProperty</span>(<span class="tag">Object</span><span class="class">.prototype</span>, "__<span class="tag">c</span>", <span class="rules">&#123;<span class="rule"><span class="attribute">value</span>:<span class="value"> <span class="function">function</span>(methodName) </span><br><span class="line">&#123;</span><br><span class="line">  ...</span><br><span class="line"></span></span></span>&#125;, <span class="tag">configurable</span><span class="pseudo">:false</span>, <span class="tag">enumerable</span>: <span class="tag">false</span>&#125;);</span><br></pre></td></tr></table></figure>
+<p>因此我们只需要关注<code>__c</code>方法的具体实现，分析发现它的核心实现是</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span><br><span class="line"><span class="keyword">var</span> args = <span class="keyword">Array</span>.prototype.slice.call(arguments)</span><br><span class="line"><span class="keyword">return</span> _methodFunc(<span class="keyword">self</span>.__obj, <span class="keyword">self</span>.__clsName, methodName, args, <span class="keyword">self</span>.__isSuper)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>查看<code>_methodFunc</code>的代码，最终定位<code>_OC_callI</code>,<code>_OC_callC</code>两个方法</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> _methodFunc = function(instance, clsName, methodName, <span class="keyword">args</span>, isSuper, isPerformSelector) &#123;</span><br><span class="line"><span class="keyword">var</span> selectorName = methodName</span><br><span class="line"><span class="keyword">if</span> (!isPerformSelector) &#123;</span><br><span class="line">  methodName = methodName.<span class="keyword">replace</span>(/__/<span class="keyword">g</span>, <span class="string">"-"</span>)</span><br><span class="line">  selectorName = methodName.<span class="keyword">replace</span>(/_/<span class="keyword">g</span>, <span class="string">":"</span>).<span class="keyword">replace</span>(/-/<span class="keyword">g</span>, <span class="string">"_"</span>)</span><br><span class="line">  <span class="keyword">var</span> marchArr = selectorName.<span class="literal">match</span>(/:/<span class="keyword">g</span>)</span><br><span class="line">  <span class="keyword">var</span> numOfArgs = marchArr ? marchArr.length : 0</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">args</span>.length &gt; numOfArgs) &#123;</span><br><span class="line">    selectorName += <span class="string">":"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> <span class="keyword">ret</span> = instance ? _OC_callI(instance, selectorName, <span class="keyword">args</span>, isSuper):</span><br><span class="line">                     _OC_callC(clsName, selectorName, <span class="keyword">args</span>)</span><br><span class="line"><span class="keyword">return</span> _formatOCToJS(<span class="keyword">ret</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由startEngine可知，<code>_OC_callI</code>,<code>_OC_callC</code>两个方法为注入到context的全局的方法，因此就定位到<code>callSelector</code>。以上分析了<code>callSelector</code>的入口，下面主要分析它的具体实现。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">context[<span class="string">@"_OC_callI"</span>] = ^<span class="keyword">id</span>(JSValue *obj, <span class="built_in">NSString</span> *selectorName, JSValue *arguments, <span class="built_in">BOOL</span> isSuper) &#123;</span><br><span class="line">    <span class="keyword">return</span> callSelector(<span class="literal">nil</span>, selectorName, arguments, obj, isSuper);</span><br><span class="line">&#125;;</span><br><span class="line">context[<span class="string">@"_OC_callC"</span>] = ^<span class="keyword">id</span>(<span class="built_in">NSString</span> *className, <span class="built_in">NSString</span> *selectorName, JSValue *arguments) &#123;</span><br><span class="line">    <span class="keyword">return</span> callSelector(className, selectorName, arguments, <span class="literal">nil</span>, <span class="literal">NO</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="1-2-2_实现">1.2.2 实现</h3><p>代码片段一：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (instance) &#123;</span><br><span class="line">        instance = formatJSToOC(instance);</span><br><span class="line">        <span class="keyword">if</span> (!instance || instance == _nilObj) <span class="keyword">return</span> @&#123;<span class="string">@"__isNil"</span>: @(<span class="literal">YES</span>)&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">id</span> argumentsObj = formatJSToOC(arguments);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (instance &amp;&amp; [selectorName isEqualToString:<span class="string">@"toJS"</span>]) &#123;</span><br><span class="line">        <span class="keyword">if</span> ([instance isKindOfClass:[<span class="built_in">NSString</span> class]] || [instance isKindOfClass:[<span class="built_in">NSDictionary</span> class]] || [instance isKindOfClass:[<span class="built_in">NSArray</span> class]] || [instance isKindOfClass:[<span class="built_in">NSDate</span> class]]) &#123;</span><br><span class="line">            <span class="keyword">return</span> _unboxOCObjectToJS(instance);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>把js对象与参数转换为OC对象<br><br></p>
+<p>代码片段二：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (isSuper) &#123;</span><br><span class="line"><span class="built_in">NSString</span> *superSelectorName = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"SUPER_%@"</span>, selectorName];</span><br><span class="line">SEL superSelector = <span class="built_in">NSSelectorFromString</span>(superSelectorName);</span><br><span class="line">    </span><br><span class="line">Class superCls;</span><br><span class="line"><span class="keyword">if</span> (clsDeclaration<span class="variable">.length</span>) &#123;</span><br><span class="line">    <span class="built_in">NSDictionary</span> *declarationDict = convertJPDeclarationString(clsDeclaration);</span><br><span class="line">    <span class="built_in">NSString</span> *defineClsName = declarationDict[<span class="string">@"className"</span>];</span><br><span class="line"></span><br><span class="line">    Class defineClass = <span class="built_in">NSClassFromString</span>(defineClsName);</span><br><span class="line">    superCls = defineClass ? [defineClass superclass] : [cls superclass];</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    superCls = [cls superclass];</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line">Method superMethod = class_getInstanceMethod(superCls, selector);</span><br><span class="line">IMP superIMP = method_getImplementation(superMethod);</span><br><span class="line">    </span><br><span class="line">class_addMethod(cls, superSelector, superIMP, method_getTypeEncoding(superMethod));</span><br><span class="line">    </span><br><span class="line"><span class="built_in">NSString</span> *JPSelectorName = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"_JP%@"</span>, selectorName];</span><br><span class="line">JSValue *overideFunction = _JSOverideMethods[superCls][JPSelectorName];</span><br><span class="line"><span class="keyword">if</span> (overideFunction) &#123;</span><br><span class="line">    overrideMethod(cls, superSelectorName, overideFunction, <span class="literal">NO</span>, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line">selector = superSelector;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p><br><br>判断是否是父类的方法，走父类的方法的实的实现</p>
+<p>代码片段三:</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSInvocation</span> *invocation;</span><br><span class="line"><span class="built_in">NSMethodSignature</span> *methodSignature;</span><br><span class="line"><span class="keyword">if</span> (!_JSMethodSignatureCache) &#123;</span><br><span class="line">_JSMethodSignatureCache = [[<span class="built_in">NSMutableDictionary</span> alloc]init];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (instance) &#123;</span><br><span class="line">    ...</span><br><span class="line">    invocation= [<span class="built_in">NSInvocation</span> invocationWithMethodSignature:methodSignature];</span><br><span class="line">    [invocation setTarget:cls];</span><br><span class="line">&#125;</span><br><span class="line">[invocation setSelector:selector];</span><br><span class="line">...</span><br><span class="line">[invocation invoke]; </span><br><span class="line">...</span><br><span class="line"><span class="keyword">return</span> returnValue;</span><br></pre></td></tr></table></figure>
+<p>封装<code>NSInvocation</code>并执行,返回处理的结果<br><br></p>
+<h2 id="补充说明">补充说明</h2><p>上一篇博文中预留一个问题：4.3.1 中为什么需要加入参数个数的说明呢？<br>如下代码：</p>
+<figure class="highlight"><figcaption><span>*typeDescStr = [@"@@:" mutableCopy];</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for (int i = 0; i &#60; numberOfArg; i ++) &#123;&#10;    [typeDescStr appendString:@&#34;@&#34;];&#10;&#125;&#10;overrideMethod(currCls, selectorName, jsMethod, !isInstance, [typeDescStr cStringUsingEncoding:NSUTF8StringEncoding]);**</span><br></pre></td></tr></table></figure>
+<p>需要根据传递过来的参数的个数声称方法的签名。</p>
+<p><strong>JSPatch核心的代码分析的部分已经完成，可以参考我的两篇博文，<br><br><a href="http://www.jianshu.com/p/6cc18cfc9354" target="_blank" rel="external">JSPatch源码学习(一)</a><br><br><a href="https://github.com/bang590/JSPatch/wiki/JSPatch-%E5%AE%9E%E7%8E" target="_blank" rel="external">JSPatch源码学习(二)</a><br>部分细节问题未作具体的分析，例如内存，<code>JPBoxing</code>,<code>JPExtension</code>等，有兴趣可以关注我后期的该主题的博文。本人还在不断的学习积累中，有问题欢迎及时指出，谢谢！</strong></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/04/10/JSPatch-源码解析-一/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">JSPatch 源码解析(一)</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="JSPatch源码解析-二" data-title="JSPatch源码解析(二)" data-url="www.arnold134777.com/2016/05/02/JSPatch源码解析-二/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 Arnold
+    	</div>
+      <span id="busuanzi_container_site_pv" style='display:none'>
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+       </span>
+       <span id="busuanzi_container_page_pv" style='display:none'>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+       </span>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
