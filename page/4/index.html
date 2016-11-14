@@ -185,6 +185,69 @@ var _hmt = _hmt || [];
 </nav>
       <div class="body-wrap">
   
+    <article id="post-iOS-内存泄漏处理" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/11/23/iOS-内存泄漏处理/" class="article-date">
+  	<time datetime="2015-11-23T09:38:44.000Z" itemprop="datePublished">2015-11-23</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/23/iOS-内存泄漏处理/">iOS 内存泄漏处理</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h3 id="问题1：loadNibNamed">问题1：loadNibNamed</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> NSString *cellId = @<span class="string">"AboutTableViewCell"</span>;</span><br><span class="line">    AboutTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];</span><br><span class="line">    <span class="keyword">if</span>(!cell)</span><br><span class="line">    &#123;</span><br><span class="line">        cell = [[[NSBundle mainBundle]loadNibNamed:@<span class="string">"AboutTableViewCell"</span> owner:self options:nil] lastObject];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>原因：I suspect that your leak may be coming from the outlets in the nib. Note this phrase in the docs on loadNibNamed::<br>To establish outlet connections, this method uses the setValue:forKey: method, which may cause the object in the outlet to be retained automatically.<br>In other words, loadNibNamed sometimes imposes an extra retain because of the odd way key-value-coding works.</p>
+<p>However, that is speculation, and there’s no need for it, because there’s no need for you to call loadNibNamed: in the first place!</p>
+<p>You’re using a custom UITableViewCell subclass, designed in a nib? Then why not do this the normal way? Make a nib containing one top-level object: the cell. Design the cell in the nib, set its class, hook up its outlets etc. In your code, call registerNib:forCellReuseIdentifier: on the table view, to tell the table view about your nib. When you later call dequeueReusableCellWithIdentifier:, if there are no free cells in the reuse pile, the table view will load your nib and hand you cell. No muss, no fuss.</p>
+<h3 id="问题2：imageWithRenderingMode">问题2：imageWithRenderingMode</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tabBarItem1.selectedImage = [[UIImage imageNamed:@<span class="string">"img_wifi_hl"</span>] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal ];</span><br></pre></td></tr></table></figure>
+<p>暂时未找到解决办法</p>
+<h3 id="问题3：id_bridge">问题3：id bridge</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (id)fetchSSIDInfo</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    NSArray *ifs = CFBridgingRelease(CNCopySupportedInterfaces());</span><br><span class="line">    id info = nil;</span><br><span class="line">    <span class="keyword">for</span> (NSString *ifnam in ifs) &#123;</span><br><span class="line">        info = CFBridgingRelease(CNCopyCurrentNetworkInfo((__bridge CFStringRef)ifnam));</span><br><span class="line">        <span class="keyword">if</span> (info &amp;&amp; [info count]) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> info;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>CFBridgingRelease 替换掉原来的（id bridge）</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-LintCode-最大间距" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">

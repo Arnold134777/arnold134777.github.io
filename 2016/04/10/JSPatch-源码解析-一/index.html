@@ -5,43 +5,43 @@
   
   <title>JSPatch 源码解析(一) | Arnold的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言前一段时间在公司做了一个iOS热补丁的模块，就用到了JSPatch框架,期间有了解过一些关于框架的源码分析的博客：1.JSPatch学习:JSPatch核心和实现原理分析
+  <meta name="description" content="1.前言前一段时间在公司做了一个iOS热补丁的模块，就用到了JSPatch框架,期间有了解过一些关于框架的源码分析的博客：1.JSPatch学习:JSPatch核心和实现原理分析
 2.JSPatch defineProtocol部分实现详解思考再三还是决定自己调试了解一下整体的实现机制。
-准备工具
+2.准备工具
 DemoCode 
 js调试
 
-项目文件项目文件图
-具体文件分析
-JPEngine.m 核心的Nativ">
+3.项目文件3.1项目文件图
+3.2具体文件分析
+JPEngin">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JSPatch 源码解析(一)">
 <meta property="og:url" content="www.arnold134777.com/2016/04/10/JSPatch-源码解析-一/index.html">
 <meta property="og:site_name" content="Arnold的技术博客">
-<meta property="og:description" content="前言前一段时间在公司做了一个iOS热补丁的模块，就用到了JSPatch框架,期间有了解过一些关于框架的源码分析的博客：1.JSPatch学习:JSPatch核心和实现原理分析
+<meta property="og:description" content="1.前言前一段时间在公司做了一个iOS热补丁的模块，就用到了JSPatch框架,期间有了解过一些关于框架的源码分析的博客：1.JSPatch学习:JSPatch核心和实现原理分析
 2.JSPatch defineProtocol部分实现详解思考再三还是决定自己调试了解一下整体的实现机制。
-准备工具
+2.准备工具
 DemoCode 
 js调试
 
-项目文件项目文件图
-具体文件分析
-JPEngine.m 核心的Nativ">
+3.项目文件3.1项目文件图
+3.2具体文件分析
+JPEngin">
 <meta property="og:image" content="https://dn-arnold.qbox.me/jspatch_1.png">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1439607-b5a418ea54fb49c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1439607-caa22246c1bb69aa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2016-05-02T14:08:50.000Z">
+<meta property="og:updated_time" content="2016-05-02T14:16:25.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JSPatch 源码解析(一)">
-<meta name="twitter:description" content="前言前一段时间在公司做了一个iOS热补丁的模块，就用到了JSPatch框架,期间有了解过一些关于框架的源码分析的博客：1.JSPatch学习:JSPatch核心和实现原理分析
+<meta name="twitter:description" content="1.前言前一段时间在公司做了一个iOS热补丁的模块，就用到了JSPatch框架,期间有了解过一些关于框架的源码分析的博客：1.JSPatch学习:JSPatch核心和实现原理分析
 2.JSPatch defineProtocol部分实现详解思考再三还是决定自己调试了解一下整体的实现机制。
-准备工具
+2.准备工具
 DemoCode 
 js调试
 
-项目文件项目文件图
-具体文件分析
-JPEngine.m 核心的Nativ">
+3.项目文件3.1项目文件图
+3.2具体文件分析
+JPEngin">
   
     <link rel="alternative" href="/atom.xml" title="Arnold的技术博客" type="application/atom+xml">
   
@@ -248,21 +248,21 @@ var _hmt = _hmt || [];
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="前言">前言</h1><p>前一段时间在公司做了一个iOS热补丁的模块，就用到了<a href="https://github.com/bang590/JSPatch" target="_blank" rel="external">JSPatch框架</a>,期间有了解过一些关于框架的源码分析的博客：<br><br><a href="http://albert43.net/2015/06/19/JSPatch%E5%AD%A6%E4%B9%A0-%E6%A0%B8%E5%BF%83%E5%92%8C%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_blank" rel="external">1.JSPatch学习:JSPatch核心和实现原理分析</a></p>
+        <h1 id="1-前言">1.前言</h1><p>前一段时间在公司做了一个iOS热补丁的模块，就用到了<a href="https://github.com/bang590/JSPatch" target="_blank" rel="external">JSPatch框架</a>,期间有了解过一些关于框架的源码分析的博客：<br><br><a href="http://albert43.net/2015/06/19/JSPatch%E5%AD%A6%E4%B9%A0-%E6%A0%B8%E5%BF%83%E5%92%8C%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_blank" rel="external">1.JSPatch学习:JSPatch核心和实现原理分析</a></p>
 <p><a href="http://www.jianshu.com/p/564bdb35f3f3" target="_blank" rel="external">2.JSPatch defineProtocol部分实现详解</a><br><br>思考再三还是决定自己调试了解一下整体的实现机制。</p>
-<h1 id="准备工具">准备工具</h1><ul>
+<h1 id="2-准备工具">2.准备工具</h1><ul>
 <li><a href="https://github.com/bang590/JSPatch" target="_blank" rel="external">DemoCode</a> <br></li>
 <li><a href="https://github.com/bang590/JSPatch/wiki/JS-%E6%96%AD%E7%82%B9%E8%B0%83%E8%AF%95" target="_blank" rel="external">js调试</a></li>
 </ul>
-<h1 id="项目文件">项目文件</h1><h2 id="项目文件图">项目文件图</h2><p><img src="https://dn-arnold.qbox.me/jspatch_1.png" alt=""></p>
-<h2 id="具体文件分析">具体文件分析</h2><ul>
+<h1 id="3-项目文件">3.项目文件</h1><h2 id="3-1项目文件图">3.1项目文件图</h2><p><img src="https://dn-arnold.qbox.me/jspatch_1.png" alt=""></p>
+<h2 id="3-2具体文件分析">3.2具体文件分析</h2><ul>
 <li>JPEngine.m 核心的Native端实现。</li>
 <li>JSpatch.js 核心的js端实现。</li>
 <li>Extensions 扩展的方法提供给js端调用，内部是OC实现。</li>
 <li>Loader 一套热补丁动态更新补丁脚本的客户端实现，需要配合服务端才能实现整个更新框架。（本文不对此作多赘述）</li>
 </ul>
-<h1 id="调试分析">调试分析</h1><h2 id="调用代码">调用代码</h2><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[JPEngine startEngine];</span><br><span class="line"><span class="built_in">NSString</span> *sourcePath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"demo"</span> ofType:<span class="string">@"js"</span>];</span><br><span class="line"><span class="built_in">NSString</span> *script = [<span class="built_in">NSString</span> stringWithContentsOfFile:sourcePath encoding:<span class="built_in">NSUTF8StringEncoding</span> error:<span class="literal">nil</span>];</span><br><span class="line">[JPEngine evaluateScript:script];</span><br></pre></td></tr></table></figure>
-<h2 id="JPEngine初始化">JPEngine初始化</h2><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[JPEngine startEngine];</span><br></pre></td></tr></table></figure>
+<h1 id="4-调试分析">4.调试分析</h1><h2 id="4-1调用代码">4.1调用代码</h2><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[JPEngine startEngine];</span><br><span class="line"><span class="built_in">NSString</span> *sourcePath = [[<span class="built_in">NSBundle</span> mainBundle] pathForResource:<span class="string">@"demo"</span> ofType:<span class="string">@"js"</span>];</span><br><span class="line"><span class="built_in">NSString</span> *script = [<span class="built_in">NSString</span> stringWithContentsOfFile:sourcePath encoding:<span class="built_in">NSUTF8StringEncoding</span> error:<span class="literal">nil</span>];</span><br><span class="line">[JPEngine evaluateScript:script];</span><br></pre></td></tr></table></figure>
+<h2 id="4-2_JPEngine初始化">4.2 JPEngine初始化</h2><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[JPEngine startEngine];</span><br></pre></td></tr></table></figure>
 <p>我们来看看具体的代码实现，</p>
 <ul>
 <li>代码片段一：</li>
@@ -276,12 +276,12 @@ var _hmt = _hmt || [];
 </ul>
 <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> *path = [[<span class="built_in">NSBundle</span> bundleForClass:[<span class="keyword">self</span> class]] pathForResource:<span class="string">@"JSPatch"</span> ofType:<span class="string">@"js"</span>];</span><br><span class="line"><span class="built_in">NSAssert</span>(path, <span class="string">@"can't find JSPatch.js"</span>);</span><br><span class="line"><span class="built_in">NSString</span> *jsCore = [[<span class="built_in">NSString</span> alloc] initWithData:[[<span class="built_in">NSFileManager</span> defaultManager] contentsAtPath:path] encoding:<span class="built_in">NSUTF8StringEncoding</span>];</span><br><span class="line">    </span><br><span class="line"> <span class="keyword">if</span> ([_context respondsToSelector:<span class="keyword">@selector</span>(evaluateScript:withSourceURL:)]) &#123;</span><br><span class="line">        [_context evaluateScript:jsCore withSourceURL:[<span class="built_in">NSURL</span> URLWithString:<span class="string">@"JSPatch.js"</span>]];</span><br><span class="line"> &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        [_context evaluateScript:jsCore];</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
 <p>加载核心的JSPatch.js代码完成初始化，具体js代码后续具体调用再作分析。</p>
-<h2 id="具体修复代码">具体修复代码</h2><p>我们来看看Demo的修复代码：</p>
+<h2 id="4-3具体修复代码">4.3具体修复代码</h2><p>我们来看看Demo的修复代码：</p>
 <figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">defineClass<span class="list">(<span class="quoted">'JPViewController</span>', &#123;</span><br><span class="line">  handleBtn: function<span class="list">(<span class="keyword">sender</span>)</span> &#123;</span><br><span class="line">    var tableViewCtrl = JPTableViewController.alloc<span class="list">()</span>.init<span class="list">()</span></span><br><span class="line">    self.navigationController<span class="list">()</span>.pushViewController_animated<span class="list">(<span class="keyword">tableViewCtrl</span>, YES)</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span></span><br></pre></td></tr></table></figure>
 <p>调试看看执行步骤：</p>
-<h3 id="首先执行global-defineClass_(js端)">首先执行global.defineClass (js端)</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">global<span class="class">.defineClass</span> = <span class="function"><span class="title">function</span><span class="params">(declaration, properties, instMethods, clsMethods)</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="4-3-1_首先执行global-defineClass_(js端)">4.3.1 首先执行global.defineClass (js端)</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">global<span class="class">.defineClass</span> = <span class="function"><span class="title">function</span><span class="params">(declaration, properties, instMethods, clsMethods)</span></span></span><br></pre></td></tr></table></figure>
 <p>我们断点到<code>var ret = _OC_defineClass(declaration, newInstMethods, newClsMethods)</code>处，查看局部变量表<br><img src="http://upload-images.jianshu.io/upload_images/1439607-caa22246c1bb69aa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="">会发现<code>newInstMethods newClsMethods</code>均被赋值，且其中每个实例或类方法的js对象被修改添加参数的个数的说明，只是好奇为什么需要加入参数个数的说明呢？？？</p>
-<h3 id="执行_OC_defineClass_(js端_-&gt;_Native端)">执行<code>_OC_defineClass</code> (js端 -&gt; Native端)</h3><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">context[@<span class="string">"_OC_defineClass"</span>] = ^(NSString *classDeclaration, JSValue *instanceMethods, JSValue *classMethods) &#123;</span><br><span class="line">       <span class="function"><span class="keyword">return</span> <span class="title">defineClass</span><span class="params">(classDeclaration, instanceMethods, classMethods)</span></span>;</span><br><span class="line">   &#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="4-3-2_执行_OC_defineClass_(js端_-&gt;_Native端)">4.3.2 执行<code>_OC_defineClass</code> (js端 -&gt; Native端)</h3><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">context[@<span class="string">"_OC_defineClass"</span>] = ^(NSString *classDeclaration, JSValue *instanceMethods, JSValue *classMethods) &#123;</span><br><span class="line">       <span class="function"><span class="keyword">return</span> <span class="title">defineClass</span><span class="params">(classDeclaration, instanceMethods, classMethods)</span></span>;</span><br><span class="line">   &#125;;</span><br></pre></td></tr></table></figure>
 <p>实际执行的是Native的 <code>static NSDictionary *defineClass(NSString *classDeclaration, JSValue *instanceMethods, JSValue *classMethods)</code> 方法,以下分代码片段解析。</p>
 <ul>
 <li>代码片段一：</li>

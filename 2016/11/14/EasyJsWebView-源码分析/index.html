@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>EasyJsWebView 源码分析 | Arnold的技术博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近在做hybrid相关的工作，项目中用到了EasyJsWebView,代码量不大，一直想分析一下它的具体实现，抽空写了这篇文章。
+1.前言原生代码＋h5页面＋甚至React Native(或其他) 的方式开发移动客户端已经成为当前的主流趋势，因此老生常谈的一个问题就是原生代码与js的交互。原生代码中执行js代码，没什么可讲的直接webView执行js代码即可，本文主要由安卓的js调用原生的方式切">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EasyJsWebView 源码分析">
+<meta property="og:url" content="www.arnold134777.com/2016/11/14/EasyJsWebView-源码分析/index.html">
+<meta property="og:site_name" content="Arnold的技术博客">
+<meta property="og:description" content="最近在做hybrid相关的工作，项目中用到了EasyJsWebView,代码量不大，一直想分析一下它的具体实现，抽空写了这篇文章。
+1.前言原生代码＋h5页面＋甚至React Native(或其他) 的方式开发移动客户端已经成为当前的主流趋势，因此老生常谈的一个问题就是原生代码与js的交互。原生代码中执行js代码，没什么可讲的直接webView执行js代码即可，本文主要由安卓的js调用原生的方式切">
+<meta property="og:updated_time" content="2016-11-14T14:55:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="EasyJsWebView 源码分析">
+<meta name="twitter:description" content="最近在做hybrid相关的工作，项目中用到了EasyJsWebView,代码量不大，一直想分析一下它的具体实现，抽空写了这篇文章。
+1.前言原生代码＋h5页面＋甚至React Native(或其他) 的方式开发移动客户端已经成为当前的主流趋势，因此老生常谈的一个问题就是原生代码与js的交互。原生代码中执行js代码，没什么可讲的直接webView执行js代码即可，本文主要由安卓的js调用原生的方式切">
+  
+    <link rel="alternative" href="/atom.xml" title="Arnold的技术博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+<script type="text/javascript">
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?b751aecb362d3c2a6826d793f68d6a94";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="/assert/arnold.png" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Arnold</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">iOS开发,喜欢算法(512509373@qq.com)</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						<div class="icon-wrap icon-link hide" data-idx="2">
+							<div class="loopback_l"></div>
+							<div class="loopback_r"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						<li>友情链接</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="http://arnold134777.github.io/" title="github">github</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/GCD/" style="font-size: 10px;">GCD</a> <a href="/tags/JSpatch/" style="font-size: 12.5px;">JSpatch</a> <a href="/tags/LintCode/" style="font-size: 20px;">LintCode</a> <a href="/tags/React-Native/" style="font-size: 12.5px;">React Native</a> <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/devTool/" style="font-size: 12.5px;">devTool</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/iOS/" style="font-size: 15px;">iOS</a> <a href="/tags/动态规划/" style="font-size: 17.5px;">动态规划</a> <a href="/tags/算法/" style="font-size: 20px;">算法</a>
+					</div>
+				</section>
+				
+				
+				
+				<section class="switch-part switch-part3">
+					<div id="js-friends">
+					
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://blog.sina.com.cn/u/2423600462">Arnold的新郎博客</a>
+			        
+			        </div>
+				</section>
+				
+
+				
+				
+				<section class="switch-part switch-part4">
+				
+					<div id="js-aboutme">iOS开发，喜欢算法</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Arnold</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="/assert/arnold.png" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Arnold</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">iOS开发,喜欢算法(512509373@qq.com)</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="http://arnold134777.github.io/" title="github">github</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-EasyJsWebView-源码分析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/11/14/EasyJsWebView-源码分析/" class="article-date">
+  	<time datetime="2016-11-14T14:53:56.000Z" itemprop="datePublished">2016-11-14</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      EasyJsWebView 源码分析
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<p>最近在做hybrid相关的工作，项目中用到了<code>EasyJsWebView</code>,代码量不大，一直想分析一下它的具体实现，抽空写了这篇文章。</p>
+<h1 id="1-前言">1.前言</h1><p>原生代码＋h5页面＋甚至React Native(或其他) 的方式开发移动客户端已经成为当前的主流趋势，因此老生常谈的一个问题就是原生代码与js的交互。原生代码中执行js代码，没什么可讲的直接webView执行js代码即可，本文主要由安卓的js调用原生的方式切入，分析iOS端是如何实现类似比较方便的调用的。</p>
+<h1 id="2-安卓端（js_-&gt;_native_interface）">2.安卓端（js -&gt; native interface）</h1><p>对安卓的开发不是很熟，只是列举一个简单的例子讲述这样一种方式。</p>
+<ul>
+<li>native端</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// 添加一个对象, 让JS可以访问该对象的方法, 该对象中可以调用JS中的方法</span></span><br><span class="line">    webView.addJavascriptInterface(<span class="keyword">new</span> Contact(), <span class="string">"contact"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Contact</span> </span>&#123;</span><br><span class="line">    <span class="comment">//Html调用此方法传递数据</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">showcontacts</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String json = <span class="string">"[&#123;\"name\":\"zxx\", \"amount\":\"9999999\", \"phone\":\"18600012345\"&#125;]"</span>; </span><br><span class="line">        <span class="comment">// 调用JS中的方法</span></span><br><span class="line">        webView.loadUrl(<span class="string">"javascript:show('"</span> + json + <span class="string">"')"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>h5端</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="title">body</span> <span class="attribute">onload</span>=<span class="value">"javascript:contact.showcontacts()"</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="title">table</span> <span class="attribute">border</span>=<span class="value">"0"</span> <span class="attribute">width</span>=<span class="value">"100%"</span> <span class="attribute">id</span>=<span class="value">"personTable"</span> <span class="attribute">cellspacing</span>=<span class="value">"0"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">tr</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">td</span> <span class="attribute">width</span>=<span class="value">"30%"</span>&gt;</span>姓名<span class="tag">&lt;/<span class="title">td</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">td</span> <span class="attribute">width</span>=<span class="value">"30%"</span> <span class="attribute">align</span>=<span class="value">"center"</span>&gt;</span>存款<span class="tag">&lt;/<span class="title">td</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">td</span> <span class="attribute">align</span>=<span class="value">"center"</span>&gt;</span>电话<span class="tag">&lt;/<span class="title">td</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">tr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">table</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">html</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>当h5页面加载时，<code>onload</code>方法执行，对应的native端中的<code>Contact</code>类中的<code>showcontacts</code>方法被执行。因此核心思想就是通过webView将native原生的类与自定义的js对象关联，js就可以直接通过这个js对象调用它的实例方法。</p>
+<h1 id="3-iOS端（js_-&gt;_native_interface）">3.iOS端（js -&gt; native interface）</h1><p>上述安卓的js调用native的方式是如此简单明了，不禁想如果iOS端也有如此实现的话，这样同时即保证安卓，iOS，h5的统一性也能让开发者只用关心交互的接口即可。因此便引出了<code>EasyJSWebView</code>的第三方的框架（基于说明2设计），下面从该框架的使用出发，分析框架的具体实现。</p>
+<p>说明：</p>
+<blockquote>
+<ul>
+<li>1.iOS端虽然也可以通过<code>JSContext</code>注入全局的方法但是达不到与安卓端统一</li>
+<li>2.iOS端可以通过拦截h5请求的url，通过url的格式区分类或方法，但是这样不够直观，也达不到与安卓端统一</li>
+</ul>
+</blockquote>
+<h1 id="4-EasyJsWebView">4.EasyJsWebView</h1><h2 id="4-1_EasyJsWebView使用">4.1 EasyJsWebView使用</h2><p>本文直接列举EasyJsWebView <a href="https://github.com/dukeland/EasyJSWebView" target="_blank" rel="external">Github README例子</a></p>
+<ul>
+<li>native端</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">MyJSInterface</span> : <span class="title">NSObject</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>) test;</span><br><span class="line">- (<span class="keyword">void</span>) testWithParam: (<span class="built_in">NSString</span>*) param;</span><br><span class="line">- (<span class="keyword">void</span>) testWithTwoParam: (<span class="built_in">NSString</span>*) param AndParam2: (<span class="built_in">NSString</span>*) param2;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">NSString</span>*) testWithRet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 注入</span></span><br><span class="line">MyJSInterface* interface = [MyJSInterface new];</span><br><span class="line">[<span class="keyword">self</span><span class="variable">.myWebView</span> addJavascriptInterfaces:interface WithName:<span class="string">@"MyJSTest"</span>];</span><br><span class="line">[interface release];</span><br></pre></td></tr></table></figure>
+<ul>
+<li>js端</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">MyJSTest.test();</span><br><span class="line">MyJSTest.testWithParam(<span class="string">"ha:ha"</span>);</span><br><span class="line">MyJSTest.testWithTwoParamAndParam2(<span class="string">"haha1"</span>, <span class="string">"haha2"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> str = MyJSTest.testWithRet();</span><br></pre></td></tr></table></figure>
+<h2 id="4-2_EasyJsWebView具体实现">4.2 EasyJsWebView具体实现</h2><h3 id="4-2-1_EasyJsWebView初始化">4.2.1 EasyJsWebView初始化</h3><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">id</span>)init&#123;</span><br><span class="line">	<span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">		[<span class="keyword">self</span> initEasyJS];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>) initEasyJS&#123;</span><br><span class="line">	<span class="keyword">self</span><span class="variable">.proxyDelegate</span> = [[EasyJSWebViewProxyDelegate alloc] init];</span><br><span class="line">	<span class="keyword">self</span><span class="variable">.delegate</span> = <span class="keyword">self</span><span class="variable">.proxyDelegate</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>) setDelegate:(<span class="keyword">id</span>&lt;<span class="built_in">UIWebViewDelegate</span>&gt;)delegate&#123;</span><br><span class="line">	<span class="keyword">if</span> (delegate != <span class="keyword">self</span><span class="variable">.proxyDelegate</span>)&#123;</span><br><span class="line">		<span class="keyword">self</span><span class="variable">.proxyDelegate</span><span class="variable">.realDelegate</span> = delegate;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		[<span class="keyword">super</span> setDelegate:delegate]; </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>初始化设置webView的delegate,实际的webView的回调的在<code>EasyJSWebViewProxyDelegate</code>中实现，因此我们主要关注<code>EasyJSWebViewProxyDelegate</code>中的webView的回调的实现即可。</p>
+<h3 id="4-2-2_EasyJSWebViewProxyDelegate_webView回调实现">4.2.2 EasyJSWebViewProxyDelegate webView回调实现</h3><h4 id="4-2-2-1_webViewDidStartLoad回调实现">4.2.2.1 webViewDidStartLoad回调实现</h4><p>代码片段一：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSMutableString</span>* injection = [[<span class="built_in">NSMutableString</span> alloc] init];</span><br><span class="line">	</span><br><span class="line"><span class="comment">//inject the javascript interface</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">id</span> key <span class="keyword">in</span> <span class="keyword">self</span><span class="variable">.javascriptInterfaces</span>) &#123;</span><br><span class="line">	<span class="built_in">NSObject</span>* interface = [<span class="keyword">self</span><span class="variable">.javascriptInterfaces</span> objectForKey:key];</span><br><span class="line">	</span><br><span class="line">	[injection appendString:<span class="string">@"EasyJS.inject(\""</span>];</span><br><span class="line">	[injection appendString:key];</span><br><span class="line">	[injection appendString:<span class="string">@"\", ["</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> mc = <span class="number">0</span>;</span><br><span class="line">	Class cls = object_getClass(interface);</span><br><span class="line">	Method * mlist = class_copyMethodList(cls, &amp;mc);</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; mc; i++)&#123;</span><br><span class="line">		[injection appendString:<span class="string">@"\""</span>];</span><br><span class="line">		[injection appendString:[<span class="built_in">NSString</span> stringWithUTF8String:sel_getName(method_getName(mlist[i]))]];</span><br><span class="line">		[injection appendString:<span class="string">@"\""</span>];</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span> (i != mc - <span class="number">1</span>)&#123;</span><br><span class="line">			[injection appendString:<span class="string">@", "</span>];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	free(mlist);</span><br><span class="line">	</span><br><span class="line">	[injection appendString:<span class="string">@"]);"</span>];</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">	<span class="built_in">NSString</span>* js = INJECT_JS;</span><br><span class="line">	<span class="comment">//inject the basic functions first</span></span><br><span class="line">	[webView stringByEvaluatingJavaScriptFromString:js];</span><br><span class="line">	<span class="comment">//inject the function interface</span></span><br><span class="line">	[webView stringByEvaluatingJavaScriptFromString:injection];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>遍历注入的接口的列表key</li>
+<li>通过key获取注入类的实例</li>
+<li>通过类的实例获取实例方法的列表</li>
+<li>依次拼接需要执行js函数的代码</li>
+<li>EasyJS对象的加载，执行EasyJS.inject方法</li>
+</ul>
+</blockquote>
+<p>例子：参考Demo调试结果如下</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">EasyJS.<span class="keyword">inject</span>(<span class="string">"MyJSTest"</span>, </span><br><span class="line">[</span><br><span class="line">	<span class="string">"test"</span>,</span><br><span class="line">	<span class="string">"testWithParam:"</span>, </span><br><span class="line">	<span class="string">"testWithTwoParam:AndParam2:"</span>, </span><br><span class="line">	<span class="string">"testWithFuncParam:"</span>,</span><br><span class="line">	<span class="string">"testWithFuncParam2:"</span>, </span><br><span class="line">	<span class="string">"testWithRet"</span></span><br><span class="line">]);</span><br></pre></td></tr></table></figure>
+<h4 id="4-2-2-2_EasyJS对象">4.2.2.2 EasyJS对象</h4><p>代码片段一：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">inject: <span class="function"><span class="keyword">function</span> (<span class="params">obj, methods</span>)</span>&#123;</span><br><span class="line">	<span class="built_in">window</span>[obj] = &#123;&#125;;</span><br><span class="line">	<span class="keyword">var</span> jsObj = <span class="built_in">window</span>[obj];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, l = methods.length; i &lt; l; i++)&#123;</span><br><span class="line">		(<span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</span><br><span class="line">			<span class="keyword">var</span> method = methods[i];</span><br><span class="line">			<span class="keyword">var</span> jsMethod = method.replace(<span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">":"</span>, <span class="string">"g"</span>), <span class="string">""</span>);</span><br><span class="line">			jsObj[jsMethod] = <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</span><br><span class="line">				<span class="keyword">return</span> EasyJS.call(obj, method, <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>));</span><br><span class="line">			&#125;;</span><br><span class="line">		&#125;)();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>遍历注入的类的实例方法的列表，通过一个全局的window[obj]的字典维护对应方法的具体实现。下面我们具体看看<code>EasyJS.call</code>方法的实现。</p>
+<p>代码片段二：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">call: function (obj, functionName, args)&#123;</span><br><span class="line">	var formattedArgs = [];</span><br><span class="line">	<span class="keyword">for</span> (var i = <span class="number">0</span>, l = args<span class="variable">.length</span>; i &lt; l; i++)&#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">typeof</span> args[i] == <span class="string">"function"</span>)&#123;</span><br><span class="line">			formattedArgs<span class="variable">.push</span>(<span class="string">"f"</span>);</span><br><span class="line">			var cbID = <span class="string">"__cb"</span> + (+new Date);</span><br><span class="line">			EasyJS<span class="variable">.__callbacks</span>[cbID] = args[i];</span><br><span class="line">			formattedArgs<span class="variable">.push</span>(cbID);</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			formattedArgs<span class="variable">.push</span>(<span class="string">"s"</span>);</span><br><span class="line">			formattedArgs<span class="variable">.push</span>(encodeURIComponent(args[i]));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	var argStr = (formattedArgs<span class="variable">.length</span> &gt; <span class="number">0</span> ? <span class="string">":"</span> + encodeURIComponent(formattedArgs<span class="variable">.join</span>(<span class="string">":"</span>)) : <span class="string">""</span>);</span><br><span class="line">    alert(argStr);</span><br><span class="line">	var iframe = document<span class="variable">.createElement</span>(<span class="string">"IFRAME"</span>);</span><br><span class="line">	iframe<span class="variable">.setAttribute</span>(<span class="string">"src"</span>, <span class="string">"easy-js:"</span> + obj + <span class="string">":"</span> + encodeURIComponent(functionName) + argStr);</span><br><span class="line">	document<span class="variable">.documentElement</span><span class="variable">.appendChild</span>(iframe);</span><br><span class="line">	iframe<span class="variable">.parentNode</span><span class="variable">.removeChild</span>(iframe);</span><br><span class="line">	iframe = null;</span><br><span class="line">	</span><br><span class="line">	var ret = EasyJS<span class="variable">.retValue</span>;</span><br><span class="line">	EasyJS<span class="variable">.retValue</span> = undefined;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (ret)&#123;</span><br><span class="line">		<span class="keyword">return</span> decodeURIComponent(ret);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<p>这段代码做了三件事：</p>
+<blockquote>
+<ul>
+<li>1.分别针对参数function类型与其他类型区分处理</li>
+<li>2.创建一个<code>IFRAME</code>标签元素,设置<code>src</code></li>
+<li>3.将新建的<code>IFRAME</code>添加到root元素上</li>
+</ul>
+</blockquote>
+<p>修改<code>IFRAME</code>的<code>src</code>默认会触发webView的回调的执行，因此便有了下面方法<code>shouldStartLoadWithRequest</code>的拦截。</p>
+<h4 id="4-2-2-3_shouldStartLoadWithRequest回调实现">4.2.2.3 shouldStartLoadWithRequest回调实现</h4><p>代码片段一：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSArray</span> *components = [requestString componentsSeparatedByString:<span class="string">@":"</span>];</span><br><span class="line"><span class="comment">//NSLog(@"req: %@", requestString);</span></span><br><span class="line">	</span><br><span class="line"><span class="built_in">NSString</span>* obj = (<span class="built_in">NSString</span>*)[components objectAtIndex:<span class="number">1</span>];</span><br><span class="line"><span class="built_in">NSString</span>* method = [(<span class="built_in">NSString</span>*)[components objectAtIndex:<span class="number">2</span>]</span><br><span class="line">					stringByReplacingPercentEscapesUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>];</span><br><span class="line">	</span><br><span class="line"><span class="built_in">NSObject</span>* interface = [javascriptInterfaces objectForKey:obj];</span><br><span class="line">	</span><br><span class="line"><span class="comment">// execute the interfacing method</span></span><br><span class="line">SEL selector = <span class="built_in">NSSelectorFromString</span>(method);</span><br><span class="line"><span class="built_in">NSMethodSignature</span>* sig = [[interface class] instanceMethodSignatureForSelector:selector];</span><br><span class="line"><span class="built_in">NSInvocation</span>* invoker = [<span class="built_in">NSInvocation</span> invocationWithMethodSignature:sig];</span><br><span class="line">invoker<span class="variable">.selector</span> = selector;</span><br><span class="line">invoker<span class="variable">.target</span> = interface;</span><br><span class="line">	</span><br><span class="line"><span class="built_in">NSMutableArray</span>* args = [[<span class="built_in">NSMutableArray</span> alloc] init];</span><br><span class="line">	</span><br><span class="line"><span class="keyword">if</span> ([components count] &gt; <span class="number">3</span>)&#123;</span><br><span class="line">	<span class="built_in">NSString</span> *argsAsString = [(<span class="built_in">NSString</span>*)[components objectAtIndex:<span class="number">3</span>]</span><br><span class="line">							  stringByReplacingPercentEscapesUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="built_in">NSArray</span>* formattedArgs = [argsAsString componentsSeparatedByString:<span class="string">@":"</span>];</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>, l = [formattedArgs count]; i &lt; l; i+=<span class="number">2</span>, j++)&#123;</span><br><span class="line">		<span class="built_in">NSString</span>* type = ((<span class="built_in">NSString</span>*) [formattedArgs objectAtIndex:i]);</span><br><span class="line">		<span class="built_in">NSString</span>* argStr = ((<span class="built_in">NSString</span>*) [formattedArgs objectAtIndex:i + <span class="number">1</span>]);</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">if</span> ([<span class="string">@"f"</span> isEqualToString:type])&#123;</span><br><span class="line">			EasyJSDataFunction* func = [[EasyJSDataFunction alloc] initWithWebView:(EasyJSWebView *)webView];</span><br><span class="line">			func<span class="variable">.funcID</span> = argStr;</span><br><span class="line">			[args addObject:func];</span><br><span class="line">			[invoker setArgument:&amp;func atIndex:(j + <span class="number">2</span>)];</span><br><span class="line">		&#125;<span class="keyword">else</span> <span class="keyword">if</span> ([<span class="string">@"s"</span> isEqualToString:type])&#123;</span><br><span class="line">			<span class="built_in">NSString</span>* arg = [argStr stringByReplacingPercentEscapesUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>];</span><br><span class="line">			[args addObject:arg];</span><br><span class="line">			[invoker setArgument:&amp;arg atIndex:(j + <span class="number">2</span>)];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">[invoker invoke];</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>1.拆分拦截到的requestString拆分为<code>obj</code>,<code>method</code>,<code>formattedArgs</code>三个部分</li>
+<li>2.获取类实例方法的签名，新建一个<code>NSInvocation</code>实例，指定实例与方法</li>
+<li>3.<code>invoker</code>设置参数，然后执行invoke，注意参数中function类型的区分，以下5中会分析回调function的处理过程。</li>
+</ul>
+</blockquote>
+<p>代码片段二：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ([sig methodReturnLength] &gt; <span class="number">0</span>)&#123;</span><br><span class="line">	<span class="built_in">NSString</span>* retValue;</span><br><span class="line">	[invoker getReturnValue:&amp;retValue];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (retValue == <span class="literal">NULL</span> || retValue == <span class="literal">nil</span>)&#123;</span><br><span class="line">		[webView stringByEvaluatingJavaScriptFromString:<span class="string">@"EasyJS.retValue=null;"</span>];</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		retValue = (<span class="built_in">NSString</span> *)<span class="built_in">CFBridgingRelease</span>(<span class="built_in">CFURLCreateStringByAddingPercentEscapes</span>(<span class="literal">NULL</span>,(<span class="built_in">CFStringRef</span>) retValue, <span class="literal">NULL</span>, (<span class="built_in">CFStringRef</span>)<span class="string">@"!*'();:@&amp;=+$,/?%#[]"</span>, k<span class="built_in">CFStringEncodingUTF8</span>));</span><br><span class="line">		[webView stringByEvaluatingJavaScriptFromString:[<span class="string">@""</span> stringByAppendingFormat:<span class="string">@"EasyJS.retValue=\"%@\";"</span>, retValue]];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>获取invoker执行的结果通过webView执行js代码返回结果值。</p>
+<h2 id="5-EasyJSDataFunction_与_invokeCallback">5.EasyJSDataFunction 与 invokeCallback</h2><p>以下主要分析<code>EasyJsWebView</code>是如何处理回调方法参数的。</p>
+<p>代码片段一：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> args[i] == <span class="string">"function"</span>)&#123;</span><br><span class="line">	formattedArgs.push(<span class="string">"f"</span>);</span><br><span class="line">	<span class="keyword">var</span> cbID = <span class="string">"__cb"</span> + (+<span class="keyword">new</span> <span class="built_in">Date</span>);</span><br><span class="line">	EasyJS.__callbacks[cbID] = args[i];</span><br><span class="line">	formattedArgs.push(cbID);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>js端call方法这样处理function参数，EasyJS对象一个全局的__callbacks字典存储方法实现对象</p>
+<p>代码片段二：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ([<span class="string">@"f"</span> isEqualToString:type])&#123;</span><br><span class="line">	EasyJSDataFunction* func = [[EasyJSDataFunction alloc] initWithWebView:(EasyJSWebView *)webView];</span><br><span class="line">	func<span class="variable">.funcID</span> = argStr;</span><br><span class="line">	[args addObject:func];</span><br><span class="line">	[invoker setArgument:&amp;func atIndex:(j + <span class="number">2</span>)];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>native端拦截到请求，执行方法</p>
+<p>代码片段三：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">NSString</span>*) executeWithParams: (<span class="built_in">NSArray</span>*) params&#123;</span><br><span class="line">	<span class="built_in">NSMutableString</span>* injection = [[<span class="built_in">NSMutableString</span> alloc] init];</span><br><span class="line">	</span><br><span class="line">	[injection appendFormat:<span class="string">@"EasyJS.invokeCallback(\"%@\", %@"</span>, <span class="keyword">self</span><span class="variable">.funcID</span>, <span class="keyword">self</span><span class="variable">.removeAfterExecute</span> ? <span class="string">@"true"</span> : <span class="string">@"false"</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (params)&#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, l = params<span class="variable">.count</span>; i &lt; l; i++)&#123;</span><br><span class="line">			<span class="built_in">NSString</span>* arg = [params objectAtIndex:i];</span><br><span class="line">			<span class="built_in">NSString</span>* encodedArg = (<span class="built_in">NSString</span>*) <span class="built_in">CFURLCreateStringByAddingPercentEscapes</span>(<span class="literal">NULL</span>, (<span class="built_in">CFStringRef</span>)arg, <span class="literal">NULL</span>, (<span class="built_in">CFStringRef</span>) <span class="string">@"!*'();:@&amp;=+$,/?%#[]"</span>, k<span class="built_in">CFStringEncodingUTF8</span>);</span><br><span class="line">			</span><br><span class="line">			[injection appendFormat:<span class="string">@", \"%@\""</span>, encodedArg];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	[injection appendString:<span class="string">@");"</span>];</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">self</span><span class="variable">.webView</span>)&#123;</span><br><span class="line">		<span class="keyword">return</span> [<span class="keyword">self</span><span class="variable">.webView</span> stringByEvaluatingJavaScriptFromString:injection];</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>回调方法执行，将回调方法执行参数解析封装js函数字符串，注意前两个参数第一个表示js函数的唯一ID方便js端找到该函数对象，第二个表示第一次回调完成是否移除该回调执行的函数对象的bool值，然后webView主动执行，这样就完成个整个的回调过程。</p>
+<p>例子：Demo回调执行语句调试</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EasyJS.invokeCallback(<span class="string">"__cb1462414605044"</span>, true, <span class="string">"blabla<span class="variable">%3A</span><span class="variable">%22bla</span>"</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="6-存在问题">6.存在问题</h2><p>见如下代码我们分析实现会发现<code>jsObj</code>全局字典方法区分的key是方法名的拼接，且去处了连接符号<code>:</code>,因此产生疑问这样可能还是会出现同一个key对应不同的方法。</p>
+<figure class="highlight nimrod"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(function ()&#123;</span><br><span class="line">	<span class="keyword">var</span> <span class="keyword">method</span> = methods[i];</span><br><span class="line">	<span class="keyword">var</span> jsMethod = <span class="keyword">method</span>.replace(new <span class="type">RegExp</span>(<span class="string">":"</span>, <span class="string">"g"</span>), <span class="string">""</span>);</span><br><span class="line">	jsObj[jsMethod] = function ()&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="type">EasyJS</span>.call(obj, <span class="keyword">method</span>, <span class="type">Array</span>.prototype.slice.call(arguments));</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<p>鉴于以上的疑问我改了一下Demo工程，<code>MyJSInterface</code>增加一个实现的接口</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>) testWithTwoParamAndParam2: (<span class="built_in">NSString</span>*) param</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"testWithTwoParamAndParam2 invoked %@"</span>,param);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就会与以下方法冲突</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>) testWithTwoParam: (<span class="built_in">NSString</span>*) param AndParam2: (<span class="built_in">NSString</span>*) param2&#123;</span><br><span class="line">	<span class="built_in">NSLog</span>(<span class="string">@"test with param: %@ and param2: %@"</span>, param, param2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Demo改成如下调用</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MyJSTest.testWithTwoParamAndParam2(<span class="string">"haha1"</span>, <span class="string">"haha2"</span>);</span><br></pre></td></tr></table></figure>
+<p>抛出异常,原因就是js方法全局字典的key<code>testWithTwoParamAndParam2</code>所对应的方法被下一个方法覆盖。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*** WebKit discarded an uncaught exception <span class="keyword">in</span> the <span class="string">webView:</span><span class="string">decidePolicyForNavigationAction:</span><span class="string">request:</span><span class="string">frame:</span><span class="string">decisionListener:</span> <span class="string">delegate:</span> &lt;NSInvalidArgumentException&gt; -[NSInvocation <span class="string">setArgument:</span><span class="string">atIndex:</span>]: index (<span class="number">3</span>) out of bounds [-<span class="number">1</span>, <span class="number">2</span>]</span><br></pre></td></tr></table></figure>
+<p>解决：</p>
+<blockquote>
+<ul>
+<li>1.可以尽量避免重名问题</li>
+<li>2.也可以替换分隔符号”:”用其他特殊字符替换</li>
+</ul>
+</blockquote>
+<p>本文结，本人还在不断学习积累中，如果对文章有疑问或者错误的描述欢迎提出。<br>或者你有hybrid iOS一块比较好的实现也欢迎分享大家一起学习，谢谢！！！</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/05/02/JSPatch源码解析-二/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">JSPatch源码解析(二)</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="EasyJsWebView-源码分析" data-title="EasyJsWebView 源码分析" data-url="www.arnold134777.com/2016/11/14/EasyJsWebView-源码分析/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 Arnold
+    	</div>
+      <span id="busuanzi_container_site_pv" style='display:none'>
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+       </span>
+       <span id="busuanzi_container_page_pv" style='display:none'>
+  本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+       </span>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+
+
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
